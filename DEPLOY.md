@@ -1,27 +1,32 @@
 # Deploying Common AI
 
-Target: **Vercel** (hosting) + **Neon** (PostgreSQL). Both have free tiers and
-need no servers to manage. This deploys the full app; the public sees the
+Target: **Vercel** (hosting) + **Supabase** (PostgreSQL). Both have free tiers
+and need no servers to manage. This deploys the full app; the public sees the
 waitlist landing page, and `/login` + `/admin` stay private.
+
+> Neon works identically — just use its connection string for both URLs below.
 
 ---
 
-## 1. Create the database (Neon) — ~3 min
+## 1. Create the database (Supabase) — ~3 min
 
-1. Sign up at https://neon.tech and create a project.
-2. Copy the **connection string** (starts with `postgresql://…?sslmode=require`).
-3. Put it in `apps/web/.env` as `DATABASE_URL` and push the schema + seed:
+1. Sign up at https://supabase.com and create a project (set a DB password).
+2. Go to **Project Settings → Database → Connection string**. You need two:
+   - **Pooled** (Transaction mode, port **6543**) → this is `DATABASE_URL`.
+     Append `?pgbouncer=true&connection_limit=1`.
+   - **Direct** (port **5432**) → this is `DIRECT_URL`.
+3. Put both in `apps/web/.env`, then push the schema + seed:
 
 ```bash
 cd "apps/web"
-# edit .env: set DATABASE_URL to your Neon URL
-npx prisma db push          # creates all tables in Neon
+# edit .env: set DATABASE_URL (pooled, 6543) and DIRECT_URL (direct, 5432)
+npx prisma db push          # creates all tables (uses DIRECT_URL)
 npm run db:seed             # demo data (optional)
 npm run make-admin          # your free admin account (optional)
 ```
 
-> Use the **same Neon URL** locally and in production for now (low pre-launch
-> traffic). Split into a separate prod DB later if you want.
+> Why two URLs: the app runs on serverless and must use Supabase's pooler, but
+> Prisma migrations need a direct connection. Both point at the same database.
 
 ## 2. Push the code to GitHub
 
@@ -47,7 +52,8 @@ git push -u origin main
 
    | Key | Value |
    |-----|-------|
-   | `DATABASE_URL` | your Neon connection string |
+   | `DATABASE_URL` | Supabase **pooled** string (port 6543, `?pgbouncer=true&connection_limit=1`) |
+   | `DIRECT_URL` | Supabase **direct** string (port 5432) |
    | `AUTH_SECRET` | run `openssl rand -base64 32` |
    | `APP_URL` | your Vercel URL, e.g. `https://common-ai.vercel.app` |
    | `DOC_ENCRYPTION_KEY` | run `openssl rand -base64 32` |

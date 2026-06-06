@@ -71,5 +71,14 @@
     "file": "apps/web/src/app/page.tsx",
     "files_in_map": 0,
     "result": "complete"
+  },
+  {
+    "timestamp": "2026-06-06T04:56:41.701Z",
+    "event": "task_complete",
+    "project_hash": "9e6913164d85e7d9",
+    "file": "apps/web/prisma/schema.prisma",
+    "task": "Make the app deployable to Vercel: switch Prisma datasource from SQLite to Postgres, ensure Prisma client generates on build, document env vars, and prepare a deploy guide.",
+    "files_in_map": 0,
+    "result": "complete"
   }
 ]
