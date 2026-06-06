@@ -1,0 +1,343 @@
+// Common AI — data model
+// Principle: this schema is the SINGLE SOURCE OF TRUTH for an applicant.
+// Autofill and AI may ONLY use values that exist here. Anything missing is
+// flagged back to the user, never guessed or fabricated.
+//
+// DB: PostgreSQL (works locally via a hosted DB like Neon, and in production).
+// status/role/type fields are Strings whose allowed values are documented in
+// comments and enforced in the TypeScript layer (kept this way so the same
+// models also run on SQLite for quick local experiments if ever needed).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------------------------------
+// Tenancy & identity
+// ----------------------------------------------------------------------------
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  name         String?
+  role         String       @default("STUDENT") // STUDENT | COUNSELOR | ADMIN
+  passwordHash String?
+  orgId        String?
+  org          Org?         @relation(fields: [orgId], references: [id])
+  memberships  Membership[]
+  ownedApplicants Applicant[] @relation("ApplicantOwner")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+// An agency / counseling organization. Gets discounted per-application pricing.
+model Org {
+  id          String       @id @default(cuid())
+  name        String
+  type        String       @default("AGENCY") // AGENCY | SCHOOL
+  // Discount applied to base per-application price, in basis points.
+  // 1000 = 10% off, 2500 = 25% off. 0 = no discount.
+  discountBps Int          @default(0)
+  active      Boolean      @default(true)
+  users       User[]
+  memberships Membership[]
+  applicants  Applicant[]
+  payments    Payment[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Membership {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orgId     String
+  org       Org      @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  role      String   @default("COUNSELOR") // COUNSELOR | ADMIN
+  createdAt DateTime @default(now())
+
+  @@unique([userId, orgId])
+}
+
+// ----------------------------------------------------------------------------
+// Applicant profile (the source of truth)
+// ----------------------------------------------------------------------------
+
+model Applicant {
+  id          String   @id @default(cuid())
+  ownerUserId String
+  owner       User     @relation("ApplicantOwner", fields: [ownerUserId], references: [id])
+  orgId       String?
+  org         Org?     @relation(fields: [orgId], references: [id])
+
+  profile      MasterProfile?
+  activities   Activity[]
+  honors       Honor[]
+  documents    Document[]
+  essays       Essay[]
+  applications Application[]
+  entitlements Entitlement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orgId])
+  @@index([ownerUserId])
+}
+
+// One-to-one core biographical data. Plain fields; null = "not provided yet".
+model MasterProfile {
+  id          String   @id @default(cuid())
+  applicantId String   @unique
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  legalFirstName String?
+  legalLastName  String?
+  preferredName  String?
+  dateOfBirth    DateTime?
+  email          String?
+  phone          String?
+
+  addressLine1 String?
+  addressLine2 String?
+  city         String?
+  state        String?
+  postalCode   String?
+  country      String?
+
+  citizenship  String?
+  gender       String?
+
+  highSchoolName String?
+  graduationYear Int?
+  gpa            Float?
+  gpaScale       Float?
+  classRank      String?
+
+  satTotal     Int?
+  actComposite Int?
+
+  intendedMajor String?
+
+  // Free-form structured extras the questionnaire collected, stored as JSON
+  // text so we can add intake questions without migrations. Still read-only facts.
+  extra String?
+
+  updatedAt DateTime @updatedAt
+}
+
+// ----------------------------------------------------------------------------
+// Activities & honors — raw input + AI-polished output (review required)
+// status: RAW (entered) | DRAFTED (AI draft) | APPROVED (student approved)
+// ----------------------------------------------------------------------------
+
+model Activity {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  category     String?
+  position     String?
+  organization String?
+  gradeLevels  String?
+  timing       String?
+  hoursPerWeek Int?
+  weeksPerYear Int?
+
+  rawDescription      String
+  polishedDescription String?
+  status              String @default("RAW") // RAW | DRAFTED | APPROVED
+
+  orderIndex Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([applicantId])
+}
+
+model Honor {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  title       String
+  gradeLevels String?
+  level       String?
+
+  rawDescription String
+  polishedTitle  String?
+  status         String @default("RAW") // RAW | DRAFTED | APPROVED
+
+  orderIndex Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([applicantId])
+}
+
+// ----------------------------------------------------------------------------
+// Essays — COACHING flow. AI drafts from the student's real stories; the
+// student rewrites in their own voice and attests authorship at submit time.
+// kind: PERSONAL_STATEMENT | SUPPLEMENT | WHY_SCHOOL | ACTIVITY_ELABORATION | OTHER
+// ----------------------------------------------------------------------------
+
+model Essay {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  kind        String  @default("PERSONAL_STATEMENT")
+  prompt      String?
+  wordLimit   Int?
+
+  studentNotes String?
+  outline      String?
+  draft        String?
+  finalText    String?
+  status       String  @default("RAW") // RAW | DRAFTED | APPROVED
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([applicantId])
+}
+
+// ----------------------------------------------------------------------------
+// Document vault — encrypted at rest, decrypted only for the owner's session
+// type: TRANSCRIPT | TEST_SCORE_REPORT | FINANCIAL_AID | PASSPORT_ID | RESUME | PORTFOLIO | OTHER
+// ----------------------------------------------------------------------------
+
+model Document {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  type        String
+  fileName    String
+  mimeType    String
+  sizeBytes   Int
+
+  storageKey  String
+  iv          String
+  authTag     String
+
+  createdAt DateTime @default(now())
+
+  @@index([applicantId])
+}
+
+// ----------------------------------------------------------------------------
+// Universities, applications, entitlements, payments
+// ----------------------------------------------------------------------------
+
+model University {
+  id            String       @id @default(cuid())
+  name          String       @unique
+  portalType    String       @default("COMMON_APP") // COMMON_APP | COALITION | DIRECT
+  supplementUrl String?
+  fieldMapKey   String?
+  applications  Application[]
+  createdAt     DateTime     @default(now())
+}
+
+model Application {
+  id           String   @id @default(cuid())
+  applicantId  String
+  applicant    Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  universityId String
+  university   University @relation(fields: [universityId], references: [id])
+
+  status      String       @default("DRAFT") // DRAFT | READY_FOR_REVIEW | SUBMITTED_BY_STUDENT
+  entitlement Entitlement?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicantId, universityId])
+  @@index([applicantId])
+}
+
+// One paid unlock = one university application's assisted autofill.
+// status: LOCKED | PAID | REFUNDED
+model Entitlement {
+  id            String   @id @default(cuid())
+  applicantId   String
+  applicant     Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  applicationId String   @unique
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  status         String  @default("LOCKED")
+  priceCents     Int
+  basePriceCents Int
+  discountBps    Int     @default(0)
+  paymentId      String?
+  payment        Payment? @relation(fields: [paymentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([applicantId])
+}
+
+// status: PENDING | SUCCEEDED | FAILED | REFUNDED
+model Payment {
+  id          String   @id @default(cuid())
+  payerUserId String?
+  orgId       String?
+  org         Org?     @relation(fields: [orgId], references: [id])
+
+  amountCents Int
+  currency    String   @default("usd")
+  status      String   @default("PENDING")
+
+  stripeSessionId       String?  @unique
+  stripePaymentIntentId String?  @unique
+
+  entitlements Entitlement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orgId])
+  @@index([payerUserId])
+}
+
+// ----------------------------------------------------------------------------
+// Audit log — admin visibility into every AI generation & autofill action
+// ----------------------------------------------------------------------------
+
+model AuditEvent {
+  id          String   @id @default(cuid())
+  action      String   // AI_POLISH_ACTIVITY | AI_POLISH_HONOR | AI_DRAFT_ESSAY | AUTOFILL_SERVED | ENTITLEMENT_GRANTED | PAYMENT_SUCCEEDED | DOCUMENT_UPLOADED
+  userId      String?
+  applicantId String?
+  meta        String?  // JSON text
+  createdAt   DateTime @default(now())
+
+  @@index([applicantId])
+  @@index([action])
+}
+
+// ----------------------------------------------------------------------------
+// Waitlist — pre-launch email capture
+// ----------------------------------------------------------------------------
+
+model WaitlistEntry {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  name        String?
+  audience    String    @default("STUDENT") // STUDENT | COUNSELOR
+  note        String?
+  source      String?   // where they signed up from
+  invited     Boolean   @default(false)
+  invitedAt   DateTime?
+  inviteToken String?   @unique // single-use token that unlocks /signup
+  createdAt   DateTime  @default(now())
+
+  @@index([createdAt])
+}

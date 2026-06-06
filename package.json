@@ -1,0 +1,20 @@
+{
+  "name": "united-agents",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI-assisted college application platform (student stays author + submitter).",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "build:web": "npm run build --workspace=apps/web",
+    "build:ext": "npm run build --workspace=apps/extension",
+    "db:push": "npm run db:push --workspace=apps/web",
+    "db:studio": "npm run db:studio --workspace=apps/web"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

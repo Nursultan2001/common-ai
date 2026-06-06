@@ -1,0 +1,22 @@
+{
+  "key": "localhost-test",
+  "portal": "DIRECT",
+  "version": 1,
+  "_note": "A local demo target so you can watch the autofill engine work end-to-end without the live Common App DOM. Maps to /dev/testform in the web app.",
+  "pages": [
+    {
+      "urlPattern": "http://localhost:3000/dev/testform*",
+      "name": "Local Test Form",
+      "fields": [
+        { "source": "profile.legalFirstName", "selectors": ["#firstName"], "kind": "text" },
+        { "source": "profile.legalLastName", "selectors": ["#lastName"], "kind": "text" },
+        { "source": "profile.preferredName", "selectors": ["#preferredName"], "kind": "text" },
+        { "source": "profile.dateOfBirth", "selectors": ["#dob"], "kind": "date", "requiresConfirm": true },
+        { "source": "profile.email", "selectors": ["#email"], "kind": "email" },
+        { "source": "profile.phone", "selectors": ["#phone"], "kind": "tel" },
+        { "source": "profile.city", "selectors": ["#city"], "kind": "text" },
+        { "source": "profile.highSchoolName", "selectors": ["#highSchool"], "kind": "text" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { db } from "@/lib/db";
+import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+
+function str(fd: FormData, k: string): string | null {
+  const v = fd.get(k);
+  const s = typeof v === "string" ? v.trim() : "";
+  return s.length ? s : null;
+}
+function num(fd: FormData, k: string): number | null {
+  const s = str(fd, k);
+  if (s === null) return null;
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
+export async function saveProfileAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+
+  const dob = str(formData, "dateOfBirth");
+  const data = {
+    legalFirstName: str(formData, "legalFirstName"),
+    legalLastName: str(formData, "legalLastName"),
+    preferredName: str(formData, "preferredName"),
+    dateOfBirth: dob ? new Date(dob) : null,
+    email: str(formData, "email"),
+    phone: str(formData, "phone"),
+    addressLine1: str(formData, "addressLine1"),
+    addressLine2: str(formData, "addressLine2"),
+    city: str(formData, "city"),
+    state: str(formData, "state"),
+    postalCode: str(formData, "postalCode"),
+    country: str(formData, "country"),
+    citizenship: str(formData, "citizenship"),
+    highSchoolName: str(formData, "highSchoolName"),
+    graduationYear: num(formData, "graduationYear"),
+    gpa: num(formData, "gpa"),
+    gpaScale: num(formData, "gpaScale"),
+    satTotal: num(formData, "satTotal"),
+    actComposite: num(formData, "actComposite"),
+    intendedMajor: str(formData, "intendedMajor"),
+  };
+
+  await db.masterProfile.upsert({
+    where: { applicantId: applicant.id },
+    update: data,
+    create: { applicantId: applicant.id, ...data },
+  });
+
+  revalidatePath("/dashboard/profile");
+  revalidatePath("/dashboard");
+}
