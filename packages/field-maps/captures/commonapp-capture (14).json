@@ -1,0 +1,118 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/4/23*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Graduating class size (approx.)*",
+      "source": "profile.graduationYear",
+      "selectors": [
+        "#text_ques_303"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Exact",
+      "source": "",
+      "selectors": [
+        "#option_ques_297_817-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Decile",
+      "source": "",
+      "selectors": [
+        "#option_ques_297_818-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Quintile",
+      "source": "",
+      "selectors": [
+        "#option_ques_297_819-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Quartile",
+      "source": "",
+      "selectors": [
+        "#option_ques_297_820-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "None",
+      "source": "",
+      "selectors": [
+        "#option_ques_297_821-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Decile rank*",
+      "source": "",
+      "selectors": [
+        "#text_ques_299"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Weighted",
+      "source": "",
+      "selectors": [
+        "#option_ques_302_841-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Unweighted",
+      "source": "",
+      "selectors": [
+        "#option_ques_302_842-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "GPA Scale reporting",
+      "source": "profile.gpa",
+      "selectors": [
+        "#text_ques_305"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Cumulative GPA*",
+      "source": "profile.gpa",
+      "selectors": [
+        "#text_ques_304"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Weighted",
+      "source": "",
+      "selectors": [
+        "#option_ques_306_841-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Unweighted",
+      "source": "",
+      "selectors": [
+        "#option_ques_306_842-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

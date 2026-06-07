@@ -1,0 +1,62 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/4/197*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Applying as a first-year student and plan to start college in 2025 or 2026",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-226"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Planning to start college in 2027",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-226"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Planning to start college in 2028 or beyond",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-226"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Already a college student",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-226"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Highest degree you intend to earn*",
+      "source": "",
+      "selectors": [
+        "label:Highest degree you intend to earn*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Career interest*",
+      "source": "",
+      "selectors": [
+        "label:Career interest*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

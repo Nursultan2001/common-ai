@@ -1,0 +1,54 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/3/53*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-75"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-75"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "I certify that I understand and meet the eligibility requirements to request an admission application fee waiver. I also understand if I am a first year student my counselor will be asked to verify my eligibility.  Fee Waiver signature:*",
+      "source": "",
+      "selectors": [
+        "label:I certify that I understand and meet the eligibi"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-78"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-78"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

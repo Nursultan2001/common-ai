@@ -1,0 +1,550 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/7/232*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-272"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-272"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Activity type*",
+      "source": "",
+      "selectors": [
+        "#text_ques_930"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Position/Leadership description  (Max characters: 50)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_932"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Organization Name  (Max characters: 100)",
+      "source": "",
+      "selectors": [
+        "label:Organization Name  (Max characters: 100)"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Please describe this activity, including what you accomplished and any recognition you received, etc.(Max characters: 150)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_938"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "9",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-28_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "10",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-28_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "11",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-28_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "12",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-28_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Post-graduate",
+      "source": "profile.graduationYear",
+      "selectors": [
+        "name:ca-checkboxList-28_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "During school year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-29_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "During school break",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-29_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "All year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-29_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Hours spent per week*",
+      "source": "",
+      "selectors": [
+        "#text_ques_936"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Weeks spent per year*",
+      "source": "",
+      "selectors": [
+        "#text_ques_937"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-275"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-275"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Activity type*",
+      "source": "",
+      "selectors": [
+        "#text_ques_939"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Sport/team*",
+      "source": "",
+      "selectors": [
+        "#text_ques_940"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Position/Leadership description  (Max characters: 50)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_941"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Organization Name  (Max characters: 100)",
+      "source": "",
+      "selectors": [
+        "label:Organization Name  (Max characters: 100)"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Please describe this activity, including what you accomplished and any recognition you received, etc.(Max characters: 150)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_947"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "9",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-30_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "10",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-30_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "11",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-30_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "12",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-30_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Post-graduate",
+      "source": "profile.graduationYear",
+      "selectors": [
+        "name:ca-checkboxList-30_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "During school year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-31_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "During school break",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-31_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "All year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-31_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Hours spent per week*",
+      "source": "",
+      "selectors": [
+        "#text_ques_945"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Weeks spent per year*",
+      "source": "",
+      "selectors": [
+        "#text_ques_946"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-278"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-278"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Activity type*",
+      "source": "",
+      "selectors": [
+        "#text_ques_948"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Position/Leadership description  (Max characters: 50)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_950"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Organization Name  (Max characters: 100)",
+      "source": "",
+      "selectors": [
+        "label:Organization Name  (Max characters: 100)"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Please describe this activity, including what you accomplished and any recognition you received, etc.(Max characters: 150)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_956"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "9",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-32_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "10",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-32_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "11",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-32_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "12",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-32_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Post-graduate",
+      "source": "profile.graduationYear",
+      "selectors": [
+        "name:ca-checkboxList-32_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "During school year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-33_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "During school break",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-33_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "All year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-33_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Hours spent per week*",
+      "source": "",
+      "selectors": [
+        "#text_ques_954"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Weeks spent per year*",
+      "source": "",
+      "selectors": [
+        "#text_ques_955"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-281"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-281"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Activity type*",
+      "source": "",
+      "selectors": [
+        "#text_ques_957"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Position/Leadership description  (Max characters: 50)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_959"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Organization Name  (Max characters: 100)",
+      "source": "",
+      "selectors": [
+        "label:Organization Name  (Max characters: 100)"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Please describe this activity, including what you accomplished and any recognition you received, etc.(Max characters: 150)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_965"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "9",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-34_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "10",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-34_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "11",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-34_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "12",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-34_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Post-graduate",
+      "source": "profile.graduationYear",
+      "selectors": [
+        "name:ca-checkboxList-34_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "During school year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-35_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "During school break",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-35_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "All year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-35_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Hours spent per week*",
+      "source": "",
+      "selectors": [
+        "#text_ques_963"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Weeks spent per year*",
+      "source": "",
+      "selectors": [
+        "#text_ques_964"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-284"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-284"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

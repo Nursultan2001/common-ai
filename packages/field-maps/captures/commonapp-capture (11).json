@@ -1,0 +1,102 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/4/18*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Date of entry*",
+      "source": "",
+      "selectors": [
+        "#text_ques_246"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-153"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-153"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-159"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-159"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Graduation date*",
+      "source": "profile.graduationYear",
+      "selectors": [
+        "#text_ques_247"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Did or will graduate early",
+      "source": "profile.graduationYear",
+      "selectors": [
+        "name:ca-checkboxList-14_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Did or will graduate late",
+      "source": "profile.graduationYear",
+      "selectors": [
+        "name:ca-checkboxList-14_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Did or will take time off",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-14_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Did or will take gap year",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-14_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "No change in progression",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-14_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

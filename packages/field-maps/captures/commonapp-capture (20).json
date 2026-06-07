@@ -1,0 +1,134 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/2/10*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Number of times you have already taken the IELTS*",
+      "source": "",
+      "selectors": [
+        "#text_ques_159"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "0",
+      "source": "",
+      "selectors": [
+        "#option_ques_160_15-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "1",
+      "source": "",
+      "selectors": [
+        "#option_ques_160_16-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "2",
+      "source": "",
+      "selectors": [
+        "#option_ques_160_17-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "3",
+      "source": "",
+      "selectors": [
+        "#option_ques_160_18-input"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Highest listening score*",
+      "source": "",
+      "selectors": [
+        "#text_ques_164"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Listening score date*",
+      "source": "",
+      "selectors": [
+        "#text_ques_165"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Highest reading score*",
+      "source": "",
+      "selectors": [
+        "#text_ques_166"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Reading score date*",
+      "source": "",
+      "selectors": [
+        "#text_ques_167"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Highest writing score*",
+      "source": "",
+      "selectors": [
+        "#text_ques_168"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Writing score date*",
+      "source": "",
+      "selectors": [
+        "#text_ques_169"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Highest speaking score*",
+      "source": "",
+      "selectors": [
+        "#text_ques_170"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Speaking score date*",
+      "source": "",
+      "selectors": [
+        "#text_ques_171"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Highest IELTS overall band score*",
+      "source": "",
+      "selectors": [
+        "label:Highest IELTS overall band score*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "IELTS overall band score date*",
+      "source": "",
+      "selectors": [
+        "label:IELTS overall band score date*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

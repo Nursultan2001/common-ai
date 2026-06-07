@@ -1,0 +1,30 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/3/12*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "No alternate address",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-0"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Send mail to a temporary or alternate address",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-0"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

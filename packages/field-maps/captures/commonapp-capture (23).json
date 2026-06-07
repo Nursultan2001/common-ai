@@ -1,0 +1,150 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/7/250*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Assisting family or household members with tasks such as doctors’ appointments, bank visits, or visa interviews",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Farm work or unpaid work for a family business",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Interpreting or translating for family or household members",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Managing family or household finances, budget, or paying bills",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Providing transportation for family or household members",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Taking care of sick, disabled, and/or elderly members of my family or household",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Taking care of younger family or household members",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Taking care of my own child or children",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Working at a paid job to contribute to my household’s income",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Other",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "None of these",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-48_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Commuting 60 minutes or more to and from school each day",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-49_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Experiencing homelessness or another unstable living situation",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-49_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Living without consistent heat, power, water, or access to food",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-49_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Living without reliable or usable internet",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-49_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Living independently or living on my own (not including boarding school)",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-49_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "None of these",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-49_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

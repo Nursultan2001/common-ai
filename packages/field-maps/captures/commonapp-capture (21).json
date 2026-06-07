@@ -1,0 +1,22 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/2/37*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Number of Senior Secondary Leaving Examinations you have already taken*",
+      "source": "",
+      "selectors": [
+        "#text_ques_839"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

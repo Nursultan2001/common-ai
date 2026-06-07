@@ -1,77 +1,31 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 2,
-  "_note": "Selectors use resilient STRATEGIES that survive Common App's auto-generated class names: 'label:<text>' matches by visible label, 'name:<attr>' by the name attribute, plain '#id' as a CSS fallback. The label/name values below are best-effort guesses — VERIFY and replace them with a real capture: open the page logged in, click 'Capture fields' in the extension, and paste the resulting selectors here. See docs/COMMONAPP-SELECTORS.md.",
+  "version": 3,
+  "_note": "Built from real captures of apply.commonapp.org. Selectors are Common App's stable question IDs (#text_ques_NNN) with a label fallback. Only HIGH-CONFIDENCE applicant fields are mapped. Deliberately omitted: Date of birth (text field expects MM/DD/YYYY; needs a formatter), all radios/dropdowns (need value maps), and Family/Activities/Writing pages (out of current data model). See docs/COMMONAPP-SELECTORS.md and captures/ for the raw data.",
   "pages": [
     {
-      "urlPattern": "https://apply.commonapp.org/*profile*",
-      "name": "Profile — Personal Information",
+      "urlPattern": "https://apply.commonapp.org/common/3/11*",
+      "name": "Personal information — name",
       "fields": [
-        { "source": "profile.legalFirstName", "selectors": ["label:First name", "name:legalFirstName", "#firstName"], "kind": "text" },
-        { "source": "profile.legalLastName", "selectors": ["label:Last name", "name:legalLastName", "#lastName"], "kind": "text" },
-        { "source": "profile.preferredName", "selectors": ["label:Preferred name", "name:preferredName", "#preferredName"], "kind": "text" },
-        { "source": "profile.dateOfBirth", "selectors": ["label:Date of birth", "name:dateOfBirth", "#dob"], "kind": "date", "requiresConfirm": true },
-        { "source": "profile.email", "selectors": ["label:Email", "name:email", "input[type='email']"], "kind": "email" },
-        { "source": "profile.phone", "selectors": ["label:Phone", "name:phoneNumber", "#phone"], "kind": "tel" }
+        { "source": "profile.legalFirstName", "selectors": ["#text_ques_173", "label:Legal first"], "kind": "text" },
+        { "source": "profile.legalLastName", "selectors": ["#text_ques_175", "label:Last/family"], "kind": "text" }
       ]
     },
     {
-      "urlPattern": "https://apply.commonapp.org/*address*",
-      "name": "Profile — Address",
+      "urlPattern": "https://apply.commonapp.org/common/3/17*",
+      "name": "Citizenship",
       "fields": [
-        { "source": "profile.addressLine1", "selectors": ["label:Address line 1", "name:street1", "#addressLine1"], "kind": "text" },
-        { "source": "profile.addressLine2", "selectors": ["label:Address line 2", "name:street2", "#addressLine2"], "kind": "text" },
-        { "source": "profile.city", "selectors": ["label:City", "name:city", "#city"], "kind": "text" },
-        { "source": "profile.state", "selectors": ["label:State", "name:state", "#state"], "kind": "select" },
-        { "source": "profile.postalCode", "selectors": ["label:ZIP", "label:Postal code", "name:postalCode", "#zip"], "kind": "text" },
-        { "source": "profile.country", "selectors": ["label:Country", "name:country", "#country"], "kind": "select" }
+        { "source": "profile.citizenship", "selectors": ["#text_ques_236", "label:List countries of citizenship"], "kind": "text", "requiresConfirm": true }
       ]
     },
     {
-      "urlPattern": "https://apply.commonapp.org/*education*",
-      "name": "Education",
+      "urlPattern": "https://apply.commonapp.org/common/4/23*",
+      "name": "Education — GPA",
       "fields": [
-        { "source": "profile.highSchoolName", "selectors": ["label:Current school", "label:High school", "name:currentSchool", "#highSchool"], "kind": "text", "requiresConfirm": true },
-        { "source": "profile.graduationYear", "selectors": ["label:Graduation", "name:graduationYear", "#gradYear"], "kind": "select" },
-        { "source": "profile.gpa", "selectors": ["label:GPA", "name:cumulativeGPA", "#gpa"], "kind": "number", "requiresConfirm": true }
+        { "source": "profile.gpa", "selectors": ["#text_ques_304", "label:Cumulative GPA"], "kind": "text", "requiresConfirm": true },
+        { "source": "profile.gpaScale", "selectors": ["#text_ques_305", "label:GPA Scale"], "kind": "text", "requiresConfirm": true }
       ]
-    },
-    {
-      "urlPattern": "https://apply.commonapp.org/*activities*",
-      "name": "Activities",
-      "repeating": [
-        {
-          "source": "activities",
-          "addButtonSelector": "button[data-testid='add-activity']",
-          "rowSelector": "[data-testid='activity-row']",
-          "fields": [
-            { "source": "category", "selectors": ["name:activityType", "label:Activity type"], "kind": "select" },
-            { "source": "position", "selectors": ["name:position", "label:Position"], "kind": "text" },
-            { "source": "organization", "selectors": ["name:organization", "label:Organization"], "kind": "text" },
-            { "source": "description", "selectors": ["name:description", "label:Description"], "kind": "textarea" },
-            { "source": "hoursPerWeek", "selectors": ["name:hoursPerWeek", "label:Hours"], "kind": "number" },
-            { "source": "weeksPerYear", "selectors": ["name:weeksPerYear", "label:Weeks"], "kind": "number" }
-          ]
-        }
-      ],
-      "fields": []
-    },
-    {
-      "urlPattern": "https://apply.commonapp.org/*honors*",
-      "name": "Honors",
-      "repeating": [
-        {
-          "source": "honors",
-          "addButtonSelector": "button[data-testid='add-honor']",
-          "rowSelector": "[data-testid='honor-row']",
-          "fields": [
-            { "source": "title", "selectors": ["name:honorTitle", "label:Honor"], "kind": "text" },
-            { "source": "level", "selectors": ["name:recognitionLevel", "label:Recognition"], "kind": "select" }
-          ]
-        }
-      ],
-      "fields": []
     }
   ]
 }

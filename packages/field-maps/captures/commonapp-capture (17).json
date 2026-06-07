@@ -1,0 +1,46 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/4/22*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "0",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-221"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "1",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-221"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "2",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-221"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "3",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-221"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

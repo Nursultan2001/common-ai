@@ -1,0 +1,30 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/13/59*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-327"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-327"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

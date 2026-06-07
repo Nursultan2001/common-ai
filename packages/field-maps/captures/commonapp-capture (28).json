@@ -1,0 +1,22 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/13/56*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "I have reported all of my courses for this grade",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-53_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

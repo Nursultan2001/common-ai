@@ -1,0 +1,54 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/2/2*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-231"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-231"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Indicate all tests you wish to report. Be sure to include tests you expect to take in addition to tests you have already taken.*",
+      "source": "",
+      "selectors": [
+        "#text_ques_11"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-234"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-234"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

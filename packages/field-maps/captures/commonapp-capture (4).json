@@ -1,0 +1,294 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/3/16*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "1",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-53"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "2",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-53"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "3",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-53"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "4",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-53"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "5",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-53"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Select language*",
+      "source": "",
+      "selectors": [
+        "#text_ques_224"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "First Language",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-9_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Speak",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-9_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Read",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-9_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Write",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-9_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Spoken at Home",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-9_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Select language*",
+      "source": "",
+      "selectors": [
+        "#text_ques_226"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "First Language",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-10_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Speak",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-10_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Read",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-10_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Write",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-10_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Spoken at Home",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-10_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Select language*",
+      "source": "",
+      "selectors": [
+        "#text_ques_228"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "First Language",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-11_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Speak",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-11_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Read",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-11_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Write",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-11_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Spoken at Home",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-11_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Select language*",
+      "source": "",
+      "selectors": [
+        "#text_ques_230"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "First Language",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-12_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Speak",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-12_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Read",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-12_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Write",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-12_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Spoken at Home",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-12_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Select language*",
+      "source": "",
+      "selectors": [
+        "#text_ques_232"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "First Language",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-13_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Speak",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-13_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Read",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-13_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Write",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-13_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Spoken at Home",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-13_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

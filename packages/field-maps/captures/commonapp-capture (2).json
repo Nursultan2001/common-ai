@@ -1,0 +1,70 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/3/13*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Home",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-6"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Mobile",
+      "source": "profile.phone",
+      "selectors": [
+        "name:mat-radio-group-6"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Country code",
+      "source": "profile.country",
+      "selectors": [
+        "#ctrycode_ques_189"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Number",
+      "source": "",
+      "selectors": [
+        "#phone_ques_189"
+      ],
+      "kind": "tel"
+    },
+    {
+      "_label": "No other telephone",
+      "source": "profile.phone",
+      "selectors": [
+        "name:mat-radio-group-9"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Home",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-9"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Mobile",
+      "source": "profile.phone",
+      "selectors": [
+        "name:mat-radio-group-9"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

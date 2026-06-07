@@ -1,0 +1,142 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/5/30*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Please specify number of siblings you have*",
+      "source": "",
+      "selectors": [
+        "#text_ques_614"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Sibling 1  First/Given name*",
+      "source": "profile.legalFirstName",
+      "selectors": [
+        "#text_ques_615"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Last/Family/Surname*",
+      "source": "profile.legalLastName",
+      "selectors": [
+        "#text_ques_617"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Age",
+      "source": "",
+      "selectors": [
+        "#text_ques_618"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Sibling 2  First/Given name*",
+      "source": "profile.legalFirstName",
+      "selectors": [
+        "#text_ques_625"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Last/Family/Surname*",
+      "source": "profile.legalLastName",
+      "selectors": [
+        "#text_ques_627"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Age",
+      "source": "",
+      "selectors": [
+        "#text_ques_628"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Sibling 3  First/Given name*",
+      "source": "profile.legalFirstName",
+      "selectors": [
+        "#text_ques_635"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Last/Family/Surname*",
+      "source": "profile.legalLastName",
+      "selectors": [
+        "#text_ques_637"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Age",
+      "source": "",
+      "selectors": [
+        "#text_ques_638"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Sibling 4  First/Given name*",
+      "source": "profile.legalFirstName",
+      "selectors": [
+        "#text_ques_645"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Last/Family/Surname*",
+      "source": "profile.legalLastName",
+      "selectors": [
+        "#text_ques_647"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Age",
+      "source": "",
+      "selectors": [
+        "#text_ques_648"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Sibling 5  First/Given name*",
+      "source": "profile.legalFirstName",
+      "selectors": [
+        "#text_ques_655"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Last/Family/Surname*",
+      "source": "profile.legalLastName",
+      "selectors": [
+        "#text_ques_657"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Age",
+      "source": "",
+      "selectors": [
+        "#text_ques_658"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

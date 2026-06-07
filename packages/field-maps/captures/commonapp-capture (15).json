@@ -1,0 +1,438 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/4/24*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Please list all courses you are taking this academic year. If you are not currently enrolled, please list courses from your most recent academic year.How many courses would you like to report?*",
+      "source": "",
+      "selectors": [
+        "#text_ques_307"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Semester",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-213"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Trimester",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-213"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Quarter",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-213"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Yearly",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-213"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Course 1 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 1 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 1 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_308"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 1 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_309"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 1 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_311"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 2 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 2 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 2 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_312"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 2 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_313"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 2 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_315"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 3 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 3 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 3 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_316"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 3 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_317"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 3 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_319"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 4 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 4 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 4 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_320"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 4 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_321"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 4 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_323"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 5 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 5 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 5 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_324"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 5 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_325"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 5 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_327"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 6 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 6 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 6 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_328"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 6 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_329"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 6 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_331"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 7 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 7 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 7 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_332"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 7 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_333"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 7 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_335"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 8 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 8 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 8 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_336"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 8 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_337"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 8 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_339"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 9 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 9 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 9 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_340"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 9 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_341"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 9 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_343"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 10 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 10 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 10 name*",
+      "source": "",
+      "selectors": [
+        "#text_ques_344"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 10 level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_345"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 10 schedule*",
+      "source": "",
+      "selectors": [
+        "#text_ques_347"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 11 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 11 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 11 name*",
+      "source": "",
+      "selectors": [
+        "label:Course 11 name*"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 11 level*",
+      "source": "",
+      "selectors": [
+        "label:Course 11 level*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 11 schedule*",
+      "source": "",
+      "selectors": [
+        "label:Course 11 schedule*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 12 subject*",
+      "source": "",
+      "selectors": [
+        "label:Course 12 subject*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 12 name*",
+      "source": "",
+      "selectors": [
+        "label:Course 12 name*"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Course 12 level*",
+      "source": "",
+      "selectors": [
+        "label:Course 12 level*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Course 12 schedule*",
+      "source": "",
+      "selectors": [
+        "label:Course 12 schedule*"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

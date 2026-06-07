@@ -1,0 +1,190 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/5/28*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Mother",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-130"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Father",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-130"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "I have limited information about this parent",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-130"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "I do not have another parent to list",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-130"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-135"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-135"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Prefix",
+      "source": "",
+      "selectors": [
+        "#text_ques_456"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "First/Given name*",
+      "source": "profile.legalFirstName",
+      "selectors": [
+        "#text_ques_457"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Middle initial",
+      "source": "",
+      "selectors": [
+        "#text_ques_458"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Last/Family/Surname*",
+      "source": "profile.legalLastName",
+      "selectors": [
+        "#text_ques_459"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Former last/family/surname (if any)",
+      "source": "profile.legalLastName",
+      "selectors": [
+        "#text_ques_244"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Suffix",
+      "source": "",
+      "selectors": [
+        "#text_ques_460"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Preferred email",
+      "source": "profile.preferredName",
+      "selectors": [
+        "#text_ques_462"
+      ],
+      "kind": "email"
+    },
+    {
+      "_label": "Mobile",
+      "source": "profile.phone",
+      "selectors": [
+        "name:mat-radio-group-138"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Home",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-138"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Other",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-138"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Work",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-138"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Country code",
+      "source": "profile.country",
+      "selectors": [
+        "#ctrycode_ques_464"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Number",
+      "source": "",
+      "selectors": [
+        "#phone_ques_464"
+      ],
+      "kind": "tel"
+    },
+    {
+      "_label": "Extension",
+      "source": "",
+      "selectors": [
+        "#phoneXtn_ques_464"
+      ],
+      "kind": "tel"
+    },
+    {
+      "_label": "Occupation (former occupation, if retired or deceased)",
+      "source": "",
+      "selectors": [
+        "#text_ques_467"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Highest education level*",
+      "source": "",
+      "selectors": [
+        "#text_ques_473"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/3/17*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Birth country/region/territory",
+      "source": "profile.dateOfBirth",
+      "selectors": [
+        "#text_ques_218"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "City of birth",
+      "source": "profile.dateOfBirth",
+      "selectors": [
+        "#text_ques_219"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Number of years you have lived in the United States",
+      "source": "profile.addressLine2",
+      "selectors": [
+        "#text_ques_221"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "U.S. citizen or U.S. national",
+      "source": "profile.citizenship",
+      "selectors": [
+        "name:mat-radio-group-59"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "U.S. dual citizen",
+      "source": "profile.citizenship",
+      "selectors": [
+        "name:mat-radio-group-59"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "U.S. permanent resident (green card holder)",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-59"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Citizen of non-U.S. country",
+      "source": "profile.country",
+      "selectors": [
+        "name:mat-radio-group-59"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "U.S. resident",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-59"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "List countries of citizenship*",
+      "source": "profile.citizenship",
+      "selectors": [
+        "#text_ques_236"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-65"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-65"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-68"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-68"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Visa type",
+      "source": "",
+      "selectors": [
+        "label:Visa type"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}

@@ -98,5 +98,13 @@
     "task": "Make Common App autofill real: add robust label/name/aria selector strategies to the matcher, add a capture-fields tool that generates field-map JSON from a live page, and update the Common App template + docs.",
     "files_in_map": 0,
     "result": "complete"
+  },
+  {
+    "timestamp": "2026-06-07T03:43:00.276Z",
+    "event": "task_complete",
+    "project_hash": "9e6913164d85e7d9",
+    "file": "packages/field-maps/templates/commonapp.json",
+    "files_in_map": 0,
+    "result": "complete"
   }
 ]

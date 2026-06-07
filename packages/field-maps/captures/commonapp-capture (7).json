@@ -1,0 +1,46 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/5/26*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Parents' marital status (relative to each other)*",
+      "source": "",
+      "selectors": [
+        "#text_ques_364"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "With whom do you make your permanent home?*",
+      "source": "",
+      "selectors": [
+        "#text_ques_366"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-87"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-87"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "#appFaqSearchControl"
+      ],
+      "kind": "text"
+    }
+  ]
+}
