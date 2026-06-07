@@ -23,6 +23,26 @@
     el.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
+  // Format a date value for a text field. Uses UTC so a date stored at midnight
+  // UTC doesn't shift a day in the user's timezone.
+  function formatDate(v, fmt) {
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return String(v);
+    const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(d.getUTCDate()).padStart(2, "0");
+    const yyyy = d.getUTCFullYear();
+    switch (fmt) {
+      case "DD/MM/YYYY":
+        return `${dd}/${mm}/${yyyy}`;
+      case "YYYY-MM-DD":
+        return `${yyyy}-${mm}-${dd}`;
+      case "MM/DD/YYYY":
+        return `${mm}/${dd}/${yyyy}`;
+      default:
+        return `${yyyy}-${mm}-${dd}`;
+    }
+  }
+
   function markFilled(el, confirm) {
     el.style.outline = HIGHLIGHT;
     el.style.outlineOffset = "1px";
@@ -114,9 +134,7 @@
         break;
       }
       case "date": {
-        const d = new Date(v);
-        const iso = isNaN(d.getTime()) ? String(v) : d.toISOString().slice(0, 10);
-        setNativeValue(el, iso);
+        setNativeValue(el, formatDate(v, mapping.format));
         break;
       }
       default:

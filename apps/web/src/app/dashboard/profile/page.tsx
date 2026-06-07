@@ -43,14 +43,20 @@ export default async function ProfilePage() {
           <h2>Identity</h2>
           <div className="row">
             <F label="Legal first name" name="legalFirstName" value={p?.legalFirstName} />
+            <F label="Middle name" name="middleName" value={p?.middleName} />
             <F label="Legal last name" name="legalLastName" value={p?.legalLastName} />
+            <F label="Suffix (Jr., III…)" name="suffix" value={p?.suffix} />
             <F label="Preferred name" name="preferredName" value={p?.preferredName} />
           </div>
           <div className="row">
             <F label="Date of birth" name="dateOfBirth" type="date" value={isoDate(p?.dateOfBirth ?? null)} />
+            <F label="City of birth" name="birthCity" value={p?.birthCity} />
+            <F label="Birth country/region" name="birthCountry" value={p?.birthCountry} />
+            <F label="Citizenship (countries)" name="citizenship" value={p?.citizenship} />
+          </div>
+          <div className="row">
             <F label="Email" name="email" type="email" value={p?.email} />
             <F label="Phone" name="phone" type="tel" value={p?.phone} />
-            <F label="Citizenship" name="citizenship" value={p?.citizenship} />
           </div>
         </div>
 

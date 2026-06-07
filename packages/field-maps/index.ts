@@ -36,6 +36,11 @@ export interface FieldMapping {
   kind: FieldKind;
   /** For select/radio: map a source value to the option value/label. */
   valueMap?: Record<string, string>;
+  /**
+   * For kind "date": how to format the value into the text field.
+   * e.g. "MM/DD/YYYY" (Common App), "DD/MM/YYYY", "YYYY-MM-DD". Default ISO.
+   */
+  format?: string;
   /** If true, fill but flag for explicit student confirmation (sensitive). */
   requiresConfirm?: boolean;
 }

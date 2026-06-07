@@ -1,21 +1,26 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 3,
-  "_note": "Built from real captures of apply.commonapp.org. Selectors are Common App's stable question IDs (#text_ques_NNN) with a label fallback. Only HIGH-CONFIDENCE applicant fields are mapped. Deliberately omitted: Date of birth (text field expects MM/DD/YYYY; needs a formatter), all radios/dropdowns (need value maps), and Family/Activities/Writing pages (out of current data model). See docs/COMMONAPP-SELECTORS.md and captures/ for the raw data.",
+  "version": 4,
+  "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN) with a label fallback. Mapped: Personal Information (name parts, DOB), Birthplace/Citizenship, and GPA. Date of birth uses format MM/DD/YYYY. Deliberately omitted for now: permanent address (custom widget, not standard inputs), phone type / country code (radios), languages, family/parents/siblings (different people), and all dropdowns/radios needing value maps.",
   "pages": [
     {
       "urlPattern": "https://apply.commonapp.org/common/3/11*",
-      "name": "Personal information — name",
+      "name": "Personal information — name & birth date",
       "fields": [
         { "source": "profile.legalFirstName", "selectors": ["#text_ques_173", "label:Legal first"], "kind": "text" },
-        { "source": "profile.legalLastName", "selectors": ["#text_ques_175", "label:Last/family"], "kind": "text" }
+        { "source": "profile.middleName", "selectors": ["#text_ques_174", "label:Middle name"], "kind": "text" },
+        { "source": "profile.legalLastName", "selectors": ["#text_ques_175", "label:Last/family"], "kind": "text" },
+        { "source": "profile.suffix", "selectors": ["#text_ques_176", "label:Suffix"], "kind": "text" },
+        { "source": "profile.dateOfBirth", "selectors": ["#text_ques_181", "label:Date of birth"], "kind": "date", "format": "MM/DD/YYYY", "requiresConfirm": true }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/3/17*",
-      "name": "Citizenship",
+      "name": "Birthplace & citizenship",
       "fields": [
+        { "source": "profile.birthCountry", "selectors": ["#text_ques_218", "label:Birth country"], "kind": "text", "requiresConfirm": true },
+        { "source": "profile.birthCity", "selectors": ["#text_ques_219", "label:City of birth"], "kind": "text", "requiresConfirm": true },
         { "source": "profile.citizenship", "selectors": ["#text_ques_236", "label:List countries of citizenship"], "kind": "text", "requiresConfirm": true }
       ]
     },

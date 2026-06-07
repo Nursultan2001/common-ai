@@ -23,9 +23,13 @@ export async function saveProfileAction(formData: FormData) {
   const dob = str(formData, "dateOfBirth");
   const data = {
     legalFirstName: str(formData, "legalFirstName"),
+    middleName: str(formData, "middleName"),
     legalLastName: str(formData, "legalLastName"),
+    suffix: str(formData, "suffix"),
     preferredName: str(formData, "preferredName"),
     dateOfBirth: dob ? new Date(dob) : null,
+    birthCity: str(formData, "birthCity"),
+    birthCountry: str(formData, "birthCountry"),
     email: str(formData, "email"),
     phone: str(formData, "phone"),
     addressLine1: str(formData, "addressLine1"),

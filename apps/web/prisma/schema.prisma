@@ -102,9 +102,13 @@ model MasterProfile {
   applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
 
   legalFirstName String?
+  middleName     String?
   legalLastName  String?
+  suffix         String?
   preferredName  String?
   dateOfBirth    DateTime?
+  birthCity      String?
+  birthCountry   String?
   email          String?
   phone          String?
 
