@@ -37,4 +37,19 @@ $("run").onclick = async () => {
   });
 };
 
+$("capture").onclick = async () => {
+  status("Capturing fields on this page…");
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.tabs.sendMessage(tab.id, { type: "CAPTURE_FIELDS" }, (r) => {
+    if (chrome.runtime.lastError) {
+      return status("Open the application page first (content script not loaded).");
+    }
+    status(
+      r && r.ok
+        ? `Captured ${r.count} fields → downloaded commonapp-capture.json (also in DevTools console).`
+        : "Capture failed."
+    );
+  });
+};
+
 load();

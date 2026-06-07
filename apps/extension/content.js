@@ -29,9 +29,58 @@
     if (confirm) el.style.outline = "2px solid #ffb454"; // needs explicit check
   }
 
+  // Resolve a control for a <label> (via for=, or a wrapped/inner control).
+  function controlForLabel(l) {
+    if (l.htmlFor) {
+      const el = document.getElementById(l.htmlFor);
+      if (el) return el;
+    }
+    return l.querySelector("input, select, textarea");
+  }
+
+  function byLabelText(text, root) {
+    const needle = text.trim().toLowerCase();
+    const scope = root && root.querySelectorAll ? root : document;
+    for (const l of scope.querySelectorAll("label")) {
+      if ((l.textContent || "").trim().toLowerCase().includes(needle)) {
+        const el = controlForLabel(l);
+        if (el) return el;
+      }
+    }
+    return null;
+  }
+
+  // A selector entry may be plain CSS, or a strategy: "label:First name",
+  // "name:firstName", "aria:Date of birth", "placeholder:you@…", "css:#id".
+  // Strategies survive Common App's auto-generated class names far better than CSS.
+  function resolveOne(sel, root) {
+    const scope = root || document;
+    const i = sel.indexOf(":");
+    const prefix = i > 0 ? sel.slice(0, i) : "";
+    const val = i > 0 ? sel.slice(i + 1) : sel;
+    try {
+      switch (prefix) {
+        case "label":
+          return byLabelText(val, scope);
+        case "name":
+          return scope.querySelector(`[name="${CSS.escape(val)}"]`);
+        case "aria":
+          return scope.querySelector(`[aria-label*="${val.replace(/"/g, "")}" i]`);
+        case "placeholder":
+          return scope.querySelector(`[placeholder*="${val.replace(/"/g, "")}" i]`);
+        case "css":
+          return scope.querySelector(val);
+        default:
+          return scope.querySelector(sel);
+      }
+    } catch {
+      return null;
+    }
+  }
+
   function findEl(selectors, root = document) {
     for (const sel of selectors) {
-      const el = root.querySelector(sel);
+      const el = resolveOne(sel, root);
       if (el) return el;
     }
     return null;
@@ -182,8 +231,143 @@
     if (issues.length) console.table(issues);
   }
 
+  // --- Capture mode: generate a field-map for the current live page ---
+  function isVisible(el) {
+    if (el.type === "hidden") return false;
+    const s = getComputedStyle(el);
+    if (s.display === "none" || s.visibility === "hidden") return false;
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0;
+  }
+
+  // Heuristic: avoid auto-generated ids (React useId, hashes, long digit runs).
+  function looksRandomId(id) {
+    if (!id) return true;
+    if (/^:r/i.test(id)) return true;
+    if (/[0-9a-f]{6,}/i.test(id)) return true;
+    if (/\d{4,}/.test(id)) return true;
+    return id.length > 40;
+  }
+
+  function labelOf(el) {
+    if (el.id) {
+      const l = document.querySelector(`label[for="${CSS.escape(el.id)}"]`);
+      if (l && l.textContent.trim()) return l.textContent.trim();
+    }
+    const wrap = el.closest("label");
+    if (wrap && wrap.textContent.trim()) return wrap.textContent.trim();
+    if (el.getAttribute("aria-label")) return el.getAttribute("aria-label").trim();
+    const lb = el.getAttribute("aria-labelledby");
+    if (lb) {
+      const n = document.getElementById(lb);
+      if (n && n.textContent.trim()) return n.textContent.trim();
+    }
+    if (el.placeholder) return el.placeholder.trim();
+    return el.name || "";
+  }
+
+  function bestSelector(el) {
+    if (el.id && !looksRandomId(el.id)) return `#${CSS.escape(el.id)}`;
+    if (el.name) return `name:${el.name}`;
+    const lab = labelOf(el);
+    if (lab) return `label:${lab.slice(0, 48)}`;
+    if (el.getAttribute("aria-label")) return `aria:${el.getAttribute("aria-label")}`;
+    if (el.placeholder) return `placeholder:${el.placeholder}`;
+    return null;
+  }
+
+  const SOURCE_HINTS = [
+    [/first name|given name/i, "profile.legalFirstName"],
+    [/last name|surname|family name/i, "profile.legalLastName"],
+    [/preferred|nickname/i, "profile.preferredName"],
+    [/birth|dob/i, "profile.dateOfBirth"],
+    [/e-?mail/i, "profile.email"],
+    [/phone|mobile|cell/i, "profile.phone"],
+    [/address line 1|street|address 1/i, "profile.addressLine1"],
+    [/address line 2|apt|suite|unit/i, "profile.addressLine2"],
+    [/city|town/i, "profile.city"],
+    [/state|province|region/i, "profile.state"],
+    [/zip|postal/i, "profile.postalCode"],
+    [/country/i, "profile.country"],
+    [/citizenship|citizen/i, "profile.citizenship"],
+    [/high school|current school|school name/i, "profile.highSchoolName"],
+    [/graduat/i, "profile.graduationYear"],
+    [/\bgpa\b/i, "profile.gpa"],
+    [/intended major|major|field of study/i, "profile.intendedMajor"],
+  ];
+
+  function guessSource(label) {
+    for (const [re, src] of SOURCE_HINTS) if (re.test(label)) return src;
+    return "";
+  }
+
+  function kindOf(el) {
+    const tag = el.tagName.toLowerCase();
+    if (tag === "select") return "select";
+    if (tag === "textarea") return "textarea";
+    const t = (el.type || "text").toLowerCase();
+    if (["checkbox", "radio", "date", "email", "tel", "file"].includes(t)) return t;
+    if (t === "number") return "number";
+    return "text";
+  }
+
+  function captureFields() {
+    const els = Array.from(
+      document.querySelectorAll("input, select, textarea")
+    ).filter(
+      (el) =>
+        isVisible(el) &&
+        !["hidden", "submit", "button", "reset"].includes((el.type || "").toLowerCase())
+    );
+
+    const fields = [];
+    for (const el of els) {
+      const sel = bestSelector(el);
+      if (!sel) continue;
+      const label = labelOf(el);
+      fields.push({
+        // _label is a human note for review; remove or keep, it's ignored at runtime.
+        _label: label,
+        source: guessSource(label),
+        selectors: [sel],
+        kind: kindOf(el),
+      });
+    }
+
+    return {
+      urlPattern: location.origin + location.pathname.replace(/\/$/, "") + "*",
+      name: document.title || "Captured page",
+      fields,
+    };
+  }
+
   // Triggered from the popup.
   chrome.runtime.onMessage.addListener((msg, _s, sendResponse) => {
+    if (msg.type === "CAPTURE_FIELDS") {
+      const map = captureFields();
+      const json = JSON.stringify(map, null, 2);
+      console.log("[Common AI] Captured field map for this page:\n" + json);
+      console.table(
+        map.fields.map((f) => ({
+          label: f._label,
+          source: f.source || "(set this)",
+          selector: f.selectors[0],
+          kind: f.kind,
+        }))
+      );
+      try {
+        const blob = new Blob([json], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "commonapp-capture.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch {}
+      sendResponse({ ok: true, count: map.fields.length });
+      return true;
+    }
+
     if (msg.type !== "RUN_AUTOFILL") return;
     chrome.runtime.sendMessage({ type: "GET_AUTOFILL_BUNDLE" }, (resp) => {
       if (!resp || !resp.ok) {

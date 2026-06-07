@@ -80,5 +80,23 @@
     "task": "Make the app deployable to Vercel: switch Prisma datasource from SQLite to Postgres, ensure Prisma client generates on build, document env vars, and prepare a deploy guide.",
     "files_in_map": 0,
     "result": "complete"
+  },
+  {
+    "timestamp": "2026-06-06T05:00:06.207Z",
+    "event": "task_complete",
+    "project_hash": "9e6913164d85e7d9",
+    "file": "apps/web/prisma/schema.prisma",
+    "task": "Use Supabase Postgres: add Prisma directUrl for migrations, document pooled vs direct connection strings, update env example and deploy guide.",
+    "files_in_map": 0,
+    "result": "complete"
+  },
+  {
+    "timestamp": "2026-06-07T03:00:13.339Z",
+    "event": "task_complete",
+    "project_hash": "9e6913164d85e7d9",
+    "file": "apps/extension/content.js",
+    "task": "Make Common App autofill real: add robust label/name/aria selector strategies to the matcher, add a capture-fields tool that generates field-map JSON from a live page, and update the Common App template + docs.",
+    "files_in_map": 0,
+    "result": "complete"
   }
 ]

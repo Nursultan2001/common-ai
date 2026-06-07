@@ -27,9 +27,13 @@ Done = scaffolded in this repo. Order below is the recommended path to a sellabl
       document type → vault file.
 
 ## Phase 3 — coverage & quality
+- [x] Resilient selector strategies (label/name/aria) + in-extension "Capture
+      fields" tool that generates a field map from a live page
+      (see docs/COMMONAPP-SELECTORS.md).
+- [ ] Run a real capture pass on each live Common App page → paste verified
+      selectors into commonapp.json (needs a logged-in Common App account).
 - [ ] Admin field-map editor; capture LLM-fallback mappings → human review → save.
 - [ ] Per-field autofill success metrics; portal kill-switch on site changes.
-- [ ] Verify/maintain Common App selectors against live DOM.
 - [ ] Add top university supplement templates one at a time.
 
 ## Phase 4 — agency growth

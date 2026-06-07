@@ -1,103 +1,40 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 1,
-  "_note": "Selectors below are REPRESENTATIVE placeholders. Common App's real DOM uses dynamic/obfuscated attributes and changes over time. Each selector must be verified against the live page and updated via the admin field-map editor. Treat unverified selectors as low-confidence (extension routes them to the AI fallback + human review).",
+  "version": 2,
+  "_note": "Selectors use resilient STRATEGIES that survive Common App's auto-generated class names: 'label:<text>' matches by visible label, 'name:<attr>' by the name attribute, plain '#id' as a CSS fallback. The label/name values below are best-effort guesses — VERIFY and replace them with a real capture: open the page logged in, click 'Capture fields' in the extension, and paste the resulting selectors here. See docs/COMMONAPP-SELECTORS.md.",
   "pages": [
     {
       "urlPattern": "https://apply.commonapp.org/*profile*",
       "name": "Profile — Personal Information",
       "fields": [
-        {
-          "source": "profile.legalFirstName",
-          "selectors": ["#firstName", "input[name='legalFirstName']"],
-          "kind": "text"
-        },
-        {
-          "source": "profile.legalLastName",
-          "selectors": ["#lastName", "input[name='legalLastName']"],
-          "kind": "text"
-        },
-        {
-          "source": "profile.preferredName",
-          "selectors": ["#preferredName", "input[name='preferredName']"],
-          "kind": "text"
-        },
-        {
-          "source": "profile.dateOfBirth",
-          "selectors": ["#dob", "input[name='dateOfBirth']"],
-          "kind": "date",
-          "requiresConfirm": true
-        },
-        {
-          "source": "profile.email",
-          "selectors": ["#email", "input[type='email']"],
-          "kind": "email"
-        },
-        {
-          "source": "profile.phone",
-          "selectors": ["#phone", "input[name='phoneNumber']"],
-          "kind": "tel"
-        }
+        { "source": "profile.legalFirstName", "selectors": ["label:First name", "name:legalFirstName", "#firstName"], "kind": "text" },
+        { "source": "profile.legalLastName", "selectors": ["label:Last name", "name:legalLastName", "#lastName"], "kind": "text" },
+        { "source": "profile.preferredName", "selectors": ["label:Preferred name", "name:preferredName", "#preferredName"], "kind": "text" },
+        { "source": "profile.dateOfBirth", "selectors": ["label:Date of birth", "name:dateOfBirth", "#dob"], "kind": "date", "requiresConfirm": true },
+        { "source": "profile.email", "selectors": ["label:Email", "name:email", "input[type='email']"], "kind": "email" },
+        { "source": "profile.phone", "selectors": ["label:Phone", "name:phoneNumber", "#phone"], "kind": "tel" }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/*address*",
       "name": "Profile — Address",
       "fields": [
-        {
-          "source": "profile.addressLine1",
-          "selectors": ["#addressLine1", "input[name='street1']"],
-          "kind": "text"
-        },
-        {
-          "source": "profile.addressLine2",
-          "selectors": ["#addressLine2", "input[name='street2']"],
-          "kind": "text"
-        },
-        {
-          "source": "profile.city",
-          "selectors": ["#city", "input[name='city']"],
-          "kind": "text"
-        },
-        {
-          "source": "profile.state",
-          "selectors": ["#state", "select[name='state']"],
-          "kind": "select"
-        },
-        {
-          "source": "profile.postalCode",
-          "selectors": ["#zip", "input[name='postalCode']"],
-          "kind": "text"
-        },
-        {
-          "source": "profile.country",
-          "selectors": ["#country", "select[name='country']"],
-          "kind": "select"
-        }
+        { "source": "profile.addressLine1", "selectors": ["label:Address line 1", "name:street1", "#addressLine1"], "kind": "text" },
+        { "source": "profile.addressLine2", "selectors": ["label:Address line 2", "name:street2", "#addressLine2"], "kind": "text" },
+        { "source": "profile.city", "selectors": ["label:City", "name:city", "#city"], "kind": "text" },
+        { "source": "profile.state", "selectors": ["label:State", "name:state", "#state"], "kind": "select" },
+        { "source": "profile.postalCode", "selectors": ["label:ZIP", "label:Postal code", "name:postalCode", "#zip"], "kind": "text" },
+        { "source": "profile.country", "selectors": ["label:Country", "name:country", "#country"], "kind": "select" }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/*education*",
       "name": "Education",
       "fields": [
-        {
-          "source": "profile.highSchoolName",
-          "selectors": ["#highSchool", "input[name='currentSchool']"],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
-          "source": "profile.graduationYear",
-          "selectors": ["#gradYear", "select[name='graduationYear']"],
-          "kind": "select"
-        },
-        {
-          "source": "profile.gpa",
-          "selectors": ["#gpa", "input[name='cumulativeGPA']"],
-          "kind": "number",
-          "requiresConfirm": true
-        }
+        { "source": "profile.highSchoolName", "selectors": ["label:Current school", "label:High school", "name:currentSchool", "#highSchool"], "kind": "text", "requiresConfirm": true },
+        { "source": "profile.graduationYear", "selectors": ["label:Graduation", "name:graduationYear", "#gradYear"], "kind": "select" },
+        { "source": "profile.gpa", "selectors": ["label:GPA", "name:cumulativeGPA", "#gpa"], "kind": "number", "requiresConfirm": true }
       ]
     },
     {
@@ -109,36 +46,12 @@
           "addButtonSelector": "button[data-testid='add-activity']",
           "rowSelector": "[data-testid='activity-row']",
           "fields": [
-            {
-              "source": "category",
-              "selectors": ["select[name='activityType']"],
-              "kind": "select"
-            },
-            {
-              "source": "position",
-              "selectors": ["input[name='position']"],
-              "kind": "text"
-            },
-            {
-              "source": "organization",
-              "selectors": ["input[name='organization']"],
-              "kind": "text"
-            },
-            {
-              "source": "description",
-              "selectors": ["textarea[name='description']"],
-              "kind": "textarea"
-            },
-            {
-              "source": "hoursPerWeek",
-              "selectors": ["input[name='hoursPerWeek']"],
-              "kind": "number"
-            },
-            {
-              "source": "weeksPerYear",
-              "selectors": ["input[name='weeksPerYear']"],
-              "kind": "number"
-            }
+            { "source": "category", "selectors": ["name:activityType", "label:Activity type"], "kind": "select" },
+            { "source": "position", "selectors": ["name:position", "label:Position"], "kind": "text" },
+            { "source": "organization", "selectors": ["name:organization", "label:Organization"], "kind": "text" },
+            { "source": "description", "selectors": ["name:description", "label:Description"], "kind": "textarea" },
+            { "source": "hoursPerWeek", "selectors": ["name:hoursPerWeek", "label:Hours"], "kind": "number" },
+            { "source": "weeksPerYear", "selectors": ["name:weeksPerYear", "label:Weeks"], "kind": "number" }
           ]
         }
       ],
@@ -153,16 +66,8 @@
           "addButtonSelector": "button[data-testid='add-honor']",
           "rowSelector": "[data-testid='honor-row']",
           "fields": [
-            {
-              "source": "title",
-              "selectors": ["input[name='honorTitle']"],
-              "kind": "text"
-            },
-            {
-              "source": "level",
-              "selectors": ["select[name='recognitionLevel']"],
-              "kind": "select"
-            }
+            { "source": "title", "selectors": ["name:honorTitle", "label:Honor"], "kind": "text" },
+            { "source": "level", "selectors": ["name:recognitionLevel", "label:Recognition"], "kind": "select" }
           ]
         }
       ],

@@ -20,7 +20,18 @@ export type FieldKind =
 export interface FieldMapping {
   /** Dot path into the autofill payload, e.g. "profile.legalFirstName". */
   source: string;
-  /** CSS selector(s) for the field on the page. First match wins. */
+  /**
+   * Selector strategies, tried in order — first match wins. Each entry is
+   * either plain CSS, or a prefixed strategy that resists auto-generated class
+   * names (preferred for Common App):
+   *   "label:First name"  → input associated with a <label> containing the text
+   *   "name:legalFirstName" → [name="legalFirstName"]
+   *   "aria:Date of birth"  → [aria-label*="…" i]
+   *   "placeholder:you@…"   → [placeholder*="…" i]
+   *   "css:#id" or "#id"    → CSS selector (default when no prefix)
+   * Authoring tip: use the extension's "Capture fields" button on the live page
+   * to generate these automatically, then verify.
+   */
   selectors: string[];
   kind: FieldKind;
   /** For select/radio: map a source value to the option value/label. */
