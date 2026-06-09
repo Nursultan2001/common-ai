@@ -19,6 +19,7 @@ export default async function DashboardLayout({
         <Link href="/dashboard/activities">Activities</Link>
         <Link href="/dashboard/honors">Honors</Link>
         <Link href="/dashboard/family">Family</Link>
+        <Link href="/dashboard/testing">Testing</Link>
         <Link href="/dashboard/documents">Documents</Link>
         {user.role === "ADMIN" && <Link href="/admin">Admin</Link>}
         <span className="spacer" />

@@ -89,6 +89,7 @@ model Applicant {
   entitlements Entitlement[]
   parents      Parent[]
   siblings     Sibling[]
+  testScores   TestScores?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -360,6 +361,32 @@ model Sibling {
   updatedAt DateTime @updatedAt
 
   @@index([applicantId])
+}
+
+// ----------------------------------------------------------------------------
+// Testing — self-reported scores (IELTS-focused for now; one row per applicant)
+// ----------------------------------------------------------------------------
+
+model TestScores {
+  id          String   @id @default(cuid())
+  applicantId String   @unique
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  selfReportScores String? // "Yes" | "No"
+
+  // IELTS — one date applied to all sub-scores for simplicity.
+  ieltsTimesTaken Int?
+  ieltsListening  String?
+  ieltsReading    String?
+  ieltsWriting    String?
+  ieltsSpeaking   String?
+  ieltsOverall    String?
+  ieltsDate       DateTime?
+
+  // Senior Secondary Leaving Examinations
+  ssleCount Int?
+
+  updatedAt DateTime @updatedAt
 }
 
 // ----------------------------------------------------------------------------

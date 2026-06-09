@@ -60,6 +60,7 @@ export async function GET(req: Request) {
       essays: { where: { status: "APPROVED" } },
       parents: { orderBy: { order: "asc" } },
       siblings: { orderBy: { order: "asc" } },
+      testScores: true,
     },
   });
   if (!applicant) {
@@ -118,6 +119,7 @@ export async function GET(req: Request) {
         lastName: s.lastName,
         ageOrGrade: s.ageOrGrade,
       })),
+      testScores: applicant.testScores ?? {},
       // Document manifest only — bytes are fetched separately and on demand.
       documents: applicant.documents,
     },

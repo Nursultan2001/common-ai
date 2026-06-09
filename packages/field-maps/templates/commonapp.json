@@ -1,9 +1,40 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 6,
+  "version": 7,
   "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN / #radioGroupNNN, formControlName) with label fallbacks. Mapped: Personal info, Phone, Legal sex, Birthplace/Citizenship (+ citizenship status radio), GPA, and Family. mat-radio fields fill by clicking the option whose label matches the stored value (exact match preferred). DOB uses MM/DD/YYYY. Sensitive/derived fields are requiresConfirm.",
   "pages": [
+    {
+      "urlPattern": "https://apply.commonapp.org/common/2/2*",
+      "name": "Testing — tests taken",
+      "fields": [
+        { "source": "testScores.selfReportScores", "selectors": ["name:mat-radio-group-231"], "kind": "mat-radio", "requiresConfirm": true }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/2/10*",
+      "name": "Testing — IELTS",
+      "fields": [
+        { "source": "testScores.ieltsTimesTaken", "selectors": ["#text_ques_159"], "kind": "text" },
+        { "source": "testScores.ieltsListening", "selectors": ["#text_ques_164"], "kind": "text" },
+        { "source": "testScores.ieltsDate", "selectors": ["#text_ques_165"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true },
+        { "source": "testScores.ieltsReading", "selectors": ["#text_ques_166"], "kind": "text" },
+        { "source": "testScores.ieltsDate", "selectors": ["#text_ques_167"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true },
+        { "source": "testScores.ieltsWriting", "selectors": ["#text_ques_168"], "kind": "text" },
+        { "source": "testScores.ieltsDate", "selectors": ["#text_ques_169"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true },
+        { "source": "testScores.ieltsSpeaking", "selectors": ["#text_ques_170"], "kind": "text" },
+        { "source": "testScores.ieltsDate", "selectors": ["#text_ques_171"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true },
+        { "source": "testScores.ieltsOverall", "selectors": ["label:Highest IELTS overall band score"], "kind": "text" },
+        { "source": "testScores.ieltsDate", "selectors": ["label:IELTS overall band score date"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/2/37*",
+      "name": "Testing — Senior Secondary Leaving Examinations",
+      "fields": [
+        { "source": "testScores.ssleCount", "selectors": ["#text_ques_839"], "kind": "text" }
+      ]
+    },
     {
       "urlPattern": "https://apply.commonapp.org/common/3/11*",
       "name": "Personal information — name & birth date",
