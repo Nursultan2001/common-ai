@@ -100,14 +100,27 @@ export default async function ProfilePage() {
           <h2>Education</h2>
           <div className="row">
             <F label="High school" name="highSchoolName" value={p?.highSchoolName} />
+            <F label="Date of entry" name="dateOfEntry" type="date" value={isoDate(p?.dateOfEntry ?? null)} />
+            <F label="Graduation date" name="graduationDate" type="date" value={isoDate(p?.graduationDate ?? null)} />
             <F label="Graduation year" name="graduationYear" type="number" value={p?.graduationYear} />
+          </div>
+          <div className="row">
             <F label="GPA" name="gpa" type="number" value={p?.gpa} />
             <F label="GPA scale" name="gpaScale" type="number" value={p?.gpaScale} />
+            <F label="Graduating class size" name="classSize" type="number" value={p?.classSize} />
           </div>
           <div className="row">
             <F label="SAT total" name="satTotal" type="number" value={p?.satTotal} />
             <F label="ACT composite" name="actComposite" type="number" value={p?.actComposite} />
             <F label="Intended major" name="intendedMajor" value={p?.intendedMajor} />
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>College plans</h2>
+          <div className="row">
+            <F label="Highest degree you intend to earn" name="highestDegree" value={p?.highestDegree} />
+            <F label="Career interest" name="careerInterest" value={p?.careerInterest} />
           </div>
         </div>
 

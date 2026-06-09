@@ -90,6 +90,7 @@ model Applicant {
   parents      Parent[]
   siblings     Sibling[]
   testScores   TestScores?
+  courses      Course[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -129,6 +130,9 @@ model MasterProfile {
 
   highSchoolName String?
   graduationYear Int?
+  dateOfEntry    DateTime?
+  graduationDate DateTime?
+  classSize      Int?
   gpa            Float?
   gpaScale       Float?
   classRank      String?
@@ -136,7 +140,9 @@ model MasterProfile {
   satTotal     Int?
   actComposite Int?
 
-  intendedMajor String?
+  intendedMajor  String?
+  highestDegree  String? // e.g. "Bachelor's", "Master's"
+  careerInterest String?
 
   // Free-form structured extras the questionnaire collected, stored as JSON
   // text so we can add intake questions without migrations. Still read-only facts.
@@ -387,6 +393,27 @@ model TestScores {
   ssleCount Int?
 
   updatedAt DateTime @updatedAt
+}
+
+// ----------------------------------------------------------------------------
+// Courses & grades — current/senior-year course list (Common App "Courses")
+// ----------------------------------------------------------------------------
+
+model Course {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  order    Int     @default(0)
+  subject  String?
+  name     String?
+  level    String? // e.g. Regular, Honors, AP, IB
+  schedule String? // e.g. Full Year, Semester 1
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([applicantId])
 }
 
 // ----------------------------------------------------------------------------

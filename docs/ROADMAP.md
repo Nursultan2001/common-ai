@@ -35,9 +35,15 @@ Done = scaffolded in this repo. Order below is the recommended path to a sellabl
 - [x] Real captures mapped: Personal info, Birthplace/Citizenship, GPA, and
       Family (Parent 1/2, Siblings) → 32 fields across 6 pages.
 - [x] Family data model + intake (parents & siblings) + payload.
-- [ ] Re-capture the dropdown/radio pages (State, Country, citizenship status,
-      sex, phone type) now that capture detects them → paste selectors → map.
-- [ ] Languages (3/16), demographics (3/14, sensitive), testing & courses (4/24).
+- [x] Testing (IELTS scores + dates, SSLE), Education (dates, class size, future
+      plans), Courses & grades (up to 12), Activities (up to 10) — built from
+      screenshots + captures. Now 15 pages / 151 fields mapped.
+- [x] "Autofill ALL pages" — one click navigates every mapped page and fills it.
+- [ ] Writing personal essay: intentionally NOT auto-filled (student authors &
+      submits their own essay — see docs/GUARANTEES.md).
+- [ ] Remaining widgets: class-rank / weighting radios, activity grade-level &
+      timing checkboxes, course subject/level dropdowns (value maps), languages,
+      demographics (race/ethnicity — sensitive).
 - [ ] Admin field-map editor; capture LLM-fallback mappings → human review → save.
 - [ ] Per-field autofill success metrics; portal kill-switch on site changes.
 - [ ] Add top university supplement templates one at a time.

@@ -61,6 +61,7 @@ export async function GET(req: Request) {
       parents: { orderBy: { order: "asc" } },
       siblings: { orderBy: { order: "asc" } },
       testScores: true,
+      courses: { orderBy: { order: "asc" } },
     },
   });
   if (!applicant) {
@@ -120,6 +121,12 @@ export async function GET(req: Request) {
         ageOrGrade: s.ageOrGrade,
       })),
       testScores: applicant.testScores ?? {},
+      courses: applicant.courses.map((c) => ({
+        subject: c.subject,
+        name: c.name,
+        level: c.level,
+        schedule: c.schedule,
+      })),
       // Document manifest only — bytes are fetched separately and on demand.
       documents: applicant.documents,
     },

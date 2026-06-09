@@ -15,6 +15,9 @@ function num(fd: FormData, k: string): number | null {
   const n = Number(s);
   return Number.isFinite(n) ? n : null;
 }
+function parseDate(s: string | null): Date | null {
+  return s ? new Date(s) : null;
+}
 
 export async function saveProfileAction(formData: FormData) {
   const user = await requireUser();
@@ -43,11 +46,16 @@ export async function saveProfileAction(formData: FormData) {
     legalSex: str(formData, "legalSex"),
     highSchoolName: str(formData, "highSchoolName"),
     graduationYear: num(formData, "graduationYear"),
+    dateOfEntry: parseDate(str(formData, "dateOfEntry")),
+    graduationDate: parseDate(str(formData, "graduationDate")),
+    classSize: num(formData, "classSize"),
     gpa: num(formData, "gpa"),
     gpaScale: num(formData, "gpaScale"),
     satTotal: num(formData, "satTotal"),
     actComposite: num(formData, "actComposite"),
     intendedMajor: str(formData, "intendedMajor"),
+    highestDegree: str(formData, "highestDegree"),
+    careerInterest: str(formData, "careerInterest"),
   };
 
   await db.masterProfile.upsert({

@@ -1,121 +1,1239 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 7,
+  "version": 8,
   "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN / #radioGroupNNN, formControlName) with label fallbacks. Mapped: Personal info, Phone, Legal sex, Birthplace/Citizenship (+ citizenship status radio), GPA, and Family. mat-radio fields fill by clicking the option whose label matches the stored value (exact match preferred). DOB uses MM/DD/YYYY. Sensitive/derived fields are requiresConfirm.",
   "pages": [
     {
       "urlPattern": "https://apply.commonapp.org/common/2/2*",
       "name": "Testing — tests taken",
       "fields": [
-        { "source": "testScores.selfReportScores", "selectors": ["name:mat-radio-group-231"], "kind": "mat-radio", "requiresConfirm": true }
+        {
+          "source": "testScores.selfReportScores",
+          "selectors": [
+            "name:mat-radio-group-231"
+          ],
+          "kind": "mat-radio",
+          "requiresConfirm": true
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/2/10*",
       "name": "Testing — IELTS",
       "fields": [
-        { "source": "testScores.ieltsTimesTaken", "selectors": ["#text_ques_159"], "kind": "text" },
-        { "source": "testScores.ieltsListening", "selectors": ["#text_ques_164"], "kind": "text" },
-        { "source": "testScores.ieltsDate", "selectors": ["#text_ques_165"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true },
-        { "source": "testScores.ieltsReading", "selectors": ["#text_ques_166"], "kind": "text" },
-        { "source": "testScores.ieltsDate", "selectors": ["#text_ques_167"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true },
-        { "source": "testScores.ieltsWriting", "selectors": ["#text_ques_168"], "kind": "text" },
-        { "source": "testScores.ieltsDate", "selectors": ["#text_ques_169"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true },
-        { "source": "testScores.ieltsSpeaking", "selectors": ["#text_ques_170"], "kind": "text" },
-        { "source": "testScores.ieltsDate", "selectors": ["#text_ques_171"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true },
-        { "source": "testScores.ieltsOverall", "selectors": ["label:Highest IELTS overall band score"], "kind": "text" },
-        { "source": "testScores.ieltsDate", "selectors": ["label:IELTS overall band score date"], "kind": "date", "format": "MMMM D, YYYY", "requiresConfirm": true }
+        {
+          "source": "testScores.ieltsTimesTaken",
+          "selectors": [
+            "#text_ques_159"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "testScores.ieltsListening",
+          "selectors": [
+            "#text_ques_164"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "testScores.ieltsDate",
+          "selectors": [
+            "#text_ques_165"
+          ],
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "testScores.ieltsReading",
+          "selectors": [
+            "#text_ques_166"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "testScores.ieltsDate",
+          "selectors": [
+            "#text_ques_167"
+          ],
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "testScores.ieltsWriting",
+          "selectors": [
+            "#text_ques_168"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "testScores.ieltsDate",
+          "selectors": [
+            "#text_ques_169"
+          ],
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "testScores.ieltsSpeaking",
+          "selectors": [
+            "#text_ques_170"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "testScores.ieltsDate",
+          "selectors": [
+            "#text_ques_171"
+          ],
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "testScores.ieltsOverall",
+          "selectors": [
+            "label:Highest IELTS overall band score"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "testScores.ieltsDate",
+          "selectors": [
+            "label:IELTS overall band score date"
+          ],
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "requiresConfirm": true
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/2/37*",
       "name": "Testing — Senior Secondary Leaving Examinations",
       "fields": [
-        { "source": "testScores.ssleCount", "selectors": ["#text_ques_839"], "kind": "text" }
+        {
+          "source": "testScores.ssleCount",
+          "selectors": [
+            "#text_ques_839"
+          ],
+          "kind": "text"
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/3/11*",
       "name": "Personal information — name & birth date",
       "fields": [
-        { "source": "profile.legalFirstName", "selectors": ["#text_ques_173", "label:Legal first"], "kind": "text" },
-        { "source": "profile.middleName", "selectors": ["#text_ques_174", "label:Middle name"], "kind": "text" },
-        { "source": "profile.legalLastName", "selectors": ["#text_ques_175", "label:Last/family"], "kind": "text" },
-        { "source": "profile.suffix", "selectors": ["#text_ques_176", "label:Suffix"], "kind": "text" },
-        { "source": "profile.dateOfBirth", "selectors": ["#text_ques_181", "label:Date of birth"], "kind": "date", "format": "MM/DD/YYYY", "requiresConfirm": true }
+        {
+          "source": "profile.legalFirstName",
+          "selectors": [
+            "#text_ques_173",
+            "label:Legal first"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "profile.middleName",
+          "selectors": [
+            "#text_ques_174",
+            "label:Middle name"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "profile.legalLastName",
+          "selectors": [
+            "#text_ques_175",
+            "label:Last/family"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "profile.suffix",
+          "selectors": [
+            "#text_ques_176",
+            "label:Suffix"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "profile.dateOfBirth",
+          "selectors": [
+            "#text_ques_181",
+            "label:Date of birth"
+          ],
+          "kind": "date",
+          "format": "MM/DD/YYYY",
+          "requiresConfirm": true
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/3/17*",
       "name": "Birthplace & citizenship",
       "fields": [
-        { "source": "profile.citizenshipStatus", "selectors": ["#radioGroup234"], "kind": "mat-radio", "requiresConfirm": true },
-        { "source": "profile.birthCountry", "selectors": ["#text_ques_218", "label:Birth country"], "kind": "text", "requiresConfirm": true },
-        { "source": "profile.birthCity", "selectors": ["#text_ques_219", "label:City of birth"], "kind": "text", "requiresConfirm": true },
-        { "source": "profile.citizenship", "selectors": ["#text_ques_236", "label:List countries of citizenship"], "kind": "text", "requiresConfirm": true }
+        {
+          "source": "profile.citizenshipStatus",
+          "selectors": [
+            "#radioGroup234"
+          ],
+          "kind": "mat-radio",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.birthCountry",
+          "selectors": [
+            "#text_ques_218",
+            "label:Birth country"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.birthCity",
+          "selectors": [
+            "#text_ques_219",
+            "label:City of birth"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.citizenship",
+          "selectors": [
+            "#text_ques_236",
+            "label:List countries of citizenship"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/3/13*",
       "name": "Contact — phone",
       "fields": [
-        { "source": "profile.phone", "selectors": ["[formcontrolname=\"phoneNumber\"]", "name:phoneNumber"], "kind": "tel", "requiresConfirm": true }
+        {
+          "source": "profile.phone",
+          "selectors": [
+            "[formcontrolname=\"phoneNumber\"]",
+            "name:phoneNumber"
+          ],
+          "kind": "tel",
+          "requiresConfirm": true
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/3/14*",
       "name": "Demographics — legal sex",
       "fields": [
-        { "source": "profile.legalSex", "selectors": ["#radioGroup180"], "kind": "mat-radio", "requiresConfirm": true }
+        {
+          "source": "profile.legalSex",
+          "selectors": [
+            "#radioGroup180"
+          ],
+          "kind": "mat-radio",
+          "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/4/18*",
+      "name": "Education — dates",
+      "fields": [
+        {
+          "source": "profile.dateOfEntry",
+          "selectors": [
+            "#text_ques_246"
+          ],
+          "kind": "date",
+          "format": "MM/DD/YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.graduationDate",
+          "selectors": [
+            "#text_ques_247"
+          ],
+          "kind": "date",
+          "format": "MM/DD/YYYY",
+          "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/4/197*",
+      "name": "Education — future plans",
+      "fields": [
+        {
+          "source": "profile.highestDegree",
+          "selectors": [
+            "label:Highest degree you intend to earn"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.careerInterest",
+          "selectors": [
+            "label:Career interest"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/4/23*",
-      "name": "Education — GPA",
+      "name": "Education — GPA & class size",
       "fields": [
-        { "source": "profile.gpa", "selectors": ["#text_ques_304", "label:Cumulative GPA"], "kind": "text", "requiresConfirm": true },
-        { "source": "profile.gpaScale", "selectors": ["#text_ques_305", "label:GPA Scale"], "kind": "text", "requiresConfirm": true }
+        {
+          "source": "profile.classSize",
+          "selectors": [
+            "#text_ques_303"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.gpa",
+          "selectors": [
+            "#text_ques_304",
+            "label:Cumulative GPA"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.gpaScale",
+          "selectors": [
+            "#text_ques_305",
+            "label:GPA Scale"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/5/27*",
       "name": "Family — Parent/Guardian 1",
       "fields": [
-        { "source": "parents.0.firstName", "selectors": ["#text_ques_375"], "kind": "text" },
-        { "source": "parents.0.middleInitial", "selectors": ["#text_ques_376"], "kind": "text" },
-        { "source": "parents.0.lastName", "selectors": ["#text_ques_377"], "kind": "text" },
-        { "source": "parents.0.suffix", "selectors": ["#text_ques_378"], "kind": "text" },
-        { "source": "parents.0.formerLastName", "selectors": ["label:Former last/family/surname"], "kind": "text" },
-        { "source": "parents.0.email", "selectors": ["#text_ques_380"], "kind": "email" }
+        {
+          "source": "parents.0.firstName",
+          "selectors": [
+            "#text_ques_375"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.0.middleInitial",
+          "selectors": [
+            "#text_ques_376"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.0.lastName",
+          "selectors": [
+            "#text_ques_377"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.0.suffix",
+          "selectors": [
+            "#text_ques_378"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.0.formerLastName",
+          "selectors": [
+            "label:Former last/family/surname"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.0.email",
+          "selectors": [
+            "#text_ques_380"
+          ],
+          "kind": "email"
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/5/28*",
       "name": "Family — Parent/Guardian 2",
       "fields": [
-        { "source": "parents.1.firstName", "selectors": ["#text_ques_457"], "kind": "text" },
-        { "source": "parents.1.middleInitial", "selectors": ["#text_ques_458"], "kind": "text" },
-        { "source": "parents.1.lastName", "selectors": ["#text_ques_459"], "kind": "text" },
-        { "source": "parents.1.suffix", "selectors": ["#text_ques_460"], "kind": "text" },
-        { "source": "parents.1.formerLastName", "selectors": ["#text_ques_244"], "kind": "text" },
-        { "source": "parents.1.email", "selectors": ["#text_ques_462"], "kind": "email" }
+        {
+          "source": "parents.1.firstName",
+          "selectors": [
+            "#text_ques_457"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.1.middleInitial",
+          "selectors": [
+            "#text_ques_458"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.1.lastName",
+          "selectors": [
+            "#text_ques_459"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.1.suffix",
+          "selectors": [
+            "#text_ques_460"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.1.formerLastName",
+          "selectors": [
+            "#text_ques_244"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "parents.1.email",
+          "selectors": [
+            "#text_ques_462"
+          ],
+          "kind": "email"
+        }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/5/30*",
       "name": "Family — Siblings",
       "fields": [
-        { "source": "siblings.0.firstName", "selectors": ["#text_ques_615"], "kind": "text" },
-        { "source": "siblings.0.lastName", "selectors": ["#text_ques_617"], "kind": "text" },
-        { "source": "siblings.1.firstName", "selectors": ["#text_ques_625"], "kind": "text" },
-        { "source": "siblings.1.lastName", "selectors": ["#text_ques_627"], "kind": "text" },
-        { "source": "siblings.2.firstName", "selectors": ["#text_ques_635"], "kind": "text" },
-        { "source": "siblings.2.lastName", "selectors": ["#text_ques_637"], "kind": "text" },
-        { "source": "siblings.3.firstName", "selectors": ["#text_ques_645"], "kind": "text" },
-        { "source": "siblings.3.lastName", "selectors": ["#text_ques_647"], "kind": "text" },
-        { "source": "siblings.4.firstName", "selectors": ["#text_ques_655"], "kind": "text" },
-        { "source": "siblings.4.lastName", "selectors": ["#text_ques_657"], "kind": "text" }
+        {
+          "source": "siblings.0.firstName",
+          "selectors": [
+            "#text_ques_615"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.0.lastName",
+          "selectors": [
+            "#text_ques_617"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.1.firstName",
+          "selectors": [
+            "#text_ques_625"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.1.lastName",
+          "selectors": [
+            "#text_ques_627"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.2.firstName",
+          "selectors": [
+            "#text_ques_635"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.2.lastName",
+          "selectors": [
+            "#text_ques_637"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.3.firstName",
+          "selectors": [
+            "#text_ques_645"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.3.lastName",
+          "selectors": [
+            "#text_ques_647"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.4.firstName",
+          "selectors": [
+            "#text_ques_655"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "siblings.4.lastName",
+          "selectors": [
+            "#text_ques_657"
+          ],
+          "kind": "text"
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/4/24*",
+      "name": "Courses & grades",
+      "fields": [
+        {
+          "source": "courses.0.subject",
+          "selectors": [
+            "label:Course 1 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.0.name",
+          "selectors": [
+            "#text_ques_308"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.0.level",
+          "selectors": [
+            "#text_ques_309"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.0.schedule",
+          "selectors": [
+            "#text_ques_311"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.1.subject",
+          "selectors": [
+            "label:Course 2 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.1.name",
+          "selectors": [
+            "#text_ques_312"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.1.level",
+          "selectors": [
+            "#text_ques_313"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.1.schedule",
+          "selectors": [
+            "#text_ques_315"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.2.subject",
+          "selectors": [
+            "label:Course 3 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.2.name",
+          "selectors": [
+            "#text_ques_316"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.2.level",
+          "selectors": [
+            "#text_ques_317"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.2.schedule",
+          "selectors": [
+            "#text_ques_319"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.3.subject",
+          "selectors": [
+            "label:Course 4 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.3.name",
+          "selectors": [
+            "#text_ques_320"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.3.level",
+          "selectors": [
+            "#text_ques_321"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.3.schedule",
+          "selectors": [
+            "#text_ques_323"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.4.subject",
+          "selectors": [
+            "label:Course 5 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.4.name",
+          "selectors": [
+            "#text_ques_324"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.4.level",
+          "selectors": [
+            "#text_ques_325"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.4.schedule",
+          "selectors": [
+            "#text_ques_327"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.5.subject",
+          "selectors": [
+            "label:Course 6 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.5.name",
+          "selectors": [
+            "#text_ques_328"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.5.level",
+          "selectors": [
+            "#text_ques_329"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.5.schedule",
+          "selectors": [
+            "#text_ques_331"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.6.subject",
+          "selectors": [
+            "label:Course 7 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.6.name",
+          "selectors": [
+            "#text_ques_332"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.6.level",
+          "selectors": [
+            "#text_ques_333"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.6.schedule",
+          "selectors": [
+            "#text_ques_335"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.7.subject",
+          "selectors": [
+            "label:Course 8 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.7.name",
+          "selectors": [
+            "#text_ques_336"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.7.level",
+          "selectors": [
+            "#text_ques_337"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.7.schedule",
+          "selectors": [
+            "#text_ques_339"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.8.subject",
+          "selectors": [
+            "label:Course 9 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.8.name",
+          "selectors": [
+            "#text_ques_340"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.8.level",
+          "selectors": [
+            "#text_ques_341"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.8.schedule",
+          "selectors": [
+            "#text_ques_343"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.9.subject",
+          "selectors": [
+            "label:Course 10 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.9.name",
+          "selectors": [
+            "#text_ques_344"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.9.level",
+          "selectors": [
+            "#text_ques_345"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.9.schedule",
+          "selectors": [
+            "#text_ques_347"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.10.subject",
+          "selectors": [
+            "label:Course 11 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.10.name",
+          "selectors": [
+            "label:Course 11 name"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.10.level",
+          "selectors": [
+            "label:Course 11 level"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.10.schedule",
+          "selectors": [
+            "label:Course 11 schedule"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.11.subject",
+          "selectors": [
+            "label:Course 12 subject"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.11.name",
+          "selectors": [
+            "label:Course 12 name"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "courses.11.level",
+          "selectors": [
+            "label:Course 12 level"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "courses.11.schedule",
+          "selectors": [
+            "label:Course 12 schedule"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/7/232*",
+      "name": "Activities",
+      "fields": [
+        {
+          "source": "activities.0.category",
+          "selectors": [
+            "#text_ques_930"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.0.position",
+          "selectors": [
+            "#text_ques_932"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.0.description",
+          "selectors": [
+            "#text_ques_938"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.0.hoursPerWeek",
+          "selectors": [
+            "#text_ques_936"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.0.weeksPerYear",
+          "selectors": [
+            "#text_ques_937"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.1.category",
+          "selectors": [
+            "#text_ques_939"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.1.position",
+          "selectors": [
+            "#text_ques_941"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.1.description",
+          "selectors": [
+            "#text_ques_947"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.1.hoursPerWeek",
+          "selectors": [
+            "#text_ques_945"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.1.weeksPerYear",
+          "selectors": [
+            "#text_ques_946"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.2.category",
+          "selectors": [
+            "#text_ques_948"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.2.position",
+          "selectors": [
+            "#text_ques_950"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.2.description",
+          "selectors": [
+            "#text_ques_956"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.2.hoursPerWeek",
+          "selectors": [
+            "#text_ques_954"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.2.weeksPerYear",
+          "selectors": [
+            "#text_ques_955"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.3.category",
+          "selectors": [
+            "#text_ques_957"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.3.position",
+          "selectors": [
+            "#text_ques_959"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.3.description",
+          "selectors": [
+            "#text_ques_965"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.3.hoursPerWeek",
+          "selectors": [
+            "#text_ques_963"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.3.weeksPerYear",
+          "selectors": [
+            "#text_ques_964"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.4.category",
+          "selectors": [
+            "#text_ques_966"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.4.position",
+          "selectors": [
+            "#text_ques_968"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.4.description",
+          "selectors": [
+            "#text_ques_974"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.4.hoursPerWeek",
+          "selectors": [
+            "#text_ques_972"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.4.weeksPerYear",
+          "selectors": [
+            "#text_ques_973"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.5.category",
+          "selectors": [
+            "#text_ques_975"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.5.position",
+          "selectors": [
+            "#text_ques_977"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.5.description",
+          "selectors": [
+            "#text_ques_983"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.5.hoursPerWeek",
+          "selectors": [
+            "#text_ques_981"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.5.weeksPerYear",
+          "selectors": [
+            "#text_ques_982"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.6.category",
+          "selectors": [
+            "#text_ques_984"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.6.position",
+          "selectors": [
+            "#text_ques_986"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.6.description",
+          "selectors": [
+            "#text_ques_992"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.6.hoursPerWeek",
+          "selectors": [
+            "#text_ques_990"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.6.weeksPerYear",
+          "selectors": [
+            "#text_ques_991"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.7.category",
+          "selectors": [
+            "#text_ques_993"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.7.position",
+          "selectors": [
+            "#text_ques_995"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.7.description",
+          "selectors": [
+            "#text_ques_1001"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.7.hoursPerWeek",
+          "selectors": [
+            "#text_ques_999"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.7.weeksPerYear",
+          "selectors": [
+            "#text_ques_1000"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.8.category",
+          "selectors": [
+            "#text_ques_1002"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.8.position",
+          "selectors": [
+            "#text_ques_1004"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.8.description",
+          "selectors": [
+            "#text_ques_1010"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.8.hoursPerWeek",
+          "selectors": [
+            "#text_ques_1008"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.8.weeksPerYear",
+          "selectors": [
+            "#text_ques_1009"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.9.category",
+          "selectors": [
+            "#text_ques_1011"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.9.position",
+          "selectors": [
+            "#text_ques_1013"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.9.description",
+          "selectors": [
+            "#text_ques_1019"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.9.hoursPerWeek",
+          "selectors": [
+            "#text_ques_1017"
+          ],
+          "kind": "text"
+        },
+        {
+          "source": "activities.9.weeksPerYear",
+          "selectors": [
+            "#text_ques_1018"
+          ],
+          "kind": "text"
+        }
       ]
     }
   ]
