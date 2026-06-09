@@ -37,6 +37,17 @@ $("run").onclick = async () => {
   });
 };
 
+$("runall").onclick = async () => {
+  status("Autofilling all pages… the tab will move through each one. Don’t close it.");
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.runtime.sendMessage({ type: "RUN_ALL_PAGES", tabId: tab.id }, (r) => {
+    if (!r || !r.ok) return status(`Error: ${(r && r.error) || "failed"}`);
+    const total = r.results.reduce((n, x) => n + (x.filled || 0), 0);
+    const pages = r.results.filter((x) => x.matched).length;
+    status(`Done. Filled ${total} field(s) across ${pages} page(s). Review each page — you submit.`);
+  });
+};
+
 $("capture").onclick = async () => {
   status("Capturing fields on this page…");
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

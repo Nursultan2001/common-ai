@@ -519,29 +519,43 @@
       return true;
     }
 
-    if (msg.type !== "RUN_AUTOFILL") return;
-    chrome.runtime.sendMessage({ type: "GET_AUTOFILL_BUNDLE" }, async (resp) => {
-      if (!resp || !resp.ok) {
-        const why =
-          resp && resp.status === 402
-            ? "This application is locked. Pay $5 to unlock autofill."
-            : (resp && resp.error) || "Could not load your data.";
-        alert(`Common AI: ${why}`);
-        sendResponse({ ok: false });
-        return;
-      }
-      const { payload, template } = resp.data;
-      const page = matchPage(template);
-      if (!page) {
-        alert("Common AI: no field map for this page yet.");
-        sendResponse({ ok: false });
-        return;
-      }
-      installSubmitGate();
-      const report = await applyPage(page, payload);
-      showBanner(report);
-      sendResponse({ ok: true, report });
-    });
-    return true;
+    if (msg.type === "RUN_AUTOFILL") {
+      runAutofill({ quiet: false }).then(sendResponse);
+      return true;
+    }
+    // Quiet variant used by the "fill all pages" driver in the background worker.
+    if (msg.type === "FILL_CURRENT_PAGE") {
+      runAutofill({ quiet: true }).then(sendResponse);
+      return true;
+    }
   });
+
+  function getBundle() {
+    return new Promise((resolve) =>
+      chrome.runtime.sendMessage({ type: "GET_AUTOFILL_BUNDLE" }, resolve)
+    );
+  }
+
+  async function runAutofill({ quiet } = {}) {
+    const resp = await getBundle();
+    if (!resp || !resp.ok) {
+      const why =
+        resp && resp.status === 402
+          ? "This application is locked. Pay $5 to unlock autofill."
+          : (resp && resp.error) || "Could not load your data.";
+      if (!quiet) alert(`Common AI: ${why}`);
+      return { ok: false, matched: false, error: why };
+    }
+    const { payload, template } = resp.data;
+    const page = matchPage(template);
+    if (!page) {
+      if (!quiet) alert("Common AI: no field map for this page yet.");
+      return { ok: true, matched: false, filled: 0 };
+    }
+    installSubmitGate();
+    const report = await applyPage(page, payload);
+    showBanner(report);
+    const filled = report.filter((r) => String(r.status).startsWith("filled")).length;
+    return { ok: true, matched: true, filled, pageName: page.name, report };
+  }
 })();
