@@ -1,0 +1,86 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/3/13*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Home",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-59"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Mobile",
+      "source": "profile.phone",
+      "selectors": [
+        "name:mat-radio-group-59"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Country code",
+      "source": "profile.country",
+      "selectors": [
+        "#ctrycode_ques_189"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Number",
+      "source": "",
+      "selectors": [
+        "[formcontrolname=\"phoneNumber\"]"
+      ],
+      "kind": "tel"
+    },
+    {
+      "_label": "No other telephone",
+      "source": "profile.phone",
+      "selectors": [
+        "name:mat-radio-group-62"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Home",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-62"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Mobile",
+      "source": "profile.phone",
+      "selectors": [
+        "name:mat-radio-group-62"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "[formcontrolname=\"appFaqSearchControl\"]"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Preferred phone*",
+      "source": "profile.preferredName",
+      "selectors": [
+        "#radioGroup188"
+      ],
+      "kind": "mat-radio"
+    },
+    {
+      "_label": "Alternate phone*",
+      "source": "profile.phone",
+      "selectors": [
+        "#radioGroup190"
+      ],
+      "kind": "mat-radio"
+    }
+  ]
+}

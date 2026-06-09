@@ -1,0 +1,318 @@
+{
+  "urlPattern": "https://apply.commonapp.org/common/3/14*",
+  "name": "My Common Application | Common App",
+  "fields": [
+    {
+      "_label": "Female",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-1_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Male",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-1_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Nonbinary",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-1_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Add another gender",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-1_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Female",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-66"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Male",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-66"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "X or another legal sex",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-66"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "He/Him",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-2_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "She/Her",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-2_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "They/Them",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-2_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Add another pronoun set",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-2_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "None",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-70"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Currently Serving",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-70"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Previously Served",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-70"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Current Dependent",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-70"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "Yes",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-100"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "No",
+      "source": "",
+      "selectors": [
+        "name:mat-radio-group-100"
+      ],
+      "kind": "radio"
+    },
+    {
+      "_label": "American Indian or Alaska Native",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-4_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Asian",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-4_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Black or African American",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-4_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Native Hawaiian or Other Pacific Islander",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-4_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "White",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-4_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Cambodia",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "China",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "India",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Japan",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Korea",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Malaysia",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Pakistan",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Philippines",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Vietnam",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Other East Asia",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Other South Asia",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Other Southeast Asia",
+      "source": "",
+      "selectors": [
+        "name:ca-checkboxList-5_group"
+      ],
+      "kind": "checkbox"
+    },
+    {
+      "_label": "Specify other East Asian background",
+      "source": "",
+      "selectors": [
+        "#text_ques_209"
+      ],
+      "kind": "textarea"
+    },
+    {
+      "_label": "Search FAQsFrequently Asked Questions",
+      "source": "",
+      "selectors": [
+        "[formcontrolname=\"appFaqSearchControl\"]"
+      ],
+      "kind": "text"
+    },
+    {
+      "_label": "Legal sex Learn more*",
+      "source": "",
+      "selectors": [
+        "#radioGroup180"
+      ],
+      "kind": "mat-radio"
+    },
+    {
+      "_label": "U.S. Armed Forces status",
+      "source": "",
+      "selectors": [
+        "#radioGroup194"
+      ],
+      "kind": "mat-radio"
+    },
+    {
+      "_label": "Are you Hispanic or Latino/a/x?",
+      "source": "",
+      "selectors": [
+        "#radioGroup200"
+      ],
+      "kind": "mat-radio"
+    }
+  ]
+}

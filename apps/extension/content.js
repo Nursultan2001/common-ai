@@ -155,11 +155,17 @@
   function fillMatRadio(el, value) {
     const group = el.closest("mat-radio-group") || el.closest("[role='radiogroup']") || el;
     const want = String(value).trim().toLowerCase();
-    for (const b of group.querySelectorAll("mat-radio-button, [role='radio'], label")) {
-      if ((b.textContent || "").trim().toLowerCase().includes(want)) {
-        (b.querySelector("input") || b).click();
-        return "filled";
-      }
+    const btns = Array.from(group.querySelectorAll("mat-radio-button, [role='radio'], label"));
+    const txt = (b) => (b.textContent || "").trim().toLowerCase();
+    // Exact match first (so "Male" never matches "Female"); then a guarded
+    // contains; then a loose contains as last resort.
+    const target =
+      btns.find((b) => txt(b) === want) ||
+      btns.find((b) => txt(b).includes(want) && txt(b).length - want.length < 6) ||
+      btns.find((b) => txt(b).includes(want));
+    if (target) {
+      (target.querySelector("input") || target).click();
+      return "filled";
     }
     return "no-matching-option";
   }

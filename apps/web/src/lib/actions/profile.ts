@@ -39,6 +39,8 @@ export async function saveProfileAction(formData: FormData) {
     postalCode: str(formData, "postalCode"),
     country: str(formData, "country"),
     citizenship: str(formData, "citizenship"),
+    citizenshipStatus: str(formData, "citizenshipStatus"),
+    legalSex: str(formData, "legalSex"),
     highSchoolName: str(formData, "highSchoolName"),
     graduationYear: num(formData, "graduationYear"),
     gpa: num(formData, "gpa"),

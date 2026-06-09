@@ -55,6 +55,28 @@ export default async function ProfilePage() {
             <F label="Citizenship (countries)" name="citizenship" value={p?.citizenship} />
           </div>
           <div className="row">
+            <div style={{ flex: "1 1 220px" }}>
+              <label>Legal sex</label>
+              <select name="legalSex" defaultValue={p?.legalSex ?? ""}>
+                <option value="">—</option>
+                <option>Female</option>
+                <option>Male</option>
+                <option>X or another legal sex</option>
+              </select>
+            </div>
+            <div style={{ flex: "1 1 320px" }}>
+              <label>Citizenship status</label>
+              <select name="citizenshipStatus" defaultValue={p?.citizenshipStatus ?? ""}>
+                <option value="">—</option>
+                <option>U.S. citizen or U.S. national</option>
+                <option>U.S. dual citizen</option>
+                <option>U.S. permanent resident (green card holder)</option>
+                <option>U.S. resident</option>
+                <option>Citizen of non-U.S. country</option>
+              </select>
+            </div>
+          </div>
+          <div className="row">
             <F label="Email" name="email" type="email" value={p?.email} />
             <F label="Phone" name="phone" type="tel" value={p?.phone} />
           </div>

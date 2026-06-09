@@ -1,8 +1,8 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 5,
-  "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN) with label fallbacks. Mapped: Personal Information, Birthplace/Citizenship, GPA, and Family (Parent 1, Parent 2, Siblings). Dropdowns/radios (mat-select/mat-radio) are supported by the engine but need a fresh capture to obtain stable selectors (formControlName). DOB uses MM/DD/YYYY.",
+  "version": 6,
+  "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN / #radioGroupNNN, formControlName) with label fallbacks. Mapped: Personal info, Phone, Legal sex, Birthplace/Citizenship (+ citizenship status radio), GPA, and Family. mat-radio fields fill by clicking the option whose label matches the stored value (exact match preferred). DOB uses MM/DD/YYYY. Sensitive/derived fields are requiresConfirm.",
   "pages": [
     {
       "urlPattern": "https://apply.commonapp.org/common/3/11*",
@@ -19,9 +19,24 @@
       "urlPattern": "https://apply.commonapp.org/common/3/17*",
       "name": "Birthplace & citizenship",
       "fields": [
+        { "source": "profile.citizenshipStatus", "selectors": ["#radioGroup234"], "kind": "mat-radio", "requiresConfirm": true },
         { "source": "profile.birthCountry", "selectors": ["#text_ques_218", "label:Birth country"], "kind": "text", "requiresConfirm": true },
         { "source": "profile.birthCity", "selectors": ["#text_ques_219", "label:City of birth"], "kind": "text", "requiresConfirm": true },
         { "source": "profile.citizenship", "selectors": ["#text_ques_236", "label:List countries of citizenship"], "kind": "text", "requiresConfirm": true }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/3/13*",
+      "name": "Contact — phone",
+      "fields": [
+        { "source": "profile.phone", "selectors": ["[formcontrolname=\"phoneNumber\"]", "name:phoneNumber"], "kind": "tel", "requiresConfirm": true }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/3/14*",
+      "name": "Demographics — legal sex",
+      "fields": [
+        { "source": "profile.legalSex", "selectors": ["#radioGroup180"], "kind": "mat-radio", "requiresConfirm": true }
       ]
     },
     {

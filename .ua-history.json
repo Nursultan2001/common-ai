@@ -123,5 +123,13 @@
     "task": "Add Angular Material dropdown/radio/autocomplete filling (async, click-based) + capture detection for those widgets; add Family (parents/siblings) data model, intake UI, payload, and field map.",
     "files_in_map": 0,
     "result": "complete"
+  },
+  {
+    "timestamp": "2026-06-09T02:22:31.238Z",
+    "event": "task_complete",
+    "project_hash": "9e6913164d85e7d9",
+    "file": "packages/field-maps/templates/commonapp.json",
+    "files_in_map": 0,
+    "result": "complete"
   }
 ]

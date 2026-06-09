@@ -121,8 +121,10 @@ model MasterProfile {
   postalCode   String?
   country      String?
 
-  citizenship  String?
-  gender       String?
+  citizenship       String?
+  citizenshipStatus String? // exact Common App option, e.g. "Citizen of non-U.S. country"
+  gender            String?
+  legalSex          String? // "Female" | "Male" | "X or another legal sex"
 
   highSchoolName String?
   graduationYear Int?
