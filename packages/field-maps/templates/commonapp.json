@@ -1,8 +1,8 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 4,
-  "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN) with a label fallback. Mapped: Personal Information (name parts, DOB), Birthplace/Citizenship, and GPA. Date of birth uses format MM/DD/YYYY. Deliberately omitted for now: permanent address (custom widget, not standard inputs), phone type / country code (radios), languages, family/parents/siblings (different people), and all dropdowns/radios needing value maps.",
+  "version": 5,
+  "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN) with label fallbacks. Mapped: Personal Information, Birthplace/Citizenship, GPA, and Family (Parent 1, Parent 2, Siblings). Dropdowns/radios (mat-select/mat-radio) are supported by the engine but need a fresh capture to obtain stable selectors (formControlName). DOB uses MM/DD/YYYY.",
   "pages": [
     {
       "urlPattern": "https://apply.commonapp.org/common/3/11*",
@@ -30,6 +30,46 @@
       "fields": [
         { "source": "profile.gpa", "selectors": ["#text_ques_304", "label:Cumulative GPA"], "kind": "text", "requiresConfirm": true },
         { "source": "profile.gpaScale", "selectors": ["#text_ques_305", "label:GPA Scale"], "kind": "text", "requiresConfirm": true }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/5/27*",
+      "name": "Family — Parent/Guardian 1",
+      "fields": [
+        { "source": "parents.0.firstName", "selectors": ["#text_ques_375"], "kind": "text" },
+        { "source": "parents.0.middleInitial", "selectors": ["#text_ques_376"], "kind": "text" },
+        { "source": "parents.0.lastName", "selectors": ["#text_ques_377"], "kind": "text" },
+        { "source": "parents.0.suffix", "selectors": ["#text_ques_378"], "kind": "text" },
+        { "source": "parents.0.formerLastName", "selectors": ["label:Former last/family/surname"], "kind": "text" },
+        { "source": "parents.0.email", "selectors": ["#text_ques_380"], "kind": "email" }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/5/28*",
+      "name": "Family — Parent/Guardian 2",
+      "fields": [
+        { "source": "parents.1.firstName", "selectors": ["#text_ques_457"], "kind": "text" },
+        { "source": "parents.1.middleInitial", "selectors": ["#text_ques_458"], "kind": "text" },
+        { "source": "parents.1.lastName", "selectors": ["#text_ques_459"], "kind": "text" },
+        { "source": "parents.1.suffix", "selectors": ["#text_ques_460"], "kind": "text" },
+        { "source": "parents.1.formerLastName", "selectors": ["#text_ques_244"], "kind": "text" },
+        { "source": "parents.1.email", "selectors": ["#text_ques_462"], "kind": "email" }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/5/30*",
+      "name": "Family — Siblings",
+      "fields": [
+        { "source": "siblings.0.firstName", "selectors": ["#text_ques_615"], "kind": "text" },
+        { "source": "siblings.0.lastName", "selectors": ["#text_ques_617"], "kind": "text" },
+        { "source": "siblings.1.firstName", "selectors": ["#text_ques_625"], "kind": "text" },
+        { "source": "siblings.1.lastName", "selectors": ["#text_ques_627"], "kind": "text" },
+        { "source": "siblings.2.firstName", "selectors": ["#text_ques_635"], "kind": "text" },
+        { "source": "siblings.2.lastName", "selectors": ["#text_ques_637"], "kind": "text" },
+        { "source": "siblings.3.firstName", "selectors": ["#text_ques_645"], "kind": "text" },
+        { "source": "siblings.3.lastName", "selectors": ["#text_ques_647"], "kind": "text" },
+        { "source": "siblings.4.firstName", "selectors": ["#text_ques_655"], "kind": "text" },
+        { "source": "siblings.4.lastName", "selectors": ["#text_ques_657"], "kind": "text" }
       ]
     }
   ]

@@ -114,5 +114,14 @@
     "file": "apps/web/prisma/schema.prisma",
     "files_in_map": 0,
     "result": "complete"
+  },
+  {
+    "timestamp": "2026-06-07T04:03:46.807Z",
+    "event": "task_complete",
+    "project_hash": "9e6913164d85e7d9",
+    "file": "apps/extension/content.js",
+    "task": "Add Angular Material dropdown/radio/autocomplete filling (async, click-based) + capture detection for those widgets; add Family (parents/siblings) data model, intake UI, payload, and field map.",
+    "files_in_map": 0,
+    "result": "complete"
   }
 ]

@@ -27,11 +27,17 @@ Done = scaffolded in this repo. Order below is the recommended path to a sellabl
       document type → vault file.
 
 ## Phase 3 — coverage & quality
-- [x] Resilient selector strategies (label/name/aria) + in-extension "Capture
-      fields" tool that generates a field map from a live page
-      (see docs/COMMONAPP-SELECTORS.md).
-- [ ] Run a real capture pass on each live Common App page → paste verified
-      selectors into commonapp.json (needs a logged-in Common App account).
+- [x] Resilient selector strategies (label/name/aria/formControlName) + in-extension
+      "Capture fields" tool that generates a field map from a live page.
+- [x] Engine fills Angular Material custom widgets (mat-select dropdowns,
+      mat-radio groups, mat-autocomplete) by clicking, not setting .value.
+- [x] Capture tool now detects mat-select / mat-radio widgets too.
+- [x] Real captures mapped: Personal info, Birthplace/Citizenship, GPA, and
+      Family (Parent 1/2, Siblings) → 32 fields across 6 pages.
+- [x] Family data model + intake (parents & siblings) + payload.
+- [ ] Re-capture the dropdown/radio pages (State, Country, citizenship status,
+      sex, phone type) now that capture detects them → paste selectors → map.
+- [ ] Languages (3/16), demographics (3/14, sensitive), testing & courses (4/24).
 - [ ] Admin field-map editor; capture LLM-fallback mappings → human review → save.
 - [ ] Per-field autofill success metrics; portal kill-switch on site changes.
 - [ ] Add top university supplement templates one at a time.

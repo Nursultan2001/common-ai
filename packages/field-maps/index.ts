@@ -15,7 +15,12 @@ export type FieldKind =
   | "checkbox"
   | "radio"
   | "textarea"
-  | "file";
+  | "file"
+  // Angular Material custom widgets (Common App): filled by clicking, not by
+  // setting .value. mat-select/mat-autocomplete open an overlay of options.
+  | "mat-select"
+  | "mat-radio"
+  | "mat-autocomplete";
 
 export interface FieldMapping {
   /** Dot path into the autofill payload, e.g. "profile.legalFirstName". */

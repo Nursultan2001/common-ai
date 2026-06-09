@@ -58,6 +58,8 @@ export async function GET(req: Request) {
         select: { id: true, type: true, fileName: true, mimeType: true },
       },
       essays: { where: { status: "APPROVED" } },
+      parents: { orderBy: { order: "asc" } },
+      siblings: { orderBy: { order: "asc" } },
     },
   });
   if (!applicant) {
@@ -100,6 +102,21 @@ export async function GET(req: Request) {
         kind: e.kind,
         prompt: e.prompt,
         text: e.finalText, // only the student's own final text
+      })),
+      parents: applicant.parents.map((p) => ({
+        relationship: p.relationship,
+        firstName: p.firstName,
+        middleInitial: p.middleInitial,
+        lastName: p.lastName,
+        suffix: p.suffix,
+        formerLastName: p.formerLastName,
+        email: p.email,
+        occupation: p.occupation,
+      })),
+      siblings: applicant.siblings.map((s) => ({
+        firstName: s.firstName,
+        lastName: s.lastName,
+        ageOrGrade: s.ageOrGrade,
       })),
       // Document manifest only — bytes are fetched separately and on demand.
       documents: applicant.documents,

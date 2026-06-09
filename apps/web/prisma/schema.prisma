@@ -87,6 +87,8 @@ model Applicant {
   essays       Essay[]
   applications Application[]
   entitlements Entitlement[]
+  parents      Parent[]
+  siblings     Sibling[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -314,6 +316,48 @@ model Payment {
 
   @@index([orgId])
   @@index([payerUserId])
+}
+
+// ----------------------------------------------------------------------------
+// Family — parents/guardians and siblings (separate people from the applicant)
+// ----------------------------------------------------------------------------
+
+model Parent {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  order          Int    @default(0) // 0 = Parent 1, 1 = Parent 2
+  relationship   String? // Mother | Father | Guardian ...
+  firstName      String?
+  middleInitial  String?
+  lastName       String?
+  suffix         String?
+  formerLastName String?
+  email          String?
+  occupation     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicantId, order])
+  @@index([applicantId])
+}
+
+model Sibling {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  order      Int     @default(0)
+  firstName  String?
+  lastName   String?
+  ageOrGrade String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([applicantId])
 }
 
 // ----------------------------------------------------------------------------

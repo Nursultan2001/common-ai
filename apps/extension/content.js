@@ -106,7 +106,77 @@
     return null;
   }
 
-  function fillField(mapping, value, root = document) {
+  // --- async helpers for Angular Material custom widgets (Common App) ---
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  async function waitFor(fn, timeout = 2000, step = 60) {
+    const t0 = Date.now();
+    for (;;) {
+      const v = fn();
+      if (v) return v;
+      if (Date.now() - t0 > timeout) return null;
+      await sleep(step);
+    }
+  }
+
+  // Material renders dropdown options in an overlay appended to <body>.
+  function overlayOptions() {
+    return document.querySelectorAll(
+      ".mat-mdc-option, mat-option, .cdk-overlay-pane [role='option'], [role='option']"
+    );
+  }
+  function pickOption(options, want) {
+    const w = String(want).trim().toLowerCase();
+    let partial = null;
+    for (const o of options) {
+      const txt = (o.textContent || "").trim().toLowerCase();
+      if (!txt) continue;
+      if (txt === w) return o;
+      if (!partial && (txt.includes(w) || w.includes(txt))) partial = o;
+    }
+    return partial;
+  }
+
+  async function fillMatSelect(el, value) {
+    const trigger = el.closest("mat-select") || el.querySelector("mat-select, [role='combobox']") || el;
+    trigger.click();
+    const panel = await waitFor(() =>
+      document.querySelector(".mat-mdc-select-panel, .mat-select-panel, .cdk-overlay-pane [role='listbox']")
+    );
+    if (!panel) return "dropdown-did-not-open";
+    const opt = await waitFor(() => pickOption(overlayOptions(), value), 1500);
+    if (!opt) {
+      document.body.click();
+      return "no-matching-option";
+    }
+    opt.click();
+    return "filled";
+  }
+
+  function fillMatRadio(el, value) {
+    const group = el.closest("mat-radio-group") || el.closest("[role='radiogroup']") || el;
+    const want = String(value).trim().toLowerCase();
+    for (const b of group.querySelectorAll("mat-radio-button, [role='radio'], label")) {
+      if ((b.textContent || "").trim().toLowerCase().includes(want)) {
+        (b.querySelector("input") || b).click();
+        return "filled";
+      }
+    }
+    return "no-matching-option";
+  }
+
+  async function fillAutocomplete(el, value) {
+    const input = el.matches("input") ? el : el.querySelector("input") || el;
+    setNativeValue(input, String(value));
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    const opt = await waitFor(() => pickOption(overlayOptions(), value), 1500);
+    if (opt) {
+      opt.click();
+      return "filled";
+    }
+    return "typed-no-match";
+  }
+
+  async function fillField(mapping, value, root = document) {
     if (value === null || value === undefined || value === "") return null;
     const el = findEl(mapping.selectors, root);
     if (!el) return { source: mapping.source, status: "field-not-found" };
@@ -133,10 +203,27 @@
         }
         break;
       }
-      case "date": {
-        setNativeValue(el, formatDate(v, mapping.format));
+      case "mat-select": {
+        const r = await fillMatSelect(el, v);
+        if (r !== "filled") return { source: mapping.source, status: r, value: v };
         break;
       }
+      case "mat-radio": {
+        const r = fillMatRadio(el, v);
+        if (r !== "filled") return { source: mapping.source, status: r, value: v };
+        break;
+      }
+      case "mat-autocomplete": {
+        const r = await fillAutocomplete(el, v);
+        if (r !== "filled") {
+          markFilled(el, true);
+          return { source: mapping.source, status: r, value: v };
+        }
+        break;
+      }
+      case "date":
+        setNativeValue(el, formatDate(v, mapping.format));
+        break;
       default:
         setNativeValue(el, String(v));
     }
@@ -148,35 +235,32 @@
     };
   }
 
-  function applyPage(pageMap, payload) {
+  async function applyPage(pageMap, payload) {
     const report = [];
 
     for (const m of pageMap.fields || []) {
-      report.push(fillField(m, get(payload, m.source)) || { source: m.source, status: "empty" });
+      report.push((await fillField(m, get(payload, m.source))) || { source: m.source, status: "empty" });
     }
 
     for (const section of pageMap.repeating || []) {
       const rows = get(payload, section.source);
       if (!Array.isArray(rows)) continue;
       const containers = document.querySelectorAll(section.rowSelector);
-      rows.forEach((rowData, i) => {
+      for (let i = 0; i < rows.length; i++) {
         const container = containers[i];
         if (!container) {
-          report.push({
-            source: `${section.source}[${i}]`,
-            status: "row-missing-add-manually",
-          });
-          return;
+          report.push({ source: `${section.source}[${i}]`, status: "row-missing-add-manually" });
+          continue;
         }
         for (const m of section.fields) {
           report.push(
-            fillField(m, get(rowData, m.source), container) || {
+            (await fillField(m, get(rows[i], m.source), container)) || {
               source: `${section.source}[${i}].${m.source}`,
               status: "empty",
             }
           );
         }
-      });
+      }
     }
     return report;
   }
@@ -285,13 +369,33 @@
   }
 
   function bestSelector(el) {
+    // Angular reactive-form name — the most stable selector when present.
+    const fcn = el.getAttribute && el.getAttribute("formcontrolname");
+    if (fcn) return `[formcontrolname="${fcn}"]`;
     if (el.id && !looksRandomId(el.id)) return `#${CSS.escape(el.id)}`;
     if (el.name) return `name:${el.name}`;
     const lab = labelOf(el);
     if (lab) return `label:${lab.slice(0, 48)}`;
-    if (el.getAttribute("aria-label")) return `aria:${el.getAttribute("aria-label")}`;
+    if (el.getAttribute && el.getAttribute("aria-label")) return `aria:${el.getAttribute("aria-label")}`;
     if (el.placeholder) return `placeholder:${el.placeholder}`;
     return null;
+  }
+
+  // Label for a custom widget (mat-select / mat-radio-group): use the enclosing
+  // mat-form-field's label, aria-label, or aria-labelledby target.
+  function widgetLabel(el) {
+    const ff = el.closest("mat-form-field");
+    if (ff) {
+      const lab = ff.querySelector("mat-label, label");
+      if (lab && lab.textContent.trim()) return lab.textContent.trim();
+    }
+    if (el.getAttribute("aria-label")) return el.getAttribute("aria-label").trim();
+    const lb = el.getAttribute("aria-labelledby");
+    if (lb) {
+      const n = document.getElementById(lb);
+      if (n && n.textContent.trim()) return n.textContent.trim();
+    }
+    return "";
   }
 
   const SOURCE_HINTS = [
@@ -352,6 +456,29 @@
       });
     }
 
+    // Angular Material custom widgets (not real input/select) — dropdowns & radios.
+    function widgetSelector(el) {
+      const fcn = el.getAttribute("formcontrolname");
+      if (fcn) return `[formcontrolname="${fcn}"]`;
+      if (el.id && !looksRandomId(el.id)) return `#${CSS.escape(el.id)}`;
+      if (el.getAttribute("name")) return `name:${el.getAttribute("name")}`;
+      return null;
+    }
+    for (const el of document.querySelectorAll("mat-select")) {
+      if (!isVisible(el)) continue;
+      const sel = widgetSelector(el);
+      if (!sel) continue;
+      const label = widgetLabel(el);
+      fields.push({ _label: label, source: guessSource(label), selectors: [sel], kind: "mat-select" });
+    }
+    for (const el of document.querySelectorAll("mat-radio-group, [role='radiogroup']")) {
+      if (!isVisible(el)) continue;
+      const sel = widgetSelector(el);
+      if (!sel) continue;
+      const label = widgetLabel(el);
+      fields.push({ _label: label, source: guessSource(label), selectors: [sel], kind: "mat-radio" });
+    }
+
     return {
       urlPattern: location.origin + location.pathname.replace(/\/$/, "") + "*",
       name: document.title || "Captured page",
@@ -387,7 +514,7 @@
     }
 
     if (msg.type !== "RUN_AUTOFILL") return;
-    chrome.runtime.sendMessage({ type: "GET_AUTOFILL_BUNDLE" }, (resp) => {
+    chrome.runtime.sendMessage({ type: "GET_AUTOFILL_BUNDLE" }, async (resp) => {
       if (!resp || !resp.ok) {
         const why =
           resp && resp.status === 402
@@ -405,7 +532,7 @@
         return;
       }
       installSubmitGate();
-      const report = applyPage(page, payload);
+      const report = await applyPage(page, payload);
       showBanner(report);
       sendResponse({ ok: true, report });
     });
