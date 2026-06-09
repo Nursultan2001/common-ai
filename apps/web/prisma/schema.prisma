@@ -136,6 +136,10 @@ model MasterProfile {
   gpa            Float?
   gpaScale       Float?
   classRank      String?
+  classRankReporting String? // Exact | Decile | Quintile | Quartile | None
+  decileRank         String?
+  rankWeighting      String? // Weighted | Unweighted (class rank)
+  gpaWeighting       String? // Weighted | Unweighted (GPA)
 
   satTotal     Int?
   actComposite Int?

@@ -190,6 +190,22 @@
 
   async function fillField(mapping, value, root = document) {
     if (value === null || value === undefined || value === "") return null;
+
+    // radio-map: pick the exact radio option by selector from valueMap.
+    if (mapping.kind === "radio-map") {
+      const sel = mapping.valueMap && mapping.valueMap[String(value)];
+      if (!sel) return { source: mapping.source, status: "no-option-mapping", value };
+      const target = document.querySelector(sel);
+      if (!target) return { source: mapping.source, status: "field-not-found" };
+      (target.closest("label") || target).click();
+      if (target.tagName === "INPUT") {
+        target.checked = true;
+        target.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      markFilled(target.closest("label") || target, mapping.requiresConfirm);
+      return { source: mapping.source, status: mapping.requiresConfirm ? "filled-confirm" : "filled" };
+    }
+
     const el = findEl(mapping.selectors, root);
     if (!el) return { source: mapping.source, status: "field-not-found" };
 
@@ -231,6 +247,35 @@
           markFilled(el, true);
           return { source: mapping.source, status: r, value: v };
         }
+        break;
+      }
+      case "checkbox-multi": {
+        const wants = String(v)
+          .split(/[;,]/)
+          .map((x) => x.trim().toLowerCase())
+          .filter(Boolean);
+        if (!wants.length) return null;
+        let any = false;
+        for (const cb of el.querySelectorAll(
+          "input[type='checkbox'], mat-checkbox, [role='checkbox']"
+        )) {
+          const lab = (
+            (cb.closest("label") || cb.parentElement || cb).textContent ||
+            cb.getAttribute("aria-label") ||
+            ""
+          )
+            .trim()
+            .toLowerCase();
+          const match =
+            wants.some((w) => lab === w) ||
+            wants.some((w) => lab.includes(w) && lab.length - w.length < 4);
+          if (match) {
+            const checked = cb.checked || cb.getAttribute("aria-checked") === "true";
+            if (!checked) (cb.closest("label") || cb).click();
+            any = true;
+          }
+        }
+        if (!any) return { source: mapping.source, status: "no-matching-option", value: v };
         break;
       }
       case "date":

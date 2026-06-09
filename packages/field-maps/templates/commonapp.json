@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 8,
+  "version": 9,
   "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN / #radioGroupNNN, formControlName) with label fallbacks. Mapped: Personal info, Phone, Legal sex, Birthplace/Citizenship (+ citizenship status radio), GPA, and Family. mat-radio fields fill by clicking the option whose label matches the stored value (exact match preferred). DOB uses MM/DD/YYYY. Sensitive/derived fields are requiresConfirm.",
   "pages": [
     {
@@ -317,6 +317,47 @@
           ],
           "kind": "text",
           "requiresConfirm": true
+        },
+        {
+          "source": "profile.classRankReporting",
+          "selectors": [],
+          "kind": "radio-map",
+          "requiresConfirm": true,
+          "valueMap": {
+            "Exact": "#option_ques_297_817-input",
+            "Decile": "#option_ques_297_818-input",
+            "Quintile": "#option_ques_297_819-input",
+            "Quartile": "#option_ques_297_820-input",
+            "None": "#option_ques_297_821-input"
+          }
+        },
+        {
+          "source": "profile.decileRank",
+          "selectors": [
+            "#text_ques_299"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.rankWeighting",
+          "selectors": [],
+          "kind": "radio-map",
+          "requiresConfirm": true,
+          "valueMap": {
+            "Weighted": "#option_ques_302_841-input",
+            "Unweighted": "#option_ques_302_842-input"
+          }
+        },
+        {
+          "source": "profile.gpaWeighting",
+          "selectors": [],
+          "kind": "radio-map",
+          "requiresConfirm": true,
+          "valueMap": {
+            "Weighted": "#option_ques_306_841-input",
+            "Unweighted": "#option_ques_306_842-input"
+          }
         }
       ]
     },
@@ -911,6 +952,22 @@
           "kind": "text"
         },
         {
+          "source": "activities.0.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-28_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.0.timing",
+          "selectors": [
+            "name:ca-checkboxList-29_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
           "source": "activities.1.category",
           "selectors": [
             "#text_ques_939"
@@ -945,6 +1002,22 @@
             "#text_ques_946"
           ],
           "kind": "text"
+        },
+        {
+          "source": "activities.1.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-30_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.1.timing",
+          "selectors": [
+            "name:ca-checkboxList-31_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
         },
         {
           "source": "activities.2.category",
@@ -983,6 +1056,22 @@
           "kind": "text"
         },
         {
+          "source": "activities.2.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-32_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.2.timing",
+          "selectors": [
+            "name:ca-checkboxList-33_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
           "source": "activities.3.category",
           "selectors": [
             "#text_ques_957"
@@ -1017,6 +1106,22 @@
             "#text_ques_964"
           ],
           "kind": "text"
+        },
+        {
+          "source": "activities.3.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-34_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.3.timing",
+          "selectors": [
+            "name:ca-checkboxList-35_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
         },
         {
           "source": "activities.4.category",
@@ -1055,6 +1160,22 @@
           "kind": "text"
         },
         {
+          "source": "activities.4.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-36_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.4.timing",
+          "selectors": [
+            "name:ca-checkboxList-37_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
           "source": "activities.5.category",
           "selectors": [
             "#text_ques_975"
@@ -1089,6 +1210,22 @@
             "#text_ques_982"
           ],
           "kind": "text"
+        },
+        {
+          "source": "activities.5.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-38_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.5.timing",
+          "selectors": [
+            "name:ca-checkboxList-39_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
         },
         {
           "source": "activities.6.category",
@@ -1127,6 +1264,22 @@
           "kind": "text"
         },
         {
+          "source": "activities.6.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-40_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.6.timing",
+          "selectors": [
+            "name:ca-checkboxList-41_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
           "source": "activities.7.category",
           "selectors": [
             "#text_ques_993"
@@ -1161,6 +1314,22 @@
             "#text_ques_1000"
           ],
           "kind": "text"
+        },
+        {
+          "source": "activities.7.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-42_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.7.timing",
+          "selectors": [
+            "name:ca-checkboxList-43_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
         },
         {
           "source": "activities.8.category",
@@ -1199,6 +1368,22 @@
           "kind": "text"
         },
         {
+          "source": "activities.8.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-44_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.8.timing",
+          "selectors": [
+            "name:ca-checkboxList-45_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
           "source": "activities.9.category",
           "selectors": [
             "#text_ques_1011"
@@ -1233,6 +1418,22 @@
             "#text_ques_1018"
           ],
           "kind": "text"
+        },
+        {
+          "source": "activities.9.gradeLevels",
+          "selectors": [
+            "name:ca-checkboxList-46_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
+        },
+        {
+          "source": "activities.9.timing",
+          "selectors": [
+            "name:ca-checkboxList-47_group"
+          ],
+          "kind": "checkbox-multi",
+          "requiresConfirm": true
         }
       ]
     }

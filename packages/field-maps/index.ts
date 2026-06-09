@@ -20,7 +20,14 @@ export type FieldKind =
   // setting .value. mat-select/mat-autocomplete open an overlay of options.
   | "mat-select"
   | "mat-radio"
-  | "mat-autocomplete";
+  | "mat-autocomplete"
+  // radio-map: valueMap maps a stored value -> a CSS selector for the exact
+  // radio option to click (for id-addressable native radios like
+  // #option_ques_297_817-input). `selectors` is ignored.
+  | "radio-map"
+  // checkbox-multi: value is a comma/semicolon list; check every box in the
+  // resolved group whose label matches an item (e.g. grade levels "9,10,11").
+  | "checkbox-multi";
 
 export interface FieldMapping {
   /** Dot path into the autofill payload, e.g. "profile.legalFirstName". */

@@ -96,6 +96,22 @@ export default async function ActivitiesPage() {
               <input name="weeksPerYear" type="number" />
             </div>
           </div>
+          <label>Grade levels (when you participated)</label>
+          <div className="row">
+            {["9", "10", "11", "12", "Post-graduate"].map((g) => (
+              <label key={g} style={{ margin: 0, display: "flex", gap: 6, alignItems: "center" }}>
+                <input type="checkbox" name="gradeLevels" value={g} style={{ width: "auto" }} /> {g}
+              </label>
+            ))}
+          </div>
+          <label>Timing</label>
+          <div className="row">
+            {["During school year", "During school break", "All year"].map((tm) => (
+              <label key={tm} style={{ margin: 0, display: "flex", gap: 6, alignItems: "center" }}>
+                <input type="checkbox" name="timing" value={tm} style={{ width: "auto" }} /> {tm}
+              </label>
+            ))}
+          </div>
           <label>Describe it in your own words</label>
           <textarea name="rawDescription" required />
           <button className="primary" type="submit">Add activity</button>

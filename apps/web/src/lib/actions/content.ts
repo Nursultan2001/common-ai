@@ -14,12 +14,17 @@ export async function addActivityAction(formData: FormData) {
   const raw = String(formData.get("rawDescription") ?? "").trim();
   if (!raw) return;
 
+  const gradeLevels = formData.getAll("gradeLevels").map(String).filter(Boolean).join(",");
+  const timing = formData.getAll("timing").map(String).filter(Boolean).join(",");
+
   await db.activity.create({
     data: {
       applicantId: applicant.id,
       category: String(formData.get("category") ?? "") || null,
       position: String(formData.get("position") ?? "") || null,
       organization: String(formData.get("organization") ?? "") || null,
+      gradeLevels: gradeLevels || null,
+      timing: timing || null,
       hoursPerWeek: Number(formData.get("hoursPerWeek")) || null,
       weeksPerYear: Number(formData.get("weeksPerYear")) || null,
       rawDescription: raw,

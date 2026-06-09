@@ -117,6 +117,40 @@ export default async function ProfilePage() {
         </div>
 
         <div className="card">
+          <h2>Class rank &amp; weighting</h2>
+          <div className="row">
+            <div style={{ flex: "1 1 180px" }}>
+              <label>Class rank reporting</label>
+              <select name="classRankReporting" defaultValue={p?.classRankReporting ?? ""}>
+                <option value="">—</option>
+                <option>Exact</option>
+                <option>Decile</option>
+                <option>Quintile</option>
+                <option>Quartile</option>
+                <option>None</option>
+              </select>
+            </div>
+            <F label="Decile rank (if Decile)" name="decileRank" value={p?.decileRank} />
+            <div style={{ flex: "1 1 160px" }}>
+              <label>Class rank weighting</label>
+              <select name="rankWeighting" defaultValue={p?.rankWeighting ?? ""}>
+                <option value="">—</option>
+                <option>Weighted</option>
+                <option>Unweighted</option>
+              </select>
+            </div>
+            <div style={{ flex: "1 1 160px" }}>
+              <label>GPA weighting</label>
+              <select name="gpaWeighting" defaultValue={p?.gpaWeighting ?? ""}>
+                <option value="">—</option>
+                <option>Weighted</option>
+                <option>Unweighted</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="card">
           <h2>College plans</h2>
           <div className="row">
             <F label="Highest degree you intend to earn" name="highestDegree" value={p?.highestDegree} />
