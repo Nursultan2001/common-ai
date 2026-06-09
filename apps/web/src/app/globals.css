@@ -204,11 +204,14 @@ code.token { display: block; word-break: break-all; background: #0f131b; border:
 /* --- feature cards --- */
 .lp-section-h { text-align: center; font-size: clamp(26px,4vw,38px); letter-spacing: -.02em; margin: 70px 0 8px; }
 .lp-section-p { text-align: center; color: #9aa3b8; max-width: 56ch; margin: 0 auto 28px; }
-.lp-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 18px; }
+.lp-features { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+@media (max-width: 900px) { .lp-features { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 560px) { .lp-features { grid-template-columns: 1fr; } }
 .lp-card {
   position: relative; border-radius: 16px; padding: 22px;
   border: 1px solid rgba(140,160,210,.14);
-  background: linear-gradient(180deg, rgba(22,27,38,.7), rgba(14,18,27,.7));
+  background: linear-gradient(180deg, rgba(22,27,38,.45), rgba(14,18,27,.5));
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   overflow: hidden; transition: transform .25s, border-color .25s;
 }
 .lp-card::before {
@@ -225,8 +228,15 @@ code.token { display: block; word-break: break-all; background: #0f131b; border:
 .lp-card p { margin: 0; color: #9aa3b8; font-size: 14px; }
 
 /* --- steps timeline --- */
-.lp-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 18px; counter-reset: step; }
-.lp-step { position: relative; padding: 22px; border-radius: 16px; border: 1px solid rgba(140,160,210,.14); background: rgba(20,25,36,.6); }
+.lp-steps { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; counter-reset: step; }
+@media (max-width: 900px) { .lp-steps { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media (max-width: 520px) { .lp-steps { grid-template-columns: 1fr; } }
+.lp-step {
+  position: relative; padding: 22px; border-radius: 16px;
+  border: 1px solid rgba(140,160,210,.14);
+  background: rgba(20,25,36,.45);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
 .lp-step .n { width: 34px; height: 34px; border-radius: 10px; background: var(--grad); color: #06122e; font-weight: 800; display: grid; place-items: center; margin-bottom: 12px; box-shadow: 0 0 20px rgba(91,140,255,.45); }
 .lp-step h4 { margin: 0 0 6px; font-size: 16px; }
 .lp-step p { margin: 0; color: #9aa3b8; font-size: 14px; }
