@@ -5,38 +5,46 @@ import WaitlistForm from "./WaitlistForm";
 import { Icon } from "./icons";
 import { DICT, LANGS, type Lang } from "@/lib/i18n";
 
-// To use a REAL logo: drop an image at apps/web/public/logos/<slug>.svg
-// (or .png and change EXT). If the file is missing, a colored monogram crest is
-// shown instead. `short` = monogram text, `color` = brand color for the crest.
-type Uni = { name: string; slug: string; short: string; color: string };
+// Real logos are loaded at runtime from a logo service by the school's domain,
+// with a favicon fallback, then a colored monogram if both fail. To self-host
+// instead, drop a file at public/logos/<slug>.svg and add it as the first
+// candidate in logoCandidates(). `short`/`color` = monogram fallback.
+type Uni = { name: string; slug: string; short: string; color: string; domain: string };
 const UNIS: Uni[] = [
-  { name: "Harvard", slug: "harvard", short: "H", color: "#A51C30" },
-  { name: "Stanford", slug: "stanford", short: "S", color: "#8C1515" },
-  { name: "MIT", slug: "mit", short: "MIT", color: "#A31F34" },
-  { name: "Yale", slug: "yale", short: "Y", color: "#00356B" },
-  { name: "Princeton", slug: "princeton", short: "P", color: "#E77500" },
-  { name: "Columbia", slug: "columbia", short: "C", color: "#1D4F91" },
-  { name: "UC Berkeley", slug: "berkeley", short: "Cal", color: "#003262" },
-  { name: "Cornell", slug: "cornell", short: "C", color: "#B31B1B" },
-  { name: "UChicago", slug: "uchicago", short: "U", color: "#800000" },
-  { name: "UPenn", slug: "upenn", short: "P", color: "#011F5B" },
-  { name: "Caltech", slug: "caltech", short: "Ct", color: "#FF6C0C" },
-  { name: "Duke", slug: "duke", short: "D", color: "#00539B" },
-  { name: "Johns Hopkins", slug: "jhu", short: "JH", color: "#002D72" },
-  { name: "Brown", slug: "brown", short: "B", color: "#4E3629" },
-  { name: "NYU", slug: "nyu", short: "NYU", color: "#57068C" },
-  { name: "UCLA", slug: "ucla", short: "UCLA", color: "#2774AE" },
-  { name: "Carnegie Mellon", slug: "cmu", short: "CMU", color: "#C41230" },
-  { name: "Michigan", slug: "michigan", short: "M", color: "#00274C" },
+  { name: "Harvard", slug: "harvard", short: "H", color: "#A51C30", domain: "harvard.edu" },
+  { name: "Stanford", slug: "stanford", short: "S", color: "#8C1515", domain: "stanford.edu" },
+  { name: "MIT", slug: "mit", short: "MIT", color: "#A31F34", domain: "mit.edu" },
+  { name: "Yale", slug: "yale", short: "Y", color: "#00356B", domain: "yale.edu" },
+  { name: "Princeton", slug: "princeton", short: "P", color: "#E77500", domain: "princeton.edu" },
+  { name: "Columbia", slug: "columbia", short: "C", color: "#1D4F91", domain: "columbia.edu" },
+  { name: "UC Berkeley", slug: "berkeley", short: "Cal", color: "#003262", domain: "berkeley.edu" },
+  { name: "Cornell", slug: "cornell", short: "C", color: "#B31B1B", domain: "cornell.edu" },
+  { name: "UChicago", slug: "uchicago", short: "U", color: "#800000", domain: "uchicago.edu" },
+  { name: "UPenn", slug: "upenn", short: "P", color: "#011F5B", domain: "upenn.edu" },
+  { name: "Caltech", slug: "caltech", short: "Ct", color: "#FF6C0C", domain: "caltech.edu" },
+  { name: "Duke", slug: "duke", short: "D", color: "#00539B", domain: "duke.edu" },
+  { name: "Johns Hopkins", slug: "jhu", short: "JH", color: "#002D72", domain: "jhu.edu" },
+  { name: "Brown", slug: "brown", short: "B", color: "#4E3629", domain: "brown.edu" },
+  { name: "NYU", slug: "nyu", short: "NYU", color: "#57068C", domain: "nyu.edu" },
+  { name: "UCLA", slug: "ucla", short: "UCLA", color: "#2774AE", domain: "ucla.edu" },
+  { name: "Carnegie Mellon", slug: "cmu", short: "CMU", color: "#C41230", domain: "cmu.edu" },
+  { name: "Michigan", slug: "michigan", short: "M", color: "#00274C", domain: "umich.edu" },
 ];
 
-const LOGO_EXT = "svg"; // change to "png" if you add PNG files
+function logoCandidates(u: Uni): string[] {
+  return [
+    `https://logo.clearbit.com/${u.domain}?size=80`,
+    `https://www.google.com/s2/favicons?domain=${u.domain}&sz=64`,
+  ];
+}
 
 function UniMark({ u }: { u: Uni }) {
-  const [broken, setBroken] = useState(false);
+  const candidates = logoCandidates(u);
+  const [i, setI] = useState(0);
+  const failed = i >= candidates.length;
   return (
     <span className="lp-uni">
-      {broken ? (
+      {failed ? (
         <span className="lp-mono" style={{ ["--c" as string]: u.color }}>
           {u.short}
         </span>
@@ -44,9 +52,10 @@ function UniMark({ u }: { u: Uni }) {
         // eslint-disable-next-line @next/next/no-img-element
         <img
           className="lp-logo-img"
-          src={`/logos/${u.slug}.${LOGO_EXT}`}
+          src={candidates[i]}
           alt={u.name}
-          onError={() => setBroken(true)}
+          loading="lazy"
+          onError={() => setI((n) => n + 1)}
         />
       )}
       <span>{u.name}</span>
