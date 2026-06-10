@@ -1,8 +1,8 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 9,
-  "_note": "Built from real captures of apply.commonapp.org (see captures/). Selectors are Common App's stable question IDs (#text_ques_NNN / #radioGroupNNN, formControlName) with label fallbacks. Mapped: Personal info, Phone, Legal sex, Birthplace/Citizenship (+ citizenship status radio), GPA, and Family. mat-radio fields fill by clicking the option whose label matches the stored value (exact match preferred). DOB uses MM/DD/YYYY. Sensitive/derived fields are requiresConfirm.",
+  "version": 10,
+  "_note": "Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
       "urlPattern": "https://apply.commonapp.org/common/2/2*",
@@ -11,7 +11,7 @@
         {
           "source": "testScores.selfReportScores",
           "selectors": [
-            "name:mat-radio-group-231"
+            "nth:mat-radio-group@0"
           ],
           "kind": "mat-radio",
           "requiresConfirm": true
@@ -954,7 +954,7 @@
         {
           "source": "activities.0.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-28_group"
+            "within:#text_ques_936"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -962,7 +962,7 @@
         {
           "source": "activities.0.timing",
           "selectors": [
-            "name:ca-checkboxList-29_group"
+            "within:#text_ques_936"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1006,7 +1006,7 @@
         {
           "source": "activities.1.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-30_group"
+            "within:#text_ques_945"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1014,7 +1014,7 @@
         {
           "source": "activities.1.timing",
           "selectors": [
-            "name:ca-checkboxList-31_group"
+            "within:#text_ques_945"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1058,7 +1058,7 @@
         {
           "source": "activities.2.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-32_group"
+            "within:#text_ques_954"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1066,7 +1066,7 @@
         {
           "source": "activities.2.timing",
           "selectors": [
-            "name:ca-checkboxList-33_group"
+            "within:#text_ques_954"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1110,7 +1110,7 @@
         {
           "source": "activities.3.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-34_group"
+            "within:#text_ques_963"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1118,7 +1118,7 @@
         {
           "source": "activities.3.timing",
           "selectors": [
-            "name:ca-checkboxList-35_group"
+            "within:#text_ques_963"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1162,7 +1162,7 @@
         {
           "source": "activities.4.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-36_group"
+            "within:#text_ques_972"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1170,7 +1170,7 @@
         {
           "source": "activities.4.timing",
           "selectors": [
-            "name:ca-checkboxList-37_group"
+            "within:#text_ques_972"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1214,7 +1214,7 @@
         {
           "source": "activities.5.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-38_group"
+            "within:#text_ques_981"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1222,7 +1222,7 @@
         {
           "source": "activities.5.timing",
           "selectors": [
-            "name:ca-checkboxList-39_group"
+            "within:#text_ques_981"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1266,7 +1266,7 @@
         {
           "source": "activities.6.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-40_group"
+            "within:#text_ques_990"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1274,7 +1274,7 @@
         {
           "source": "activities.6.timing",
           "selectors": [
-            "name:ca-checkboxList-41_group"
+            "within:#text_ques_990"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1318,7 +1318,7 @@
         {
           "source": "activities.7.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-42_group"
+            "within:#text_ques_999"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1326,7 +1326,7 @@
         {
           "source": "activities.7.timing",
           "selectors": [
-            "name:ca-checkboxList-43_group"
+            "within:#text_ques_999"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1370,7 +1370,7 @@
         {
           "source": "activities.8.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-44_group"
+            "within:#text_ques_1008"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1378,7 +1378,7 @@
         {
           "source": "activities.8.timing",
           "selectors": [
-            "name:ca-checkboxList-45_group"
+            "within:#text_ques_1008"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1422,7 +1422,7 @@
         {
           "source": "activities.9.gradeLevels",
           "selectors": [
-            "name:ca-checkboxList-46_group"
+            "within:#text_ques_1017"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
@@ -1430,7 +1430,7 @@
         {
           "source": "activities.9.timing",
           "selectors": [
-            "name:ca-checkboxList-47_group"
+            "within:#text_ques_1017"
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true

@@ -96,6 +96,37 @@
           return scope.querySelector(`[placeholder*="${val.replace(/"/g, "")}" i]`);
         case "css":
           return scope.querySelector(val);
+        // nth:<css>@<i> — the i-th element matching <css>. Survives Angular's
+        // auto-indexed name attributes (mat-radio-group-NNN changes per render).
+        case "nth": {
+          const at = val.lastIndexOf("@");
+          if (at < 0) return scope.querySelector(val);
+          const css = val.slice(0, at);
+          const idx = Number(val.slice(at + 1)) || 0;
+          const all = scope.querySelectorAll(css);
+          return all[idx] || null;
+        }
+        // within:<anchor css> — resolve the anchor (a stable element like
+        // #text_ques_936), then ascend to the nearest ancestor block that
+        // contains checkbox/radio options. Lets us reach unstable checkbox
+        // groups via a stable sibling field in the same card.
+        case "within": {
+          const anchor = scope.querySelector(val);
+          if (!anchor) return null;
+          let cur = anchor;
+          for (let i = 0; i < 8 && cur; i++) {
+            cur = cur.parentElement;
+            if (
+              cur &&
+              cur.querySelector(
+                "input[type='checkbox'], input[type='radio'], mat-checkbox, mat-radio-button, [role='checkbox'], [role='radio']"
+              )
+            ) {
+              return cur;
+            }
+          }
+          return null;
+        }
         default:
           return scope.querySelector(sel);
       }
@@ -188,6 +219,44 @@
     return "typed-no-match";
   }
 
+  // Many Common App "text" fields are really combobox widgets (course subject/
+  // level, activity type, score dropdowns...). Typing alone never commits a
+  // selection in Angular — the value vanishes on save. Detect those and click
+  // the matching overlay option after typing.
+  function isCombobox(el) {
+    return (
+      el.getAttribute &&
+      (el.getAttribute("role") === "combobox" ||
+        el.hasAttribute("aria-autocomplete") ||
+        el.hasAttribute("aria-owns") ||
+        el.hasAttribute("aria-controls") ||
+        el.hasAttribute("aria-expanded"))
+    );
+  }
+
+  async function smartFillText(el, text) {
+    if (el.focus) el.focus();
+    setNativeValue(el, String(text));
+    if (isCombobox(el)) {
+      const opt = await waitFor(() => pickOption(overlayOptions(), text), 1400);
+      if (opt) {
+        opt.click();
+        await sleep(80);
+        if (el.blur) el.blur();
+        return "filled";
+      }
+      // No matching option — keep the typed text but flag it for review, and
+      // close any stray overlay so it can't swallow the next click.
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+      if (el.blur) el.blur();
+      document.body.click();
+      return "typed-confirm";
+    }
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+    if (el.blur) el.blur();
+    return "filled";
+  }
+
   async function fillField(mapping, value, root = document) {
     if (value === null || value === undefined || value === "") return null;
 
@@ -255,34 +324,64 @@
           .map((x) => x.trim().toLowerCase())
           .filter(Boolean);
         if (!wants.length) return null;
-        let any = false;
-        for (const cb of el.querySelectorAll(
-          "input[type='checkbox'], mat-checkbox, [role='checkbox']"
-        )) {
-          const lab = (
-            (cb.closest("label") || cb.parentElement || cb).textContent ||
+
+        // Normalize to a container: a name:/within: selector may hand us a
+        // single <input>; ascend until the scope actually holds the checkboxes.
+        const CB = "input[type='checkbox'], mat-checkbox, [role='checkbox']";
+        let scope = el;
+        if (!scope.querySelector || !scope.querySelector(CB)) {
+          let cur = el;
+          for (let i = 0; i < 8 && cur; i++) {
+            cur = cur.parentElement;
+            if (cur && cur.querySelectorAll(CB).length >= 1) {
+              scope = cur;
+              break;
+            }
+          }
+        }
+
+        const boxes = Array.from(scope.querySelectorAll(CB));
+        const labelOfBox = (cb) =>
+          ((cb.closest("label") || cb.parentElement || cb).textContent ||
             cb.getAttribute("aria-label") ||
-            ""
-          )
+            "")
             .trim()
             .toLowerCase();
-          const match =
-            wants.some((w) => lab === w) ||
-            wants.some((w) => lab.includes(w) && lab.length - w.length < 4);
-          if (match) {
-            const checked = cb.checked || cb.getAttribute("aria-checked") === "true";
-            if (!checked) (cb.closest("label") || cb).click();
+        let any = false;
+        for (const w of wants) {
+          // exact label match first; loose match only as fallback
+          let target = boxes.find((cb) => labelOfBox(cb) === w);
+          if (!target) {
+            target = boxes.find((cb) => {
+              const lab = labelOfBox(cb);
+              return lab.includes(w) && lab.length - w.length < 4;
+            });
+          }
+          if (target) {
+            const checked =
+              target.checked || target.getAttribute("aria-checked") === "true";
+            if (!checked) (target.closest("label") || target).click();
             any = true;
           }
         }
         if (!any) return { source: mapping.source, status: "no-matching-option", value: v };
         break;
       }
-      case "date":
-        setNativeValue(el, formatDate(v, mapping.format));
+      case "date": {
+        const r = await smartFillText(el, formatDate(v, mapping.format));
+        if (r === "typed-confirm") {
+          markFilled(el, true);
+          return { source: mapping.source, status: "filled-confirm" };
+        }
         break;
-      default:
-        setNativeValue(el, String(v));
+      }
+      default: {
+        const r = await smartFillText(el, String(v));
+        if (r === "typed-confirm") {
+          markFilled(el, true);
+          return { source: mapping.source, status: "filled-confirm" };
+        }
+      }
     }
 
     markFilled(el, mapping.requiresConfirm);
@@ -360,7 +459,7 @@
     if (el) el.textContent = text;
   }
 
-  function showBanner(report) {
+  function showBanner(report, pageName) {
     document.getElementById("united-banner")?.remove();
     const filled = report.filter((r) => r.status.startsWith("filled")).length;
     const issues = report.filter(
@@ -377,6 +476,7 @@
       `<span id="united-banner-text">Filled ${filled} field(s). ` +
       `${issues.length} need your attention. Orange = please double-check.</span>` +
       `<button id="united-confirm" style="margin-left:auto;background:#3ecf8e;border:0;color:#06210f;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:600">I reviewed — enable submit</button>` +
+      `<button id="united-report" style="background:transparent;border:1px solid #3a4252;color:#9aa3b2;padding:8px 12px;border-radius:8px;cursor:pointer">Copy report</button>` +
       `<button id="united-dismiss" style="background:transparent;border:1px solid #3a4252;color:#9aa3b2;padding:8px 12px;border-radius:8px;cursor:pointer">Hide</button>`;
     document.body.appendChild(bar);
 
@@ -384,6 +484,21 @@
       window.__unitedReviewConfirmed = true;
       flashBanner("Submit unlocked. You are submitting your own application.");
       document.getElementById("united-confirm").disabled = true;
+    };
+    // Diagnostic report the user can paste back to support/dev: which fields
+    // filled and which failed, per page. Contains field names + statuses only.
+    document.getElementById("united-report").onclick = () => {
+      const payload = JSON.stringify(
+        { url: location.href, page: pageName || document.title, when: new Date().toISOString(), report },
+        null,
+        2
+      );
+      const done = () => flashBanner("Report copied — paste it to support.");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).then(done, () => window.prompt("Copy the report:", payload));
+      } else {
+        window.prompt("Copy the report:", payload);
+      }
     };
     document.getElementById("united-dismiss").onclick = () => bar.remove();
 
@@ -604,8 +719,22 @@
       return { ok: true, matched: false, filled: 0 };
     }
     installSubmitGate();
+
+    // Common App is an Angular SPA — fields render well after page "load".
+    // Wait until at least one mapped field actually exists before filling.
+    await waitFor(() => {
+      for (const m of page.fields || []) {
+        if (m.selectors && m.selectors.length && findEl(m.selectors)) return true;
+      }
+      for (const s of page.repeating || []) {
+        if (document.querySelector(s.rowSelector)) return true;
+      }
+      return false;
+    }, 10000, 250);
+    await sleep(400);
+
     const report = await applyPage(page, payload);
-    showBanner(report);
+    showBanner(report, page.name);
     const filled = report.filter((r) => String(r.status).startsWith("filled")).length;
     return { ok: true, matched: true, filled, pageName: page.name, report };
   }
