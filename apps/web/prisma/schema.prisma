@@ -421,6 +421,18 @@ model Course {
 }
 
 // ----------------------------------------------------------------------------
+// Dev-only: raw page-structure dumps from the deep scraper (no personal data,
+// only field structure). Used to build the field map. Safe to drop later.
+// ----------------------------------------------------------------------------
+
+model ScrapeDump {
+  path      String   @id
+  data      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ----------------------------------------------------------------------------
 // Audit log — admin visibility into every AI generation & autofill action
 // ----------------------------------------------------------------------------
 

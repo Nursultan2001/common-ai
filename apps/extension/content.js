@@ -570,6 +570,189 @@
     return "";
   }
 
+  // ===========================================================================
+  // DEEP SCRAPE — read-only inventory of EVERY fillable control on the page:
+  // text/date inputs, textareas, native selects (with options), combobox
+  // dropdowns (overlay opened just to read options, closed with Escape),
+  // mat-radio groups and checkbox lists (labels + option ids, never clicked).
+  // Records structure only — never the user's entered values. Results
+  // accumulate in localStorage so multiple pages build one export file.
+  // ===========================================================================
+
+  function nearestStableAnchor(el) {
+    // Closest ancestor block that contains a stable question id — lets us build
+    // `within:#text_ques_NNN` selectors offline for unstable widgets.
+    let cur = el;
+    for (let i = 0; i < 10 && cur; i++) {
+      cur = cur.parentElement;
+      if (!cur) break;
+      const q = cur.querySelector("[id^='text_ques_'], [id^='option_ques_']");
+      if (q) return q.id;
+    }
+    return null;
+  }
+
+  function dateHintNear(el) {
+    const ff = el.closest("mat-form-field") || el.parentElement;
+    const scopeText = ff ? ff.parentElement?.textContent || "" : "";
+    const m = scopeText.match(/Date uses [^.]+format[^.]*\./i);
+    return m ? m[0].trim() : null;
+  }
+
+  function escapeOverlay(input) {
+    try {
+      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+      input.blur && input.blur();
+      document.body.click();
+    } catch {}
+  }
+
+  async function harvestComboOptions(input) {
+    // Open the dropdown WITHOUT typing or selecting; read options; close.
+    try {
+      input.focus && input.focus();
+      input.click && input.click();
+    } catch {}
+    const found = await waitFor(() => {
+      const opts = overlayOptions();
+      return opts.length ? opts : null;
+    }, 1200);
+    let options = null;
+    if (found) {
+      options = Array.from(found)
+        .map((o) => (o.textContent || "").trim())
+        .filter(Boolean)
+        .slice(0, 250);
+    }
+    escapeOverlay(input);
+    await sleep(120);
+    return options; // null => opens only after typing (server-driven search)
+  }
+
+  async function deepScrapePage() {
+    const out = {
+      url: location.origin + location.pathname,
+      title: (document.querySelector("h1, h2") || {}).textContent?.trim() || document.title,
+      scrapedAt: new Date().toISOString(),
+      textFields: [],
+      selects: [],
+      comboboxes: [],
+      radioGroups: [],
+      checkboxGroups: [],
+      unanchored: [],
+    };
+
+    const seenRadioGroups = new Set();
+    const seenCheckboxNames = new Set();
+
+    // --- plain inputs / textareas / native selects / comboboxes ---
+    const els = Array.from(document.querySelectorAll("input, textarea, select")).filter(
+      (el) =>
+        isVisible(el) &&
+        !["hidden", "submit", "button", "reset"].includes((el.type || "").toLowerCase())
+    );
+
+    for (const el of els) {
+      const tag = el.tagName.toLowerCase();
+      const type = (el.type || "").toLowerCase();
+      if (type === "radio" || type === "checkbox") continue; // grouped below
+      const id = el.id && !looksRandomId(el.id) ? el.id : null;
+      const entry = {
+        label: labelOf(el) || widgetLabel(el) || null,
+        id,
+        selector: id ? `#${CSS.escape(el.id)}` : bestSelector(el),
+        anchor: id ? null : nearestStableAnchor(el),
+        kind: kindOf(el),
+        required: !!(el.required || el.getAttribute("aria-required") === "true"),
+        hasValue: !!(el.value && String(el.value).trim()),
+      };
+      const hint = dateHintNear(el);
+      if (hint) entry.dateFormatHint = hint;
+
+      if (tag === "select") {
+        entry.options = Array.from(el.options || []).map((o) => o.textContent.trim());
+        out.selects.push(entry);
+      } else if (isCombobox(el)) {
+        entry.options = await harvestComboOptions(el);
+        if (entry.options === null) entry.optionsNote = "type-ahead (server-driven)";
+        out.comboboxes.push(entry);
+      } else {
+        out.textFields.push(entry);
+      }
+      if (!entry.selector && !entry.anchor) out.unanchored.push(entry.label || tag);
+    }
+
+    // --- mat-radio groups (never clicked) ---
+    for (const g of document.querySelectorAll("mat-radio-group, [role='radiogroup']")) {
+      if (!isVisible(g) && !g.querySelector("input")) continue;
+      const key = g.id || g.getAttribute("name") || Math.random().toString(36);
+      if (seenRadioGroups.has(key)) continue;
+      seenRadioGroups.add(key);
+      const options = Array.from(
+        g.querySelectorAll("mat-radio-button, [role='radio']")
+      ).map((b) => ({
+        label: (b.textContent || "").trim().slice(0, 160),
+        inputId: (b.querySelector("input") || {}).id || null,
+      }));
+      out.radioGroups.push({
+        question: widgetLabel(g) || null,
+        groupId: g.id && !looksRandomId(g.id) ? g.id : null,
+        nthOnPage: out.radioGroups.length,
+        anchor: nearestStableAnchor(g),
+        options,
+      });
+    }
+
+    // --- checkbox groups (grouped by name; never clicked) ---
+    const cbByName = {};
+    for (const cb of document.querySelectorAll("input[type='checkbox']")) {
+      const name = cb.getAttribute("name") || "__solo__" + (cb.id || "");
+      (cbByName[name] = cbByName[name] || []).push(cb);
+    }
+    for (const [name, boxes] of Object.entries(cbByName)) {
+      if (seenCheckboxNames.has(name)) continue;
+      seenCheckboxNames.add(name);
+      if (!boxes.some((b) => isVisible(b))) continue;
+      out.checkboxGroups.push({
+        runtimeName: name, // unstable across sessions — for human reference only
+        nthOnPage: out.checkboxGroups.length,
+        anchor: nearestStableAnchor(boxes[0]),
+        options: boxes.map((b) => ({
+          label:
+            ((b.closest("label") || b.parentElement || b).textContent || "")
+              .trim()
+              .slice(0, 120),
+          inputId: b.id && !looksRandomId(b.id) ? b.id : null,
+        })),
+      });
+    }
+
+    // Accumulate across pages in localStorage for one combined export.
+    try {
+      const store = JSON.parse(localStorage.getItem("ca_deep_scrape") || "{}");
+      store[location.pathname] = out;
+      localStorage.setItem("ca_deep_scrape", JSON.stringify(store));
+    } catch {}
+
+    return out;
+  }
+
+  function exportDeepScrape() {
+    let store = {};
+    try {
+      store = JSON.parse(localStorage.getItem("ca_deep_scrape") || "{}");
+    } catch {}
+    const json = JSON.stringify(store, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "commonapp-deep-scrape.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    return Object.keys(store);
+  }
+
   const SOURCE_HINTS = [
     [/first name|given name/i, "profile.legalFirstName"],
     [/last name|surname|family name/i, "profile.legalLastName"],
@@ -692,6 +875,38 @@
     // Quiet variant used by the "fill all pages" driver in the background worker.
     if (msg.type === "FILL_CURRENT_PAGE") {
       runAutofill({ quiet: true }).then(sendResponse);
+      return true;
+    }
+    // Read-only structural inventory of the current page (accumulates).
+    if (msg.type === "DEEP_SCRAPE_PAGE") {
+      (async () => {
+        // Let the Angular page finish rendering before inventorying.
+        await waitFor(
+          () => document.querySelector("input, textarea, select, mat-radio-group"),
+          10000,
+          250
+        );
+        await sleep(400);
+        const out = await deepScrapePage();
+        console.log("[Common AI] Deep scrape:", out);
+        sendResponse({
+          ok: true,
+          page: out.url,
+          counts: {
+            text: out.textFields.length,
+            selects: out.selects.length,
+            comboboxes: out.comboboxes.length,
+            radioGroups: out.radioGroups.length,
+            checkboxGroups: out.checkboxGroups.length,
+          },
+          data: out,
+        });
+      })();
+      return true;
+    }
+    if (msg.type === "EXPORT_SCRAPE") {
+      const pages = exportDeepScrape();
+      sendResponse({ ok: true, pages });
       return true;
     }
   });

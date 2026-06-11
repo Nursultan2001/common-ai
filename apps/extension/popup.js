@@ -48,6 +48,16 @@ $("runall").onclick = async () => {
   });
 };
 
+$("deepall").onclick = async () => {
+  status("Deep scraping all pages… the tab will walk every section. ~2 min, don’t close it.");
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.runtime.sendMessage({ type: "DEEP_SCRAPE_ALL", tabId: tab.id }, (r) => {
+    if (!r || !r.ok) return status(`Error: ${(r && r.error) || "failed"}`);
+    const okPages = r.results.filter((x) => x.ok).length;
+    status(`Done — scraped ${okPages}/${r.results.length} pages. File downloaded: commonapp-deep-scrape.json`);
+  });
+};
+
 $("capture").onclick = async () => {
   status("Capturing fields on this page…");
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
