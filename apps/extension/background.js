@@ -130,6 +130,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       // the field map, wait for it to render, and fill it. Never submits.
       if (msg.type === "RUN_ALL_PAGES") {
         const tabId = msg.tabId;
+        const save = !!msg.save; // when true, click Continue to persist each page
         const bundle = await buildBundle();
         if (!bundle.ok) return sendResponse(bundle);
         const pages = bundle.data.template.pages || [];
@@ -139,10 +140,22 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
           await waitComplete(tabId);
           await sleep(1800); // give the Angular app time to render
           const r = await fillTabPage(tabId);
+          let saved = null;
+          let errors = null;
+          if (save && r && r.matched) {
+            // Common App only persists a page on Continue. Click it; advanced =>
+            // saved, validation errors => blocked (page needs manual completion).
+            await sleep(700); // let field values settle before saving
+            const c = await messageTabWithInject(tabId, { type: "CLICK_CONTINUE" });
+            saved = !!(c && c.saved);
+            errors = (c && c.errors) || 0;
+          }
           results.push({
             name: p.name,
             filled: (r && r.filled) || 0,
             matched: !!(r && r.matched),
+            saved,
+            errors,
           });
         }
         return sendResponse({ ok: true, results });

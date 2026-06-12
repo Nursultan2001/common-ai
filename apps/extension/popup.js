@@ -37,16 +37,39 @@ $("run").onclick = async () => {
   });
 };
 
-$("runall").onclick = async () => {
-  status("Autofilling all pages… the tab will move through each one. Don’t close it.");
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  chrome.runtime.sendMessage({ type: "RUN_ALL_PAGES", tabId: tab.id }, (r) => {
-    if (!r || !r.ok) return status(`Error: ${(r && r.error) || "failed"}`);
-    const total = r.results.reduce((n, x) => n + (x.filled || 0), 0);
-    const pages = r.results.filter((x) => x.matched).length;
-    status(`Done. Filled ${total} field(s) across ${pages} page(s). Review each page — you submit.`);
-  });
-};
+function runAll(save) {
+  return async () => {
+    status(
+      save
+        ? "Autofilling + saving every page… the tab walks each section and clicks Continue to save. Don’t close it."
+        : "Autofilling all pages (no save)… the tab moves through each one. Don’t close it."
+    );
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    chrome.runtime.sendMessage({ type: "RUN_ALL_PAGES", tabId: tab.id, save }, (r) => {
+      if (!r || !r.ok) return status(`Error: ${(r && r.error) || "failed"}`);
+      const total = r.results.reduce((n, x) => n + (x.filled || 0), 0);
+      const pages = r.results.filter((x) => x.matched).length;
+      if (save) {
+        const saved = r.results.filter((x) => x.saved).length;
+        const blocked = r.results.filter((x) => x.matched && x.saved === false);
+        let msg = `Done. Filled ${total} field(s); saved ${saved} page(s).`;
+        if (blocked.length) {
+          msg += ` ${blocked.length} page(s) need manual completion (missing required fields): ${blocked
+            .map((b) => b.name)
+            .join(", ")}.`;
+        }
+        status(msg);
+      } else {
+        status(
+          `Filled ${total} field(s) across ${pages} page(s) — NOT saved. Use "Autofill + Save" to persist, or click Continue on each page yourself.`
+        );
+      }
+    });
+  };
+}
+
+$("runall").onclick = runAll(false);
+$("runallsave").onclick = runAll(true);
 
 $("deepall").onclick = async () => {
   status("Deep scraping all pages… the tab will walk every section. ~2 min, don’t close it.");

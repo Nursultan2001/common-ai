@@ -877,6 +877,13 @@
       runAutofill({ quiet: true }).then(sendResponse);
       return true;
     }
+    // Save the page by clicking its "Continue" button. Common App does NOT
+    // autosave on field change — Continue is the only thing that persists a page.
+    // Returns whether it saved (advanced) or was blocked by validation errors.
+    if (msg.type === "CLICK_CONTINUE") {
+      clickContinue().then(sendResponse);
+      return true;
+    }
     // Read-only structural inventory of the current page (accumulates).
     if (msg.type === "DEEP_SCRAPE_PAGE") {
       (async () => {
@@ -915,6 +922,36 @@
     return new Promise((resolve) =>
       chrome.runtime.sendMessage({ type: "GET_AUTOFILL_BUNDLE" }, resolve)
     );
+  }
+
+  // Click the page's "Continue" button to SAVE it (Common App only persists a
+  // page on Continue, not on field change). Returns whether it saved (advanced)
+  // or was blocked by validation. Never clicks Submit/Pay (those are gated).
+  async function clickContinue() {
+    const before = location.href;
+    let btn = null;
+    for (const b of document.querySelectorAll(
+      "button, input[type='submit'], a[role='button']"
+    )) {
+      const t = (b.textContent || b.value || "").trim().toLowerCase();
+      // Match Continue / "Continue to next section". Never submit/pay/confirm.
+      if (/\bcontinue\b/.test(t) && !/submit|pay|confirm/.test(t)) {
+        const r = b.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0 && !b.disabled) {
+          btn = b;
+          break;
+        }
+      }
+    }
+    if (!btn) return { ok: true, clicked: false, saved: false, reason: "no-continue-button" };
+    btn.click();
+    // Saved+advanced => the SPA route (URL) changes. Blocked => stays + shows errors.
+    const advanced = await waitFor(() => location.href !== before, 4500, 150);
+    await sleep(300);
+    const errors = document.querySelectorAll(
+      "mat-error, [role='alert'], .mat-mdc-form-field-error, .ca-error, .error-message"
+    ).length;
+    return { ok: true, clicked: true, saved: !!advanced, advanced: !!advanced, errors };
   }
 
   async function runAutofill({ quiet } = {}) {
