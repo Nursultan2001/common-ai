@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import WaitlistForm from "./WaitlistForm";
 import { Icon } from "./icons";
 import { DICT, LANGS, type Lang } from "@/lib/i18n";
@@ -88,6 +88,86 @@ export default function LandingClient() {
     if (saved && DICT[saved]) setLang(saved);
   }, []);
 
+  // Cursor spotlight: drive the radial-glow position via CSS variables.
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+    const onMove = (e: MouseEvent) => {
+      document.documentElement.style.setProperty("--mx", e.clientX + "px");
+      document.documentElement.style.setProperty("--my", e.clientY + "px");
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  // Constellation: slow-drifting star points connected by faint lines.
+  const starsRef = useRef<HTMLCanvasElement | null>(null);
+  useEffect(() => {
+    const canvas = starsRef.current;
+    if (!canvas) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let raf = 0;
+    let w = 0;
+    let h = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const N = 70;
+    const pts = Array.from({ length: N }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      vx: (Math.random() - 0.5) * 0.0005,
+      vy: (Math.random() - 0.5) * 0.0005,
+    }));
+
+    const resize = () => {
+      w = canvas.offsetWidth;
+      h = canvas.offsetHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const tick = () => {
+      ctx.clearRect(0, 0, w, h);
+      for (const p of pts) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > 1) p.vx *= -1;
+        if (p.y < 0 || p.y > 1) p.vy *= -1;
+      }
+      ctx.fillStyle = "rgba(170,195,255,.7)";
+      for (const p of pts) {
+        ctx.beginPath();
+        ctx.arc(p.x * w, p.y * h, 1.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      for (let i = 0; i < N; i++) {
+        for (let j = i + 1; j < N; j++) {
+          const dx = (pts[i].x - pts[j].x) * w;
+          const dy = (pts[i].y - pts[j].y) * h;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 130 * 130) {
+            ctx.strokeStyle = `rgba(120,150,255,${0.12 * (1 - d2 / (130 * 130))})`;
+            ctx.beginPath();
+            ctx.moveTo(pts[i].x * w, pts[i].y * h);
+            ctx.lineTo(pts[j].x * w, pts[j].y * h);
+            ctx.stroke();
+          }
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
   function choose(l: Lang) {
     setLang(l);
     try {
@@ -105,8 +185,13 @@ export default function LandingClient() {
         <div className="lp-blob b1" />
         <div className="lp-blob b2" />
         <div className="lp-blob b3" />
+        <canvas ref={starsRef} className="lp-stars" />
+        <div className="lp-shoot" style={{ top: "12%", right: "-150px" }} />
+        <div className="lp-shoot s2" style={{ top: "34%", right: "-150px" }} />
+        <div className="lp-shoot s3" style={{ top: "6%", right: "-150px" }} />
         <div className="lp-scan" />
       </div>
+      <div className="lp-spot" aria-hidden="true" />
 
       <header className="lp-nav">
         <span className="lp-logo">

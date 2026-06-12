@@ -1,8 +1,19 @@
-import Link from "next/link";
 import { requireUser } from "@/lib/server-auth";
 import { logoutAction } from "@/lib/actions/auth";
+import AppBackground from "../AppBackground";
+import NavLinks from "../NavLinks";
 
 export const dynamic = "force-dynamic";
+
+const LINKS = [
+  { href: "/dashboard", label: "Overview" },
+  { href: "/dashboard/profile", label: "Profile" },
+  { href: "/dashboard/activities", label: "Activities" },
+  { href: "/dashboard/honors", label: "Honors" },
+  { href: "/dashboard/family", label: "Family" },
+  { href: "/dashboard/testing", label: "Testing" },
+  { href: "/dashboard/documents", label: "Documents" },
+];
 
 export default async function DashboardLayout({
   children,
@@ -10,21 +21,16 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
+  const links =
+    user.role === "ADMIN" ? [...LINKS, { href: "/admin", label: "Admin" }] : LINKS;
   return (
     <>
+      <AppBackground />
       <nav className="top">
         <strong>Common AI</strong>
-        <Link href="/dashboard">Overview</Link>
-        <Link href="/dashboard/profile">Profile</Link>
-        <Link href="/dashboard/activities">Activities</Link>
-        <Link href="/dashboard/honors">Honors</Link>
-        <Link href="/dashboard/family">Family</Link>
-        <Link href="/dashboard/testing">Testing</Link>
-        <Link href="/dashboard/courses">Courses</Link>
-        <Link href="/dashboard/documents">Documents</Link>
-        {user.role === "ADMIN" && <Link href="/admin">Admin</Link>}
+        <NavLinks links={links} />
         <span className="spacer" />
-        <span className="muted">{user.email}</span>
+        <span className="muted" style={{ fontSize: 13 }}>{user.email}</span>
         <form action={logoutAction}>
           <button style={{ marginTop: 0 }}>Sign out</button>
         </form>

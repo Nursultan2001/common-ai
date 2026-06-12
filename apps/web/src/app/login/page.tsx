@@ -2,6 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { loginAction, type ActionState } from "@/lib/actions/auth";
+import AppBackground from "../AppBackground";
 
 function Submit() {
   const { pending } = useFormStatus();
@@ -16,6 +17,7 @@ export default function LoginPage() {
   const [state, action] = useFormState<ActionState, FormData>(loginAction, undefined);
   return (
     <main style={{ maxWidth: 420 }}>
+      <AppBackground />
       <h1>Sign in</h1>
       <form action={action} className="card">
         <label>Email</label>

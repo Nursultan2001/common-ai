@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { signupAction, type ActionState } from "@/lib/actions/auth";
+import AppBackground from "../AppBackground";
 
 function Submit() {
   const { pending } = useFormStatus();
@@ -24,6 +25,7 @@ export default function SignupForm({
   const [role, setRole] = useState("STUDENT");
   return (
     <main style={{ maxWidth: 460 }}>
+      <AppBackground />
       <h1>Create your account</h1>
       <p className="muted">You’re invited 🎉 Finish setting up your account below.</p>
       <form action={action} className="card">
