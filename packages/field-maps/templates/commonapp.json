@@ -1,8 +1,8 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 10,
-  "_note": "Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
+  "version": 11,
+  "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
       "urlPattern": "https://apply.commonapp.org/common/2/2*",
@@ -10,11 +10,13 @@
       "fields": [
         {
           "source": "testScores.selfReportScores",
-          "selectors": [
-            "nth:mat-radio-group@0"
-          ],
-          "kind": "mat-radio",
-          "requiresConfirm": true
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_925_2371-input",
+            "No": "#option_ques_925_2372-input"
+          }
         }
       ]
     },
@@ -178,11 +180,16 @@
       "fields": [
         {
           "source": "profile.citizenshipStatus",
-          "selectors": [
-            "#radioGroup234"
-          ],
-          "kind": "mat-radio",
-          "requiresConfirm": true
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "U.S. citizen or U.S. national": "#option_ques_234_2098-input",
+            "U.S. dual citizen": "#option_ques_234_2099-input",
+            "U.S. permanent resident": "#option_ques_234_2789-input",
+            "Citizen of non-U.S. country": "#option_ques_234_2101-input",
+            "U.S. resident": "#option_ques_234_5918-input"
+          }
         },
         {
           "source": "profile.birthCountry",
@@ -234,11 +241,14 @@
       "fields": [
         {
           "source": "profile.legalSex",
-          "selectors": [
-            "#radioGroup180"
-          ],
-          "kind": "mat-radio",
-          "requiresConfirm": true
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Female": "#option_ques_180_1795-input",
+            "Male": "#option_ques_180_1794-input",
+            "X or another legal sex": "#option_ques_180_5465-input"
+          }
         }
       ]
     },
