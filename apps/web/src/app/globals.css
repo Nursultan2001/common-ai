@@ -122,6 +122,21 @@ code.token { display: block; word-break: break-all; background: rgba(10,14,21,.8
 }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 16px; }
 
+/* ---- auth pages (login / signup): centered card on the ambient bg ---- */
+main.auth-page { max-width: none; min-height: 100dvh; display: grid; place-items: center; padding: 24px; }
+.auth-card { width: 100%; max-width: 400px; }
+.auth-card .card { margin: 0; }
+.auth-card h1 { font-size: 22px; margin: 0 0 4px; }
+.auth-brand { display: flex; align-items: center; gap: 10px; justify-content: center; margin-bottom: 18px; font-weight: 800; font-size: 20px; letter-spacing: -.02em; }
+.auth-brand .dot {
+  width: 28px; height: 28px; border-radius: 9px;
+  background: linear-gradient(135deg, #5b8cff, #9b6bff 55%, #36e0c8);
+  box-shadow: 0 0 18px rgba(91,140,255,.6);
+  display: inline-grid; place-items: center; font-size: 15px; color: #061026;
+}
+.auth-foot { text-align: center; margin-top: 16px; }
+.auth-card form button[type="submit"] { width: 100%; margin-top: 18px; }
+
 /* ==========================================================================
    LANDING PAGE — high-tech, application-themed
    ========================================================================== */

@@ -1,5 +1,9 @@
 const $ = (id) => document.getElementById(id);
-const status = (t) => ($("status").textContent = t);
+const status = (t) => {
+  const el = $("status");
+  el.textContent = t;
+  el.classList.toggle("show", !!t);
+};
 
 async function load() {
   const cfg = await chrome.storage.local.get(["backendUrl", "token", "applicationId"]);

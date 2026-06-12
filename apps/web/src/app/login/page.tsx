@@ -16,20 +16,28 @@ function Submit() {
 export default function LoginPage() {
   const [state, action] = useFormState<ActionState, FormData>(loginAction, undefined);
   return (
-    <main style={{ maxWidth: 420 }}>
+    <main className="auth-page">
       <AppBackground />
-      <h1>Sign in</h1>
-      <form action={action} className="card">
-        <label>Email</label>
-        <input name="email" type="email" required />
-        <label>Password</label>
-        <input name="password" type="password" required />
-        {state?.error && <p style={{ color: "#ff6b6b" }}>{state.error}</p>}
-        <Submit />
-      </form>
-      <p className="muted">
-        No account? <a href="/signup">Create one</a>
-      </p>
+      <div className="auth-card">
+        <div className="auth-brand">
+          <span className="dot">◆</span> Common AI
+        </div>
+        <div className="card">
+          <h1>Sign in</h1>
+          <p className="muted" style={{ marginTop: 0 }}>Welcome back.</p>
+          <form action={action}>
+            <label>Email</label>
+            <input name="email" type="email" required autoFocus />
+            <label>Password</label>
+            <input name="password" type="password" required />
+            {state?.error && <p style={{ color: "#ff6b6b" }}>{state.error}</p>}
+            <Submit />
+          </form>
+        </div>
+        <p className="muted auth-foot">
+          No account? <a href="/signup">Create one</a>
+        </p>
+      </div>
     </main>
   );
 }

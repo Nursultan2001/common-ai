@@ -3,32 +3,117 @@
   <head>
     <meta charset="utf-8" />
     <style>
-      body { width: 300px; font: 13px system-ui; margin: 0; padding: 14px; background: #0b0d12; color: #e8ebf0; }
-      h1 { font-size: 15px; margin: 0 0 10px; }
-      label { display: block; margin: 8px 0 3px; color: #9aa3b2; }
-      input { width: 100%; padding: 7px 8px; border-radius: 7px; border: 1px solid #2a3344; background: #151922; color: #e8ebf0; }
-      button { width: 100%; margin-top: 12px; padding: 9px; border: 0; border-radius: 8px; cursor: pointer; font-weight: 600; }
-      .primary { background: #5b8cff; color: #06122e; }
-      .ghost { background: transparent; border: 1px solid #2a3344; color: #9aa3b2; }
-      #status { margin-top: 10px; font-size: 12px; color: #9aa3b2; min-height: 16px; }
+      :root {
+        --bg: #0b0d12; --text: #e8ebf0; --muted: #99a2b4;
+        --line: rgba(140,160,210,.16); --accent: #5b8cff;
+      }
+      * { box-sizing: border-box; }
+      body {
+        width: 320px; margin: 0; color: var(--text);
+        font: 13px/1.45 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background:
+          radial-gradient(420px 220px at 20% -10%, rgba(91,140,255,.18), transparent 70%),
+          radial-gradient(420px 240px at 110% 0%, rgba(139,75,255,.16), transparent 70%),
+          var(--bg);
+      }
+
+      header {
+        display: flex; align-items: center; gap: 9px;
+        padding: 14px 16px 12px; border-bottom: 1px solid var(--line);
+      }
+      .logo {
+        width: 26px; height: 26px; border-radius: 8px; flex: none;
+        background: linear-gradient(135deg, #5b8cff, #9b6bff 55%, #36e0c8);
+        box-shadow: 0 0 16px rgba(91,140,255,.55);
+        display: grid; place-items: center; color: #061026; font-size: 14px; font-weight: 800;
+      }
+      .brand {
+        font-size: 15px; font-weight: 800; letter-spacing: -.01em;
+        background: linear-gradient(110deg, #dfe6ff, #b3a6ff, #7fe7d6);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+      }
+      .brand small { display: block; font-size: 10px; font-weight: 600; letter-spacing: .12em;
+        text-transform: uppercase; color: var(--muted); -webkit-text-fill-color: var(--muted); }
+
+      .body { padding: 14px 16px 16px; }
+      label { display: block; margin: 11px 0 4px; color: var(--muted);
+        font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+      input {
+        width: 100%; padding: 9px 10px; border-radius: 9px;
+        border: 1px solid var(--line); background: rgba(10,14,21,.7); color: var(--text);
+        font: inherit; transition: border-color .15s, box-shadow .15s;
+      }
+      input:focus { outline: none; border-color: rgba(123,150,255,.6); box-shadow: 0 0 0 3px rgba(91,140,255,.16); }
+
+      .actions { margin-top: 14px; display: grid; gap: 8px; }
+      button {
+        width: 100%; padding: 10px 12px; border-radius: 10px; cursor: pointer;
+        font: inherit; font-weight: 650; border: 1px solid var(--line);
+        background: rgba(255,255,255,.03); color: #cfd6e6;
+        transition: transform .12s, box-shadow .2s, background .2s, border-color .2s;
+        display: flex; align-items: center; justify-content: center; gap: 7px;
+      }
+      button:hover { transform: translateY(-1px); background: rgba(91,140,255,.10); color: #fff; }
+      button.primary {
+        border-color: transparent; color: #06122e; font-weight: 750;
+        background: linear-gradient(110deg, #5b8cff, #7b6bff);
+        box-shadow: 0 8px 22px -10px rgba(91,140,255,.85);
+      }
+      button.primary:hover { box-shadow: 0 12px 26px -10px rgba(91,140,255,1); }
+      .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+      .sep { height: 1px; background: var(--line); margin: 14px 0 4px; }
+      details { margin-top: 12px; }
+      summary {
+        cursor: pointer; color: var(--muted); font-size: 11px; font-weight: 700;
+        letter-spacing: .06em; text-transform: uppercase; list-style: none; padding: 4px 0;
+      }
+      summary::-webkit-details-marker { display: none; }
+      summary::before { content: "▸ "; color: var(--accent); }
+      details[open] summary::before { content: "▾ "; }
+
+      #status {
+        margin-top: 12px; font-size: 12px; color: #b9c2d6; min-height: 16px;
+        padding: 9px 11px; border-radius: 9px; border: 1px solid var(--line);
+        background: rgba(10,14,21,.5); display: none;
+      }
+      #status.show { display: block; }
     </style>
   </head>
   <body>
-    <h1>Common AI</h1>
-    <label>Backend URL</label>
-    <input id="backendUrl" placeholder="http://localhost:3000" />
-    <label>Access token</label>
-    <input id="token" type="password" placeholder="your token" />
-    <label>Application ID</label>
-    <input id="applicationId" placeholder="appl_..." />
-    <button id="save" class="ghost">Save</button>
-    <button id="check" class="ghost">Check unlock status</button>
-    <button id="runallsave" class="primary">Autofill + Save ALL pages</button>
-    <button id="runall" class="ghost">Autofill all (no save)</button>
-    <button id="run" class="ghost">Autofill this page only</button>
-    <button id="capture" class="ghost">Capture fields (build a map)</button>
-    <button id="deepall" class="ghost">Deep scrape ALL pages → file</button>
-    <div id="status"></div>
+    <header>
+      <span class="logo">◆</span>
+      <span class="brand">Common AI<small>Application autofill</small></span>
+    </header>
+
+    <div class="body">
+      <label>Backend URL</label>
+      <input id="backendUrl" placeholder="https://common-ai-web.vercel.app" />
+      <label>Access token</label>
+      <input id="token" type="password" placeholder="paste from your dashboard" />
+      <label>Application ID</label>
+      <input id="applicationId" placeholder="appl_…" />
+
+      <div class="actions">
+        <div class="pair">
+          <button id="save">Save</button>
+          <button id="check">Check unlock</button>
+        </div>
+        <button id="runallsave" class="primary">⚡ Autofill + Save all pages</button>
+        <button id="run">Autofill this page only</button>
+      </div>
+
+      <details>
+        <summary>Advanced</summary>
+        <div class="actions">
+          <button id="runall">Autofill all (no save)</button>
+          <button id="capture">Capture fields (build a map)</button>
+          <button id="deepall">Deep scrape all pages → file</button>
+        </div>
+      </details>
+
+      <div id="status"></div>
+    </div>
     <script src="popup.js"></script>
   </body>
 </html>
