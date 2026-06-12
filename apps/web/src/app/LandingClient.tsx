@@ -32,8 +32,11 @@ const UNIS: Uni[] = [
 ];
 
 function logoCandidates(u: Uni): string[] {
+  // Reliable favicon services that 404 cleanly for unknowns (so onError fires
+  // and we fall back to the monogram). Clearbit was dropped — it returns a gray
+  // "?" placeholder with a 200 status, which never triggers onError.
   return [
-    `https://logo.clearbit.com/${u.domain}?size=80`,
+    `https://icons.duckduckgo.com/ip3/${u.domain}.ico`,
     `https://www.google.com/s2/favicons?domain=${u.domain}&sz=64`,
   ];
 }
@@ -223,7 +226,9 @@ export default function LandingClient() {
           <span className="ping" /> {t.pill}
         </span>
         <h1 className="lp-title">
-          {t.title1} <span className="grad">{t.title2}</span>
+          {t.title1}
+          <br />
+          <span className="grad">{t.title2}</span>
         </h1>
         <p className="lp-sub">{t.subtitle}</p>
 

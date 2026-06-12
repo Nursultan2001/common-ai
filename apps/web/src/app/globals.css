@@ -183,8 +183,8 @@ code.token { display: block; word-break: break-all; background: rgba(10,14,21,.8
 .lp-pill .ping { width: 8px; height: 8px; border-radius: 50%; background: #36e0c8; box-shadow: 0 0 0 0 rgba(54,224,200,.7); animation: lp-ping 1.8s infinite; }
 @keyframes lp-ping { 0% { box-shadow: 0 0 0 0 rgba(54,224,200,.55); } 70% { box-shadow: 0 0 0 10px rgba(54,224,200,0); } 100% { box-shadow: 0 0 0 0 rgba(54,224,200,0); } }
 
-.lp-title { font-size: clamp(40px, 7vw, 78px); line-height: 1.03; letter-spacing: -.03em; font-weight: 850; margin: 22px auto 0; max-width: 16ch; }
-.lp-title .grad { background: var(--grad); background-size: 220% 220%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: lp-shift 7s ease infinite; text-shadow: 0 0 50px rgba(123,120,255,.25); }
+.lp-title { font-size: clamp(38px, 6.6vw, 76px); line-height: 1.04; letter-spacing: -.03em; font-weight: 850; margin: 22px auto 0; max-width: 18ch; }
+.lp-title .grad { display: inline-block; white-space: nowrap; background: var(--grad); background-size: 220% 220%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: lp-shift 7s ease infinite; text-shadow: 0 0 50px rgba(123,120,255,.25); }
 @keyframes lp-shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 .lp-sub { color: #aeb6c8; font-size: clamp(16px, 2.1vw, 20px); max-width: 60ch; margin: 20px auto 0; }
 .lp-sub b { color: #fff; }
