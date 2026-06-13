@@ -89,6 +89,7 @@ model Applicant {
   entitlements Entitlement[]
   parents      Parent[]
   siblings     Sibling[]
+  languages    Language[]
   testScores   TestScores?
   courses      Course[]
 
@@ -133,6 +134,10 @@ model MasterProfile {
 
   citizenship       String?
   citizenshipStatus String? // exact Common App option, e.g. "Citizen of non-U.S. country"
+  yearsInUS         String? // "Number of years you have lived in the United States" (dropdown)
+  holdsUSVisa       String? // "Yes" | "No"
+  intendsUSVisa     String? // "Yes" | "No"
+  visaType          String? // e.g. "F-1 Student"
   gender            String? // checkbox(es), comma-separated: "Female" | "Male" | "Nonbinary"
   legalSex          String? // "Female" | "Male" | "X or another legal sex"
   pronouns          String? // checkbox(es), comma-separated: "He/Him" | "She/Her" | "They/Them"
@@ -375,6 +380,27 @@ model Sibling {
   firstName  String?
   lastName   String?
   ageOrGrade String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([applicantId])
+}
+
+// ----------------------------------------------------------------------------
+// Languages — proficiency (repeating; Common App allows up to 5)
+// ----------------------------------------------------------------------------
+
+model Language {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  order       Int     @default(0)
+  name        String?
+  // checked proficiency options, comma-separated:
+  // "First Language" | "Speak" | "Read" | "Write" | "Spoken at Home"
+  proficiency String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

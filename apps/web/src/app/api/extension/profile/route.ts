@@ -60,6 +60,7 @@ export async function GET(req: Request) {
       essays: { where: { status: "APPROVED" } },
       parents: { orderBy: { order: "asc" } },
       siblings: { orderBy: { order: "asc" } },
+      languages: { orderBy: { order: "asc" } },
       testScores: true,
       courses: { orderBy: { order: "asc" } },
     },
@@ -121,6 +122,13 @@ export async function GET(req: Request) {
         ageOrGrade: s.ageOrGrade,
       })),
       testScores: applicant.testScores ?? {},
+      languageCount: applicant.languages.length
+        ? String(applicant.languages.length)
+        : null,
+      languages: applicant.languages.map((l) => ({
+        name: l.name,
+        proficiency: l.proficiency,
+      })),
       courses: applicant.courses.map((c) => ({
         subject: c.subject,
         name: c.name,

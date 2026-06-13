@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 12,
+  "version": 13,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -251,6 +251,42 @@
           "selectors": [
             "#text_ques_236",
             "label:List countries of citizenship"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.yearsInUS",
+          "selectors": [
+            "#text_ques_221"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.holdsUSVisa",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_1836_2371-input",
+            "No": "#option_ques_1836_2372-input"
+          }
+        },
+        {
+          "source": "profile.intendsUSVisa",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_1974_2371-input",
+            "No": "#option_ques_1974_2372-input"
+          }
+        },
+        {
+          "source": "profile.visaType",
+          "selectors": [
+            "label:Visa type"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1532,6 +1568,135 @@
           ],
           "kind": "checkbox-multi",
           "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/3/16*",
+      "name": "Language",
+      "fields": [
+        {
+          "source": "languageCount",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "1": "#option_ques_223_1915-input",
+            "2": "#option_ques_223_1916-input",
+            "3": "#option_ques_223_1917-input",
+            "4": "#option_ques_223_1918-input",
+            "5": "#option_ques_223_1919-input"
+          }
+        },
+        {
+          "source": "languages.0.name",
+          "selectors": [
+            "#text_ques_224"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "languages.0.proficiency",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "anchor": "#text_ques_224",
+          "requiresConfirm": true,
+          "valueMap": {
+            "First Language": "[id$=\"_2096-input\"]",
+            "Speak": "[id$=\"_2093-input\"]",
+            "Read": "[id$=\"_2094-input\"]",
+            "Write": "[id$=\"_2095-input\"]",
+            "Spoken at Home": "[id$=\"_2097-input\"]"
+          }
+        },
+        {
+          "source": "languages.1.name",
+          "selectors": [
+            "#text_ques_226"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "languages.1.proficiency",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "anchor": "#text_ques_226",
+          "requiresConfirm": true,
+          "valueMap": {
+            "First Language": "[id$=\"_2096-input\"]",
+            "Speak": "[id$=\"_2093-input\"]",
+            "Read": "[id$=\"_2094-input\"]",
+            "Write": "[id$=\"_2095-input\"]",
+            "Spoken at Home": "[id$=\"_2097-input\"]"
+          }
+        },
+        {
+          "source": "languages.2.name",
+          "selectors": [
+            "#text_ques_228"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "languages.2.proficiency",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "anchor": "#text_ques_228",
+          "requiresConfirm": true,
+          "valueMap": {
+            "First Language": "[id$=\"_2096-input\"]",
+            "Speak": "[id$=\"_2093-input\"]",
+            "Read": "[id$=\"_2094-input\"]",
+            "Write": "[id$=\"_2095-input\"]",
+            "Spoken at Home": "[id$=\"_2097-input\"]"
+          }
+        },
+        {
+          "source": "languages.3.name",
+          "selectors": [
+            "#text_ques_230"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "languages.3.proficiency",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "anchor": "#text_ques_230",
+          "requiresConfirm": true,
+          "valueMap": {
+            "First Language": "[id$=\"_2096-input\"]",
+            "Speak": "[id$=\"_2093-input\"]",
+            "Read": "[id$=\"_2094-input\"]",
+            "Write": "[id$=\"_2095-input\"]",
+            "Spoken at Home": "[id$=\"_2097-input\"]"
+          }
+        },
+        {
+          "source": "languages.4.name",
+          "selectors": [
+            "#text_ques_232"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "languages.4.proficiency",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "anchor": "#text_ques_232",
+          "requiresConfirm": true,
+          "valueMap": {
+            "First Language": "[id$=\"_2096-input\"]",
+            "Speak": "[id$=\"_2093-input\"]",
+            "Read": "[id$=\"_2094-input\"]",
+            "Write": "[id$=\"_2095-input\"]",
+            "Spoken at Home": "[id$=\"_2097-input\"]"
+          }
         }
       ]
     }

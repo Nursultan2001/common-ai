@@ -279,14 +279,30 @@
 
     // checkbox-map: check one or more boxes by exact selector from valueMap.
     // Value may be a list ("Male" or "Female; Male"). Used for gender/pronouns.
+    // Optional `anchor`: a stable selector; checkboxes are matched only WITHIN
+    // the anchor's block (so repeating groups like per-language proficiency,
+    // which share option codes, resolve to the correct block).
     if (mapping.kind === "checkbox-map") {
       const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+      let scope = document;
+      if (mapping.anchor) {
+        const a = document.querySelector(mapping.anchor);
+        if (!a) return { source: mapping.source, status: "anchor-not-found" };
+        let cur = a;
+        for (let i = 0; i < 10 && cur; i++) {
+          cur = cur.parentElement;
+          if (cur && cur.querySelector("input[type='checkbox'], mat-checkbox, [role='checkbox']")) {
+            scope = cur;
+            break;
+          }
+        }
+      }
       let any = false;
       const missed = [];
       for (const w of wants) {
         const sel = mapping.valueMap && mapping.valueMap[w];
         if (!sel) { missed.push(w); continue; }
-        const cb = document.querySelector(sel);
+        const cb = scope.querySelector(sel);
         if (!cb) { missed.push(w); continue; }
         const checked = cb.checked || cb.getAttribute("aria-checked") === "true";
         if (!checked) (cb.closest("label") || cb).click();

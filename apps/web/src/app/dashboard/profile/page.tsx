@@ -1,8 +1,11 @@
 import { db } from "@/lib/db";
 import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
 import { saveProfileAction } from "@/lib/actions/profile";
+import { addLanguageAction, deleteLanguageAction } from "@/lib/actions/languages";
 
 export const dynamic = "force-dynamic";
+
+const PROFICIENCY = ["First Language", "Speak", "Read", "Write", "Spoken at Home"];
 
 function isoDate(d: Date | null) {
   return d ? d.toISOString().slice(0, 10) : "";
@@ -12,6 +15,10 @@ export default async function ProfilePage() {
   const user = await requireUser();
   const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
   const p = await db.masterProfile.findUnique({ where: { applicantId: applicant.id } });
+  const languages = await db.language.findMany({
+    where: { applicantId: applicant.id },
+    orderBy: { order: "asc" },
+  });
 
   const F = ({
     label,
@@ -132,6 +139,12 @@ export default async function ProfilePage() {
                 "U.S. resident",
                 "Citizen of non-U.S. country",
               ]} />
+            <F label="Years lived in the U.S." name="yearsInUS" value={p?.yearsInUS} />
+          </div>
+          <div className="row">
+            <Sel label="Hold a valid U.S. visa?" name="holdsUSVisa" value={p?.holdsUSVisa} flex="1 1 180px" options={["Yes", "No"]} />
+            <Sel label="Intend to apply for a U.S. visa?" name="intendsUSVisa" value={p?.intendsUSVisa} flex="1 1 220px" options={["Yes", "No"]} />
+            <F label="Visa type (e.g. F-1 Student)" name="visaType" value={p?.visaType} />
           </div>
         </div>
 
@@ -247,6 +260,47 @@ export default async function ProfilePage() {
 
         <button className="primary" type="submit">Save profile</button>
       </form>
+
+      <div className="card">
+        <h2>Languages</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Languages you’re proficient in (up to 5). The extension sets the count
+          and fills each language + proficiency on Common App.
+        </p>
+        {languages.map((l) => (
+          <div className="row" key={l.id} style={{ justifyContent: "space-between" }}>
+            <span>
+              <strong>{l.name}</strong>
+              {l.proficiency ? <span className="muted"> — {l.proficiency}</span> : null}
+            </span>
+            <form action={deleteLanguageAction}>
+              <input type="hidden" name="languageId" value={l.id} />
+              <button style={{ marginTop: 0 }}>Delete</button>
+            </form>
+          </div>
+        ))}
+        {languages.length === 0 && <p className="muted">No languages added.</p>}
+
+        {languages.length < 5 && (
+          <form action={addLanguageAction} style={{ marginTop: 12 }}>
+            <div className="row">
+              <div style={{ flex: "1 1 240px" }}>
+                <label>Language</label>
+                <input name="name" placeholder="e.g. Kazakh" required />
+              </div>
+            </div>
+            <label>Proficiency</label>
+            <div className="row">
+              {PROFICIENCY.map((pr) => (
+                <label key={pr} style={{ margin: 0, display: "flex", gap: 6, alignItems: "center" }}>
+                  <input type="checkbox" name="proficiency" value={pr} style={{ width: "auto" }} /> {pr}
+                </label>
+              ))}
+            </div>
+            <button type="submit">Add language</button>
+          </form>
+        )}
+      </div>
     </main>
   );
 }
