@@ -18,6 +18,11 @@ function num(fd: FormData, k: string): number | null {
 function parseDate(s: string | null): Date | null {
   return s ? new Date(s) : null;
 }
+// Multi-checkbox values → comma-separated string (e.g. gender, pronouns).
+function multi(fd: FormData, k: string): string | null {
+  const vals = fd.getAll(k).map((v) => String(v).trim()).filter(Boolean);
+  return vals.length ? vals.join(", ") : null;
+}
 
 export async function saveProfileAction(formData: FormData) {
   const user = await requireUser();
@@ -30,11 +35,19 @@ export async function saveProfileAction(formData: FormData) {
     legalLastName: str(formData, "legalLastName"),
     suffix: str(formData, "suffix"),
     preferredName: str(formData, "preferredName"),
+    sharePreferredName: str(formData, "sharePreferredName"),
+    hasFormerName: str(formData, "hasFormerName"),
+    formerLastName: str(formData, "formerLastName"),
     dateOfBirth: dob ? new Date(dob) : null,
     birthCity: str(formData, "birthCity"),
     birthCountry: str(formData, "birthCountry"),
     email: str(formData, "email"),
     phone: str(formData, "phone"),
+    phoneType: str(formData, "phoneType"),
+    phoneCountryCode: str(formData, "phoneCountryCode"),
+    alternatePhone: str(formData, "alternatePhone"),
+    alternatePhoneNumber: str(formData, "alternatePhoneNumber"),
+    alternatePhoneCountryCode: str(formData, "alternatePhoneCountryCode"),
     addressLine1: str(formData, "addressLine1"),
     addressLine2: str(formData, "addressLine2"),
     city: str(formData, "city"),
@@ -43,7 +56,9 @@ export async function saveProfileAction(formData: FormData) {
     country: str(formData, "country"),
     citizenship: str(formData, "citizenship"),
     citizenshipStatus: str(formData, "citizenshipStatus"),
+    gender: multi(formData, "gender"),
     legalSex: str(formData, "legalSex"),
+    pronouns: multi(formData, "pronouns"),
     highSchoolName: str(formData, "highSchoolName"),
     graduationYear: num(formData, "graduationYear"),
     dateOfEntry: parseDate(str(formData, "dateOfEntry")),

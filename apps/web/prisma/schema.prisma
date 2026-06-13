@@ -108,13 +108,21 @@ model MasterProfile {
   legalFirstName String?
   middleName     String?
   legalLastName  String?
-  suffix         String?
+  suffix         String?  // dropdown: "" | "Jr." | "Sr." | "II" | "III" | "IV" | "V"
   preferredName  String?
+  sharePreferredName String? // "Yes" | "No" — share a different first name?
+  hasFormerName      String? // "Yes" | "No" — materials under a former legal name?
+  formerLastName     String?
   dateOfBirth    DateTime?
   birthCity      String?
   birthCountry   String?
   email          String?
   phone          String?
+  phoneType            String? // "Home" | "Mobile"
+  phoneCountryCode     String? // e.g. "Kazakhstan" / "+7" (combobox typed value)
+  alternatePhone       String? // "No other telephone" | "Home" | "Mobile"
+  alternatePhoneNumber String?
+  alternatePhoneCountryCode String?
 
   addressLine1 String?
   addressLine2 String?
@@ -125,8 +133,9 @@ model MasterProfile {
 
   citizenship       String?
   citizenshipStatus String? // exact Common App option, e.g. "Citizen of non-U.S. country"
-  gender            String?
+  gender            String? // checkbox(es), comma-separated: "Female" | "Male" | "Nonbinary"
   legalSex          String? // "Female" | "Male" | "X or another legal sex"
+  pronouns          String? // checkbox(es), comma-separated: "He/Him" | "She/Her" | "They/Them"
 
   highSchoolName String?
   graduationYear Int?

@@ -272,7 +272,33 @@
         target.dispatchEvent(new Event("change", { bubbles: true }));
       }
       markFilled(target.closest("label") || target, mapping.requiresConfirm);
+      // Selecting a radio can reveal a dependent field; let it render.
+      await sleep(250);
       return { source: mapping.source, status: mapping.requiresConfirm ? "filled-confirm" : "filled" };
+    }
+
+    // checkbox-map: check one or more boxes by exact selector from valueMap.
+    // Value may be a list ("Male" or "Female; Male"). Used for gender/pronouns.
+    if (mapping.kind === "checkbox-map") {
+      const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+      let any = false;
+      const missed = [];
+      for (const w of wants) {
+        const sel = mapping.valueMap && mapping.valueMap[w];
+        if (!sel) { missed.push(w); continue; }
+        const cb = document.querySelector(sel);
+        if (!cb) { missed.push(w); continue; }
+        const checked = cb.checked || cb.getAttribute("aria-checked") === "true";
+        if (!checked) (cb.closest("label") || cb).click();
+        markFilled(cb.closest("label") || cb, mapping.requiresConfirm);
+        any = true;
+      }
+      if (!any) return { source: mapping.source, status: "no-matching-option", value };
+      return {
+        source: mapping.source,
+        status: mapping.requiresConfirm ? "filled-confirm" : "filled",
+        missed: missed.length ? missed : undefined,
+      };
     }
 
     const el = findEl(mapping.selectors, root);

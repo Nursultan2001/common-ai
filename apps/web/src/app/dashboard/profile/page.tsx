@@ -30,6 +30,65 @@ export default async function ProfilePage() {
     </div>
   );
 
+  // Dropdown select with a placeholder + options.
+  const Sel = ({
+    label,
+    name,
+    value,
+    options,
+    flex = "1 1 220px",
+  }: {
+    label: string;
+    name: string;
+    value?: string | null;
+    options: string[];
+    flex?: string;
+  }) => (
+    <div style={{ flex }}>
+      <label>{label}</label>
+      <select name={name} defaultValue={value ?? ""}>
+        <option value="">—</option>
+        {options.map((o) => (
+          <option key={o}>{o}</option>
+        ))}
+      </select>
+    </div>
+  );
+
+  // Multi-select checkbox group; saved comma-separated by the action.
+  const Checks = ({
+    label,
+    name,
+    value,
+    options,
+  }: {
+    label: string;
+    name: string;
+    value?: string | null;
+    options: string[];
+  }) => {
+    const picked = (value ?? "").split(",").map((s) => s.trim());
+    return (
+      <div style={{ flex: "1 1 280px" }}>
+        <label>{label}</label>
+        <div className="row">
+          {options.map((o) => (
+            <label key={o} style={{ margin: 0, display: "flex", gap: 6, alignItems: "center" }}>
+              <input
+                type="checkbox"
+                name={name}
+                value={o}
+                defaultChecked={picked.includes(o)}
+                style={{ width: "auto" }}
+              />{" "}
+              {o}
+            </label>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <main>
       <h1>Your profile</h1>
@@ -45,8 +104,18 @@ export default async function ProfilePage() {
             <F label="Legal first name" name="legalFirstName" value={p?.legalFirstName} />
             <F label="Middle name" name="middleName" value={p?.middleName} />
             <F label="Legal last name" name="legalLastName" value={p?.legalLastName} />
-            <F label="Suffix (Jr., III…)" name="suffix" value={p?.suffix} />
-            <F label="Preferred name" name="preferredName" value={p?.preferredName} />
+            <Sel label="Suffix" name="suffix" value={p?.suffix} flex="1 1 140px"
+              options={["Jr.", "Sr.", "II", "III", "IV", "V"]} />
+          </div>
+          <div className="row">
+            <Sel label="Share a different first name people call you?" name="sharePreferredName"
+              value={p?.sharePreferredName} flex="1 1 280px" options={["Yes", "No"]} />
+            <F label="Preferred name (if yes)" name="preferredName" value={p?.preferredName} />
+          </div>
+          <div className="row">
+            <Sel label="Materials under a former legal name?" name="hasFormerName"
+              value={p?.hasFormerName} flex="1 1 260px" options={["Yes", "No"]} />
+            <F label="Former last name (if yes)" name="formerLastName" value={p?.formerLastName} />
           </div>
           <div className="row">
             <F label="Date of birth" name="dateOfBirth" type="date" value={isoDate(p?.dateOfBirth ?? null)} />
@@ -55,30 +124,48 @@ export default async function ProfilePage() {
             <F label="Citizenship (countries)" name="citizenship" value={p?.citizenship} />
           </div>
           <div className="row">
-            <div style={{ flex: "1 1 220px" }}>
-              <label>Legal sex</label>
-              <select name="legalSex" defaultValue={p?.legalSex ?? ""}>
-                <option value="">—</option>
-                <option>Female</option>
-                <option>Male</option>
-                <option>X or another legal sex</option>
-              </select>
-            </div>
-            <div style={{ flex: "1 1 320px" }}>
-              <label>Citizenship status</label>
-              <select name="citizenshipStatus" defaultValue={p?.citizenshipStatus ?? ""}>
-                <option value="">—</option>
-                <option>U.S. citizen or U.S. national</option>
-                <option>U.S. dual citizen</option>
-                <option>U.S. permanent resident (green card holder)</option>
-                <option>U.S. resident</option>
-                <option>Citizen of non-U.S. country</option>
-              </select>
-            </div>
+            <Sel label="Citizenship status" name="citizenshipStatus" value={p?.citizenshipStatus} flex="1 1 320px"
+              options={[
+                "U.S. citizen or U.S. national",
+                "U.S. dual citizen",
+                "U.S. permanent resident (green card holder)",
+                "U.S. resident",
+                "Citizen of non-U.S. country",
+              ]} />
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>Demographics</h2>
+          <p className="muted" style={{ marginTop: 0 }}>Optional. Used only if you provide it.</p>
+          <div className="row">
+            <Checks label="Gender" name="gender" value={p?.gender}
+              options={["Female", "Male", "Nonbinary"]} />
+            <Sel label="Legal sex" name="legalSex" value={p?.legalSex} flex="1 1 220px"
+              options={["Female", "Male", "X or another legal sex"]} />
           </div>
           <div className="row">
+            <Checks label="Pronouns" name="pronouns" value={p?.pronouns}
+              options={["He/Him", "She/Her", "They/Them"]} />
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>Contact &amp; phone</h2>
+          <div className="row">
             <F label="Email" name="email" type="email" value={p?.email} />
-            <F label="Phone" name="phone" type="tel" value={p?.phone} />
+          </div>
+          <div className="row">
+            <Sel label="Preferred phone type" name="phoneType" value={p?.phoneType} flex="1 1 160px"
+              options={["Home", "Mobile"]} />
+            <F label="Country code (e.g. +7)" name="phoneCountryCode" value={p?.phoneCountryCode} />
+            <F label="Phone number" name="phone" type="tel" value={p?.phone} />
+          </div>
+          <div className="row">
+            <Sel label="Alternate phone" name="alternatePhone" value={p?.alternatePhone} flex="1 1 200px"
+              options={["No other telephone", "Home", "Mobile"]} />
+            <F label="Alternate country code (if any)" name="alternatePhoneCountryCode" value={p?.alternatePhoneCountryCode} />
+            <F label="Alternate phone number (if any)" name="alternatePhoneNumber" value={p?.alternatePhoneNumber} />
           </div>
         </div>
 

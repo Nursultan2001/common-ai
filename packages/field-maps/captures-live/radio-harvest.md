@@ -24,3 +24,20 @@
 
 ## /common/2/2 — Testing: self-report
 - RADIO selfReportScores: Yes #option_ques_925_2371-input, No #option_ques_925_2372-input
+
+## /common/3/11 — Personal (conditional radios + suffix)
+- sharePreferredName: Yes #option_ques_1975_2371-input | No #option_ques_1975_2372-input
+- hasFormerName:      Yes #option_ques_177_2371-input  | No #option_ques_177_2372-input
+- suffix: #text_ques_176 (combobox input; type value + pick)
+
+## /common/3/13 — Phone
+- phoneType:     Home #option_ques_188_1798-input | Mobile #option_ques_188_1799-input
+- preferred country code: #ctrycode_ques_189 (combobox)
+- preferred number: [formcontrolname="phoneNumber"]
+- alternatePhone: No other #option_ques_190_1800-input | Home #option_ques_190_1801-input | Mobile #option_ques_190_1802-input
+- alternate country code: #ctrycode_ques_191 (combobox)
+
+## /common/3/14 — Demographics (checkbox option codes, stable suffix _NNNN)
+- gender (checkbox-map ends-with): Female [id$="_5316-input"] | Male _5317 | Nonbinary _5318
+- legalSex (radio-map): Female #option_ques_180_1795-input | Male #option_ques_180_1794-input | X #option_ques_180_5465-input
+- pronouns (checkbox-map): He/Him _5320 | She/Her _5321 | They/Them _5322

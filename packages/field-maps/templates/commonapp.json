@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 11,
+  "version": 12,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -157,10 +157,47 @@
         {
           "source": "profile.suffix",
           "selectors": [
-            "#text_ques_176",
-            "label:Suffix"
+            "#text_ques_176"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.sharePreferredName",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_1975_2371-input",
+            "No": "#option_ques_1975_2372-input"
+          }
+        },
+        {
+          "source": "profile.preferredName",
+          "selectors": [
+            "label:Preferred first name",
+            "label:What would you like"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.hasFormerName",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_177_2371-input",
+            "No": "#option_ques_177_2372-input"
+          }
+        },
+        {
+          "source": "profile.formerLastName",
+          "selectors": [
+            "label:Former last"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "profile.dateOfBirth",
@@ -225,6 +262,24 @@
       "name": "Contact — phone",
       "fields": [
         {
+          "source": "profile.phoneType",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Home": "#option_ques_188_1798-input",
+            "Mobile": "#option_ques_188_1799-input"
+          }
+        },
+        {
+          "source": "profile.phoneCountryCode",
+          "selectors": [
+            "#ctrycode_ques_189"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
           "source": "profile.phone",
           "selectors": [
             "[formcontrolname=\"phoneNumber\"]",
@@ -232,6 +287,17 @@
           ],
           "kind": "tel",
           "requiresConfirm": true
+        },
+        {
+          "source": "profile.alternatePhone",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "No other telephone": "#option_ques_190_1800-input",
+            "Home": "#option_ques_190_1801-input",
+            "Mobile": "#option_ques_190_1802-input"
+          }
         }
       ]
     },
@@ -239,6 +305,17 @@
       "urlPattern": "https://apply.commonapp.org/common/3/14*",
       "name": "Demographics — legal sex",
       "fields": [
+        {
+          "source": "profile.gender",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Female": "[id$=\"_5316-input\"]",
+            "Male": "[id$=\"_5317-input\"]",
+            "Nonbinary": "[id$=\"_5318-input\"]"
+          }
+        },
         {
           "source": "profile.legalSex",
           "kind": "radio-map",
@@ -248,6 +325,17 @@
             "Female": "#option_ques_180_1795-input",
             "Male": "#option_ques_180_1794-input",
             "X or another legal sex": "#option_ques_180_5465-input"
+          }
+        },
+        {
+          "source": "profile.pronouns",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "He/Him": "[id$=\"_5320-input\"]",
+            "She/Her": "[id$=\"_5321-input\"]",
+            "They/Them": "[id$=\"_5322-input\"]"
           }
         }
       ]
