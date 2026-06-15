@@ -2,6 +2,11 @@ import { db } from "@/lib/db";
 import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
 import { saveProfileAction } from "@/lib/actions/profile";
 import { addLanguageAction, deleteLanguageAction } from "@/lib/actions/languages";
+import {
+  addOtherSchoolAction,
+  updateOtherSchoolAction,
+  deleteOtherSchoolAction,
+} from "@/lib/actions/otherSchools";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +21,10 @@ export default async function ProfilePage() {
   const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
   const p = await db.masterProfile.findUnique({ where: { applicantId: applicant.id } });
   const languages = await db.language.findMany({
+    where: { applicantId: applicant.id },
+    orderBy: { order: "asc" },
+  });
+  const otherSchools = await db.otherSchool.findMany({
     where: { applicantId: applicant.id },
     orderBy: { order: "asc" },
   });
@@ -95,6 +104,48 @@ export default async function ProfilePage() {
       </div>
     );
   };
+
+  // Shared field block for one additional secondary/high school (same questions
+  // as the main school, plus from/to dates and a reason for leaving).
+  type SchoolRow = {
+    name?: string | null; notListed?: string | null; type?: string | null;
+    country?: string | null; address1?: string | null; address2?: string | null;
+    address3?: string | null; city?: string | null; state?: string | null;
+    zip?: string | null; fromDate?: Date | null; toDate?: Date | null;
+    reasonLeft?: string | null;
+  };
+  const SchoolFields = ({ v }: { v?: SchoolRow }) => (
+    <>
+      <div className="row">
+        <F label="School name" name="name" value={v?.name} />
+        <Sel label="Not in Common App’s list? (enter manually)" name="notListed"
+          value={v?.notListed ?? "Yes"} flex="1 1 220px" options={["Yes", "No"]} />
+        <Sel label="School type" name="type" value={v?.type} flex="1 1 180px"
+          options={["Public", "Charter", "Religious", "Home school", "Independent"]} />
+      </div>
+      <div className="row">
+        <F label="Country/Region/Territory" name="country" value={v?.country} />
+        <F label="From date" name="fromDate" type="date" value={isoDate(v?.fromDate ?? null)} />
+        <F label="To date" name="toDate" type="date" value={isoDate(v?.toDate ?? null)} />
+      </div>
+      <div className="row">
+        <F label="Address line 1" name="address1" value={v?.address1} />
+        <F label="Address line 2" name="address2" value={v?.address2} />
+        <F label="Address line 3" name="address3" value={v?.address3} />
+      </div>
+      <div className="row">
+        <F label="City" name="city" value={v?.city} />
+        <F label="State/Province (US: combobox)" name="state" value={v?.state} />
+        <F label="Zip/Postal code" name="zip" value={v?.zip} />
+      </div>
+      <div className="row">
+        <div style={{ flex: "1 1 100%" }}>
+          <label>Why did you leave this school?</label>
+          <textarea name="reasonLeft" rows={2} defaultValue={v?.reasonLeft ?? ""} />
+        </div>
+      </div>
+    </>
+  );
 
   return (
     <main>
@@ -354,6 +405,42 @@ export default async function ProfilePage() {
               ))}
             </div>
             <button type="submit">Add language</button>
+          </form>
+        )}
+      </div>
+
+      <div className="card">
+        <h2>Other secondary/high schools</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Any <strong>additional</strong> schools you attended besides the main
+          one above (up to 3). The extension sets the school count on Common App
+          and fills each one — including the manual “I don’t see my high school”
+          entry, the from/to dates, and your reason for leaving.
+        </p>
+
+        {otherSchools.map((sch, i) => (
+          <div key={sch.id} className="card" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+              <strong>School {i + 2}{sch.name ? ` — ${sch.name}` : ""}</strong>
+              <form action={deleteOtherSchoolAction}>
+                <input type="hidden" name="schoolId" value={sch.id} />
+                <button style={{ marginTop: 0 }}>Delete</button>
+              </form>
+            </div>
+            <form action={updateOtherSchoolAction}>
+              <input type="hidden" name="schoolId" value={sch.id} />
+              <SchoolFields v={sch} />
+              <button type="submit">Save school {i + 2}</button>
+            </form>
+          </div>
+        ))}
+        {otherSchools.length === 0 && <p className="muted">No additional schools added.</p>}
+
+        {otherSchools.length < 3 && (
+          <form action={addOtherSchoolAction} style={{ marginTop: 12 }}>
+            <h3 style={{ marginBottom: 4 }}>Add a school</h3>
+            <SchoolFields />
+            <button type="submit">Add school</button>
           </form>
         )}
       </div>

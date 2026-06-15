@@ -411,6 +411,28 @@
         if (!any) return { source: mapping.source, status: "no-matching-option", value: v };
         break;
       }
+      case "richtext": {
+        // CKEditor 5 (Common App "why you left" box). Prefer the editor's own
+        // API (the DOM is reconstructed from the model, so writing innerHTML
+        // alone won't stick); fall back to contenteditable for plain editors.
+        const esc = (s) =>
+          String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        const html = String(v)
+          .split(/\n{2,}/)
+          .map((para) => "<p>" + para.split(/\n/).map(esc).join("<br>") + "</p>")
+          .join("");
+        if (el.ckeditorInstance && typeof el.ckeditorInstance.setData === "function") {
+          el.ckeditorInstance.setData(html);
+        } else {
+          if (el.focus) el.focus();
+          el.innerHTML = html;
+          el.dispatchEvent(new Event("input", { bubbles: true }));
+          el.dispatchEvent(new Event("change", { bubbles: true }));
+          if (el.blur) el.blur();
+        }
+        markFilled(el, true);
+        return { source: mapping.source, status: "filled-confirm" };
+      }
       case "date": {
         const r = await smartFillText(el, formatDate(v, mapping.format));
         if (r === "typed-confirm") {

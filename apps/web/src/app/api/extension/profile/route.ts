@@ -61,6 +61,7 @@ export async function GET(req: Request) {
       parents: { orderBy: { order: "asc" } },
       siblings: { orderBy: { order: "asc" } },
       languages: { orderBy: { order: "asc" } },
+      otherSchools: { orderBy: { order: "asc" } },
       testScores: true,
       courses: { orderBy: { order: "asc" } },
     },
@@ -144,6 +145,34 @@ export async function GET(req: Request) {
         level: c.level,
         schedule: c.schedule,
       })),
+      // Additional secondary/high schools (page 4/19).
+      otherSchoolsCount: String(applicant.otherSchools.length),
+      otherSchools: applicant.otherSchools.map((o) => ({
+        name: o.name,
+        notListed: o.notListed,
+        country: o.country,
+        type: o.type,
+        address1: o.address1,
+        address2: o.address2,
+        address3: o.address3,
+        city: o.city,
+        state: o.state,
+        zip: o.zip,
+        fromDate: o.fromDate,
+        toDate: o.toDate,
+        reasonLeft: o.reasonLeft,
+      })),
+      // The Common App reason box is one field for all of them — combine the
+      // per-school reasons, labelled by school, into a single block of text.
+      otherSchoolsReason:
+        applicant.otherSchools
+          .map((o, i) =>
+            o.reasonLeft
+              ? `${o.name || `School ${i + 2}`}: ${o.reasonLeft}`
+              : null
+          )
+          .filter(Boolean)
+          .join("\n\n") || null,
       // Document manifest only — bytes are fetched separately and on demand.
       documents: applicant.documents,
     },

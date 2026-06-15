@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 16,
+  "version": 17,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -506,6 +506,314 @@
             "Did or will take gap year": "input[id$=\"_1070-input\"]",
             "No change in progression": "input[id$=\"_3485-input\"]"
           }
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/4/19*",
+      "name": "Education — other secondary/high schools",
+      "fields": [
+        {
+          "source": "otherSchoolsCount",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "0": "#option_ques_255_1061-input",
+            "1": "#option_ques_255_1062-input",
+            "2": "#option_ques_255_1063-input",
+            "3": "#option_ques_255_1064-input"
+          }
+        },
+        {
+          "kind": "school-lookup",
+          "source": "otherSchools.0.notListed",
+          "nameSource": "otherSchools.0.name",
+          "requiresConfirm": true,
+          "trigger": "#findSchool256",
+          "search": "#searchTermControl256",
+          "notListedText": "see my high school in this list",
+          "lookupContinue": "#lookupContinue256",
+          "modalContinue": "#lookupContinue256",
+          "modalFields": [
+            {
+              "source": "otherSchools.0.name",
+              "selectors": [
+                "#nameControl256"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.0.country",
+              "selectors": [
+                "#countryControl256"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.0.type",
+              "selectors": [
+                "#schoolTypeCodeControl256"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.0.address1",
+              "selectors": [
+                "#address1Control256"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.0.address2",
+              "selectors": [
+                "#address2Control256"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.0.address3",
+              "selectors": [
+                "#address3Control256"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.0.city",
+              "selectors": [
+                "#cityControl256"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.0.state",
+              "selectors": [
+                "#stateControl256"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.0.zip",
+              "selectors": [
+                "#zipControl256"
+              ],
+              "kind": "text"
+            }
+          ]
+        },
+        {
+          "source": "otherSchools.0.fromDate",
+          "selectors": [
+            "#text_ques_257"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "otherSchools.0.toDate",
+          "selectors": [
+            "#text_ques_258"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "kind": "school-lookup",
+          "source": "otherSchools.1.notListed",
+          "nameSource": "otherSchools.1.name",
+          "requiresConfirm": true,
+          "trigger": "#findSchool259",
+          "search": "#searchTermControl259",
+          "notListedText": "see my high school in this list",
+          "lookupContinue": "#lookupContinue259",
+          "modalContinue": "#lookupContinue259",
+          "modalFields": [
+            {
+              "source": "otherSchools.1.name",
+              "selectors": [
+                "#nameControl259"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.1.country",
+              "selectors": [
+                "#countryControl259"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.1.type",
+              "selectors": [
+                "#schoolTypeCodeControl259"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.1.address1",
+              "selectors": [
+                "#address1Control259"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.1.address2",
+              "selectors": [
+                "#address2Control259"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.1.address3",
+              "selectors": [
+                "#address3Control259"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.1.city",
+              "selectors": [
+                "#cityControl259"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.1.state",
+              "selectors": [
+                "#stateControl259"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.1.zip",
+              "selectors": [
+                "#zipControl259"
+              ],
+              "kind": "text"
+            }
+          ]
+        },
+        {
+          "source": "otherSchools.1.fromDate",
+          "selectors": [
+            "#text_ques_260"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "otherSchools.1.toDate",
+          "selectors": [
+            "#text_ques_261"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "kind": "school-lookup",
+          "source": "otherSchools.2.notListed",
+          "nameSource": "otherSchools.2.name",
+          "requiresConfirm": true,
+          "trigger": "#findSchool262",
+          "search": "#searchTermControl262",
+          "notListedText": "see my high school in this list",
+          "lookupContinue": "#lookupContinue262",
+          "modalContinue": "#lookupContinue262",
+          "modalFields": [
+            {
+              "source": "otherSchools.2.name",
+              "selectors": [
+                "#nameControl262"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.2.country",
+              "selectors": [
+                "#countryControl262"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.2.type",
+              "selectors": [
+                "#schoolTypeCodeControl262"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.2.address1",
+              "selectors": [
+                "#address1Control262"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.2.address2",
+              "selectors": [
+                "#address2Control262"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.2.address3",
+              "selectors": [
+                "#address3Control262"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.2.city",
+              "selectors": [
+                "#cityControl262"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.2.state",
+              "selectors": [
+                "#stateControl262"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "otherSchools.2.zip",
+              "selectors": [
+                "#zipControl262"
+              ],
+              "kind": "text"
+            }
+          ]
+        },
+        {
+          "source": "otherSchools.2.fromDate",
+          "selectors": [
+            "#text_ques_263"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "otherSchools.2.toDate",
+          "selectors": [
+            "#text_ques_264"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "otherSchoolsReason",
+          "selectors": [
+            ".ck-content[contenteditable=\"true\"]"
+          ],
+          "kind": "richtext",
+          "requiresConfirm": true
         }
       ]
     },

@@ -90,6 +90,7 @@ model Applicant {
   parents      Parent[]
   siblings     Sibling[]
   languages    Language[]
+  otherSchools OtherSchool[]
   testScores   TestScores?
   courses      Course[]
 
@@ -426,6 +427,36 @@ model Sibling {
 // ----------------------------------------------------------------------------
 // Languages — proficiency (repeating; Common App allows up to 5)
 // ----------------------------------------------------------------------------
+
+// Additional secondary/high schools (Common App "Other Secondary/High Schools",
+// page 4/19). Same manual-entry questions as the main school, repeated per row,
+// plus from/to dates and a per-school reason for leaving.
+model OtherSchool {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  order     Int     @default(0)
+  name      String?
+  notListed String? // "Yes" = not in CA list → manual entry; "No" = pick from list
+  country   String?
+  type      String? // "Public" | "Charter" | "Religious" | "Home school" | "Independent"
+  address1  String?
+  address2  String?
+  address3  String?
+  city      String?
+  state     String?
+  zip       String?
+  fromDate  DateTime?
+  toDate    DateTime?
+  reasonLeft String? // why the student left this school
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicantId, order])
+  @@index([applicantId])
+}
 
 model Language {
   id          String   @id @default(cuid())
