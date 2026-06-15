@@ -214,10 +214,8 @@ export default async function ProfilePage() {
             <F label="ACT composite" name="actComposite" type="number" value={p?.actComposite} />
             <F label="Intended major" name="intendedMajor" value={p?.intendedMajor} />
           </div>
-        </div>
 
-        <div className="card">
-          <h2>Secondary/High School details</h2>
+          <h3 style={{ marginBottom: 4 }}>Secondary/high school details</h3>
           <p className="muted" style={{ marginTop: 0 }}>
             Most non-US schools aren’t in Common App’s lookup. Leave “Not in
             Common App’s list” as <strong>Yes</strong> and fill the details
