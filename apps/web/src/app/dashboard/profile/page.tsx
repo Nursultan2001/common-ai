@@ -258,6 +258,21 @@ export default async function ProfilePage() {
           </div>
         </div>
 
+        <div className="card">
+          <h2>Fee waiver</h2>
+          <p className="muted" style={{ marginTop: 0 }}>
+            Only answer “Yes” if you genuinely meet a Common App fee-waiver
+            criterion — it’s a certification your counselor may verify.
+          </p>
+          <div className="row">
+            <Sel label="Meet a fee-waiver eligibility criterion?" name="feeWaiverEligible"
+              value={p?.feeWaiverEligible} flex="1 1 260px" options={["Yes", "No"]} />
+            <F label="Fee waiver signature (your name)" name="feeWaiverSignature" value={p?.feeWaiverSignature} />
+            <Sel label="Connect with a UStrive mentor?" name="ustriveMentor"
+              value={p?.ustriveMentor} flex="1 1 220px" options={["Yes", "No"]} />
+          </div>
+        </div>
+
         <button className="primary" type="submit">Save profile</button>
       </form>
 

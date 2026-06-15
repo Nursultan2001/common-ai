@@ -162,6 +162,11 @@ model MasterProfile {
   highestDegree  String? // e.g. "Bachelor's", "Master's"
   careerInterest String?
 
+  // Common App Fee Waiver (a certification — the student must truly qualify).
+  feeWaiverEligible  String? // "Yes" | "No"
+  feeWaiverSignature String? // the student's typed signature (their name)
+  ustriveMentor      String? // "Yes" | "No" — connect with a UStrive mentor?
+
   // Free-form structured extras the questionnaire collected, stored as JSON
   // text so we can add intake questions without migrations. Still read-only facts.
   extra String?
