@@ -19,19 +19,45 @@ export async function saveParentAction(formData: FormData) {
 
   const data = {
     relationship: s(formData, "relationship"),
+    parentType: s(formData, "parentType"),
+    isLiving: s(formData, "isLiving"),
+    prefix: s(formData, "prefix"),
     firstName: s(formData, "firstName"),
     middleInitial: s(formData, "middleInitial"),
     lastName: s(formData, "lastName"),
     suffix: s(formData, "suffix"),
     formerLastName: s(formData, "formerLastName"),
     email: s(formData, "email"),
+    phoneType: s(formData, "phoneType"),
+    phoneCountryCode: s(formData, "phoneCountryCode"),
+    phoneNumber: s(formData, "phoneNumber"),
     occupation: s(formData, "occupation"),
+    occupationOther: s(formData, "occupationOther"),
+    employmentStatus: s(formData, "employmentStatus"),
+    educationLevel: s(formData, "educationLevel"),
   };
 
   await db.parent.upsert({
     where: { applicantId_order: { applicantId: applicant.id, order } },
     update: data,
     create: { applicantId: applicant.id, order, ...data },
+  });
+  revalidatePath("/dashboard/family");
+}
+
+// Household: marital status, with whom you live, whether you have children.
+export async function saveHouseholdAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const data = {
+    parentsMaritalStatus: s(formData, "parentsMaritalStatus"),
+    permanentHomeWith: s(formData, "permanentHomeWith"),
+    hasChildren: s(formData, "hasChildren"),
+  };
+  await db.masterProfile.upsert({
+    where: { applicantId: applicant.id },
+    update: data,
+    create: { applicantId: applicant.id, ...data },
   });
   revalidatePath("/dashboard/family");
 }

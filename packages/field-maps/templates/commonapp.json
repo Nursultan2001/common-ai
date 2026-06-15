@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 13,
+  "version": 14,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -492,102 +492,6 @@
             "Weighted": "#option_ques_306_841-input",
             "Unweighted": "#option_ques_306_842-input"
           }
-        }
-      ]
-    },
-    {
-      "urlPattern": "https://apply.commonapp.org/common/5/27*",
-      "name": "Family — Parent/Guardian 1",
-      "fields": [
-        {
-          "source": "parents.0.firstName",
-          "selectors": [
-            "#text_ques_375"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.0.middleInitial",
-          "selectors": [
-            "#text_ques_376"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.0.lastName",
-          "selectors": [
-            "#text_ques_377"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.0.suffix",
-          "selectors": [
-            "#text_ques_378"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.0.formerLastName",
-          "selectors": [
-            "label:Former last/family/surname"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.0.email",
-          "selectors": [
-            "#text_ques_380"
-          ],
-          "kind": "email"
-        }
-      ]
-    },
-    {
-      "urlPattern": "https://apply.commonapp.org/common/5/28*",
-      "name": "Family — Parent/Guardian 2",
-      "fields": [
-        {
-          "source": "parents.1.firstName",
-          "selectors": [
-            "#text_ques_457"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.1.middleInitial",
-          "selectors": [
-            "#text_ques_458"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.1.lastName",
-          "selectors": [
-            "#text_ques_459"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.1.suffix",
-          "selectors": [
-            "#text_ques_460"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.1.formerLastName",
-          "selectors": [
-            "#text_ques_244"
-          ],
-          "kind": "text"
-        },
-        {
-          "source": "parents.1.email",
-          "selectors": [
-            "#text_ques_462"
-          ],
-          "kind": "email"
         }
       ]
     },
@@ -1697,6 +1601,322 @@
             "Write": "[id$=\"_2095-input\"]",
             "Spoken at Home": "[id$=\"_2097-input\"]"
           }
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/5/26*",
+      "name": "Household",
+      "fields": [
+        {
+          "source": "profile.parentsMaritalStatus",
+          "selectors": [
+            "#text_ques_364"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.permanentHomeWith",
+          "selectors": [
+            "#text_ques_366"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.hasChildren",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_369_2371-input",
+            "No": "#option_ques_369_2372-input"
+          }
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/5/27*",
+      "name": "Family — Parent 1",
+      "fields": [
+        {
+          "source": "parents.0.parentType",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Mother": "#option_ques_371_1190-input",
+            "Father": "#option_ques_371_1191-input",
+            "I have limited information about this parent": "#option_ques_371_1192-input"
+          }
+        },
+        {
+          "source": "parents.0.isLiving",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_372_2371-input",
+            "No": "#option_ques_372_2372-input"
+          }
+        },
+        {
+          "source": "parents.0.prefix",
+          "selectors": [
+            "#text_ques_374"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.firstName",
+          "selectors": [
+            "#text_ques_375"
+          ],
+          "kind": "text",
+          "requiresConfirm": false
+        },
+        {
+          "source": "parents.0.middleInitial",
+          "selectors": [
+            "#text_ques_376"
+          ],
+          "kind": "text",
+          "requiresConfirm": false
+        },
+        {
+          "source": "parents.0.lastName",
+          "selectors": [
+            "#text_ques_377"
+          ],
+          "kind": "text",
+          "requiresConfirm": false
+        },
+        {
+          "source": "parents.0.formerLastName",
+          "selectors": [
+            "#text_ques_1023"
+          ],
+          "kind": "text",
+          "requiresConfirm": false
+        },
+        {
+          "source": "parents.0.suffix",
+          "selectors": [
+            "#text_ques_378"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.email",
+          "selectors": [
+            "#text_ques_380"
+          ],
+          "kind": "email"
+        },
+        {
+          "source": "parents.0.phoneType",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Mobile": "#option_ques_381_1264-input",
+            "Home": "#option_ques_381_1265-input",
+            "Other": "#option_ques_381_1266-input",
+            "Work": "#option_ques_381_1267-input"
+          }
+        },
+        {
+          "source": "parents.0.phoneCountryCode",
+          "selectors": [
+            "#ctrycode_ques_382"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.phoneNumber",
+          "selectors": [
+            "#phone_ques_382"
+          ],
+          "kind": "tel",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.occupation",
+          "selectors": [
+            "#text_ques_385"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.occupationOther",
+          "selectors": [
+            "label:Other Occupation Details"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.employmentStatus",
+          "selectors": [
+            "#text_ques_386"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.educationLevel",
+          "selectors": [
+            "#text_ques_391"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/5/28*",
+      "name": "Family — Parent 2",
+      "fields": [
+        {
+          "source": "parents.1.parentType",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Mother": "#option_ques_453_3608-input",
+            "Father": "#option_ques_453_3609-input",
+            "I have limited information about this parent": "#option_ques_453_3610-input"
+          }
+        },
+        {
+          "source": "parents.1.isLiving",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_454_2371-input",
+            "No": "#option_ques_454_2372-input"
+          }
+        },
+        {
+          "source": "parents.1.prefix",
+          "selectors": [
+            "#text_ques_456"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.firstName",
+          "selectors": [
+            "#text_ques_457"
+          ],
+          "kind": "text",
+          "requiresConfirm": false
+        },
+        {
+          "source": "parents.1.middleInitial",
+          "selectors": [
+            "#text_ques_458"
+          ],
+          "kind": "text",
+          "requiresConfirm": false
+        },
+        {
+          "source": "parents.1.lastName",
+          "selectors": [
+            "#text_ques_459"
+          ],
+          "kind": "text",
+          "requiresConfirm": false
+        },
+        {
+          "source": "parents.1.formerLastName",
+          "selectors": [
+            "#text_ques_244"
+          ],
+          "kind": "text",
+          "requiresConfirm": false
+        },
+        {
+          "source": "parents.1.suffix",
+          "selectors": [
+            "#text_ques_460"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.email",
+          "selectors": [
+            "#text_ques_462"
+          ],
+          "kind": "email"
+        },
+        {
+          "source": "parents.1.phoneType",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Mobile": "#option_ques_463_1264-input",
+            "Home": "#option_ques_463_1265-input",
+            "Other": "#option_ques_463_1266-input",
+            "Work": "#option_ques_463_1267-input"
+          }
+        },
+        {
+          "source": "parents.1.phoneCountryCode",
+          "selectors": [
+            "#ctrycode_ques_464"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.phoneNumber",
+          "selectors": [
+            "#phone_ques_464"
+          ],
+          "kind": "tel",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.occupation",
+          "selectors": [
+            "#text_ques_467"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.occupationOther",
+          "selectors": [
+            "#text_ques_1784"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.employmentStatus",
+          "selectors": [
+            "#text_ques_468"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.educationLevel",
+          "selectors": [
+            "#text_ques_473"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
         }
       ]
     }

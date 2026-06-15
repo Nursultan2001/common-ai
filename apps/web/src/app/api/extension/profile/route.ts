@@ -107,6 +107,9 @@ export async function GET(req: Request) {
         text: e.finalText, // only the student's own final text
       })),
       parents: applicant.parents.map((p) => ({
+        parentType: p.parentType,
+        isLiving: p.isLiving,
+        prefix: p.prefix,
         relationship: p.relationship,
         firstName: p.firstName,
         middleInitial: p.middleInitial,
@@ -114,7 +117,13 @@ export async function GET(req: Request) {
         suffix: p.suffix,
         formerLastName: p.formerLastName,
         email: p.email,
+        phoneType: p.phoneType,
+        phoneCountryCode: p.phoneCountryCode,
+        phoneNumber: p.phoneNumber,
         occupation: p.occupation,
+        occupationOther: p.occupationOther,
+        employmentStatus: p.employmentStatus,
+        educationLevel: p.educationLevel,
       })),
       siblings: applicant.siblings.map((s) => ({
         firstName: s.firstName,

@@ -167,6 +167,11 @@ model MasterProfile {
   feeWaiverSignature String? // the student's typed signature (their name)
   ustriveMentor      String? // "Yes" | "No" — connect with a UStrive mentor?
 
+  // Household (5/26)
+  parentsMaritalStatus String? // "Married" | "Divorced" | ...
+  permanentHomeWith    String? // "Both Parents" | "Parent 1" | ...
+  hasChildren          String? // "Yes" | "No"
+
   // Free-form structured extras the questionnaire collected, stored as JSON
   // text so we can add intake questions without migrations. Still read-only facts.
   extra String?
@@ -361,13 +366,22 @@ model Parent {
 
   order          Int    @default(0) // 0 = Parent 1, 1 = Parent 2
   relationship   String? // Mother | Father | Guardian ...
+  parentType     String? // "Mother" | "Father" | "I have limited information about this parent"
+  isLiving       String? // "Yes" | "No"
+  prefix         String? // Mr. | Mrs. | Ms. | Dr. ...
   firstName      String?
   middleInitial  String?
   lastName       String?
   suffix         String?
   formerLastName String?
   email          String?
-  occupation     String?
+  phoneType      String? // "Mobile" | "Home" | "Other" | "Work"
+  phoneCountryCode String?
+  phoneNumber      String?
+  occupation       String?
+  occupationOther  String?
+  employmentStatus String? // Employed | Self-Employed | Retired | ...
+  educationLevel   String? // "Some high/secondary school" | "Bachelor's degree" | ...
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
