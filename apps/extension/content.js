@@ -44,6 +44,8 @@
         return `${mm}/${dd}/${yyyy}`;
       case "MMMM D, YYYY":
         return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${yyyy}`;
+      case "MMMM YYYY":
+        return `${MONTHS[d.getUTCMonth()]} ${yyyy}`;
       default:
         return `${yyyy}-${mm}-${dd}`;
     }
@@ -433,10 +435,98 @@
     };
   }
 
+  // school-lookup: a multi-step modal macro for the Secondary/High School page.
+  // Most non-US schools aren't in Common App's registry, so we drive the
+  // "I don't see my high school in this list" manual-entry path:
+  //   1. open the Find-school dialog, 2. type the name to surface the list,
+  //   3. select the "not listed" option (Material list items need a full
+  //      mousedown/mouseup/click to register), 4. Continue to School
+  //      Information, 5. fill name/country/type/address/city/state/zip,
+  //   6. Continue (which is what actually saves the school).
+  // Skips itself when highSchoolNotListed == "No" (student picks from the list
+  // themselves) or when no school name is stored. Never invents a value.
+  async function fillSchoolLookup(mapping, payload) {
+    const notListed = get(payload, mapping.source);
+    const name = get(payload, mapping.nameSource || "profile.highSchoolName");
+    if (!name) return { source: mapping.source, status: "empty" };
+    if (String(notListed).trim().toLowerCase() === "no") {
+      return { source: mapping.source, status: "skipped-school-in-list" };
+    }
+
+    const fullClick = (el) =>
+      ["mousedown", "mouseup", "click"].forEach((t) =>
+        el.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+      );
+
+    // 1. open the Find-school dialog.
+    const trigger = findEl([mapping.trigger]);
+    if (!trigger) return { source: mapping.source, status: "find-button-not-found" };
+    trigger.click();
+
+    // 2. wait for the search box, type the school name to surface the list.
+    const search = await waitFor(() => findEl([mapping.search]), 3000);
+    if (!search) return { source: mapping.source, status: "lookup-modal-not-open" };
+    search.focus();
+    setNativeValue(search, String(name));
+    search.dispatchEvent(new Event("keyup", { bubbles: true }));
+
+    // 3. select the "I don't see my high school in this list" option.
+    const wantTxt = (mapping.notListedText || "see my high school in this list").toLowerCase();
+    const opt = await waitFor(() => {
+      const opts = document.querySelectorAll(
+        "ca-single-selection-list-option, [id='selectionListResult'], .ca-list-item, [role='option']"
+      );
+      for (const o of opts) {
+        if ((o.textContent || "").trim().toLowerCase().includes(wantTxt)) return o;
+      }
+      return null;
+    }, 4000);
+    if (!opt) return { source: mapping.source, status: "not-listed-option-missing" };
+    fullClick(opt);
+    await sleep(300);
+
+    // 4. Continue → advances to the School Information form.
+    const cont1 = findEl([mapping.lookupContinue]);
+    if (!cont1) return { source: mapping.source, status: "lookup-continue-not-found" };
+    fullClick(cont1);
+
+    // 5. wait for the manual-entry form, then fill each field. Country / school
+    // type / state are comboboxes — smartFillText (via fillField default) types
+    // and clicks the matching overlay option.
+    const firstField = (mapping.modalFields || [])[0];
+    const ready = await waitFor(() => firstField && findEl(firstField.selectors), 3000);
+    if (!ready) return { source: mapping.source, status: "school-info-modal-not-open" };
+
+    const sub = [];
+    for (const f of mapping.modalFields || []) {
+      sub.push((await fillField(f, get(payload, f.source))) || { source: f.source, status: "empty" });
+      await sleep(120);
+    }
+
+    // 6. Continue saves the manually-entered school and closes the modal.
+    const cont2 = findEl([mapping.modalContinue || mapping.lookupContinue]);
+    if (cont2) {
+      fullClick(cont2);
+      await sleep(300);
+    }
+
+    const filled = sub.filter((r) => r.status && String(r.status).startsWith("filled")).length;
+    return {
+      source: mapping.source,
+      status: "filled-confirm",
+      detail: `school manual-entry: ${filled}/${(mapping.modalFields || []).length} fields`,
+      sub,
+    };
+  }
+
   async function applyPage(pageMap, payload) {
     const report = [];
 
     for (const m of pageMap.fields || []) {
+      if (m.kind === "school-lookup") {
+        report.push(await fillSchoolLookup(m, payload));
+        continue;
+      }
       report.push((await fillField(m, get(payload, m.source))) || { source: m.source, status: "empty" });
     }
 

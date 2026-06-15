@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 15,
+  "version": 16,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -378,15 +378,91 @@
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/4/18*",
-      "name": "Education — dates",
+      "name": "Education — current/most recent secondary school",
       "fields": [
+        {
+          "kind": "school-lookup",
+          "source": "profile.highSchoolNotListed",
+          "nameSource": "profile.highSchoolName",
+          "requiresConfirm": true,
+          "trigger": "#findSchool245",
+          "search": "#searchTermControl245",
+          "notListedText": "see my high school in this list",
+          "lookupContinue": "#lookupContinue245",
+          "modalContinue": "#lookupContinue245",
+          "modalFields": [
+            {
+              "source": "profile.highSchoolName",
+              "selectors": [
+                "#nameControl245"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "profile.highSchoolCountry",
+              "selectors": [
+                "#countryControl245"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "profile.highSchoolType",
+              "selectors": [
+                "#schoolTypeCodeControl245"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "profile.highSchoolAddress1",
+              "selectors": [
+                "#address1Control245"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "profile.highSchoolAddress2",
+              "selectors": [
+                "#address2Control245"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "profile.highSchoolAddress3",
+              "selectors": [
+                "#address3Control245"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "profile.highSchoolCity",
+              "selectors": [
+                "#cityControl245"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "profile.highSchoolState",
+              "selectors": [
+                "#stateControl245"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "profile.highSchoolZip",
+              "selectors": [
+                "#zipControl245"
+              ],
+              "kind": "text"
+            }
+          ]
+        },
         {
           "source": "profile.dateOfEntry",
           "selectors": [
             "#text_ques_246"
           ],
           "kind": "date",
-          "format": "MM/DD/YYYY",
+          "format": "MMMM YYYY",
           "requiresConfirm": true
         },
         {
@@ -395,8 +471,41 @@
             "#text_ques_247"
           ],
           "kind": "date",
-          "format": "MM/DD/YYYY",
+          "format": "MMMM YYYY",
           "requiresConfirm": true
+        },
+        {
+          "source": "profile.isBoardingSchool",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_1490_2371-input",
+            "No": "#option_ques_1490_2372-input"
+          }
+        },
+        {
+          "source": "profile.didGraduate",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_1491_2371-input",
+            "No": "#option_ques_1491_2372-input"
+          }
+        },
+        {
+          "source": "profile.progression",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Did or will graduate early": "input[id$=\"_1066-input\"]",
+            "Did or will graduate late": "input[id$=\"_1067-input\"]",
+            "Did or will take time off": "input[id$=\"_1069-input\"]",
+            "Did or will take gap year": "input[id$=\"_1070-input\"]",
+            "No change in progression": "input[id$=\"_3485-input\"]"
+          }
         }
       ]
     },

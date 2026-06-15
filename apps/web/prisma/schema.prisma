@@ -147,6 +147,23 @@ model MasterProfile {
   dateOfEntry    DateTime?
   graduationDate DateTime?
   classSize      Int?
+
+  // Current/most recent Secondary/High School page (4/18).
+  // Most non-US schools are NOT in Common App's registry, so we fill the
+  // "I don't see my high school in this list" manual-entry path.
+  highSchoolNotListed String? // "Yes" = not in CA list → manual entry; "No" = pick from list
+  highSchoolCountry   String? // Country/Region/Territory (combobox)
+  highSchoolType      String? // "Public" | "Charter" | "Religious" | "Home school" | "Independent"
+  highSchoolAddress1  String?
+  highSchoolAddress2  String?
+  highSchoolAddress3  String?
+  highSchoolCity      String?
+  highSchoolState     String? // combobox (shown for US addresses)
+  highSchoolZip       String?
+  isBoardingSchool    String? // "Yes" | "No"
+  didGraduate         String? // "Yes" | "No" — did/will you graduate from this school?
+  progression         String? // multi, comma-separated: "Did or will graduate early" | "...late" | "...take time off" | "...take gap year" | "No change in progression"
+
   gpa            Float?
   gpaScale       Float?
   classRank      String?

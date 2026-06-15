@@ -217,6 +217,49 @@ export default async function ProfilePage() {
         </div>
 
         <div className="card">
+          <h2>Secondary/High School details</h2>
+          <p className="muted" style={{ marginTop: 0 }}>
+            Most non-US schools aren’t in Common App’s lookup. Leave “Not in
+            Common App’s list” as <strong>Yes</strong> and fill the details
+            below — the extension selects “I don’t see my high school in this
+            list” and enters them for you.
+          </p>
+          <div className="row">
+            <Sel label="Not in Common App’s list? (enter manually)" name="highSchoolNotListed"
+              value={p?.highSchoolNotListed ?? "Yes"} flex="1 1 240px" options={["Yes", "No"]} />
+            <Sel label="School type" name="highSchoolType" value={p?.highSchoolType} flex="1 1 200px"
+              options={["Public", "Charter", "Religious", "Home school", "Independent"]} />
+            <F label="Country/Region/Territory" name="highSchoolCountry" value={p?.highSchoolCountry} />
+          </div>
+          <div className="row">
+            <F label="Address line 1" name="highSchoolAddress1" value={p?.highSchoolAddress1} />
+            <F label="Address line 2" name="highSchoolAddress2" value={p?.highSchoolAddress2} />
+            <F label="Address line 3" name="highSchoolAddress3" value={p?.highSchoolAddress3} />
+          </div>
+          <div className="row">
+            <F label="City" name="highSchoolCity" value={p?.highSchoolCity} />
+            <F label="State/Province (US: combobox)" name="highSchoolState" value={p?.highSchoolState} />
+            <F label="Zip/Postal code" name="highSchoolZip" value={p?.highSchoolZip} />
+          </div>
+          <div className="row">
+            <Sel label="Is this a boarding school?" name="isBoardingSchool" value={p?.isBoardingSchool}
+              flex="1 1 200px" options={["Yes", "No"]} />
+            <Sel label="Did/will you graduate from this school?" name="didGraduate" value={p?.didGraduate}
+              flex="1 1 240px" options={["Yes", "No"]} />
+          </div>
+          <div className="row">
+            <Checks label="Progression (check all that apply)" name="progression" value={p?.progression}
+              options={[
+                "Did or will graduate early",
+                "Did or will graduate late",
+                "Did or will take time off",
+                "Did or will take gap year",
+                "No change in progression",
+              ]} />
+          </div>
+        </div>
+
+        <div className="card">
           <h2>Class rank &amp; weighting</h2>
           <div className="row">
             <div style={{ flex: "1 1 180px" }}>
