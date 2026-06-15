@@ -91,6 +91,7 @@ model Applicant {
   siblings     Sibling[]
   languages    Language[]
   otherSchools OtherSchool[]
+  colleges     College[]
   testScores   TestScores?
   courses      Course[]
 
@@ -450,6 +451,38 @@ model OtherSchool {
   fromDate  DateTime?
   toDate    DateTime?
   reasonLeft String? // why the student left this school
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicantId, order])
+  @@index([applicantId])
+}
+
+// Colleges/universities where the student took coursework (Common App
+// "Colleges & Universities", page 4/21). Same manual-entry path as schools when
+// the college isn't in CA's registry, plus course-detail flags, dates, degree.
+model College {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  order     Int     @default(0)
+  name      String?
+  notListed String? // "Yes" = not in CA list → manual entry
+  country   String?
+  address1  String?
+  address2  String?
+  address3  String?
+  city      String?
+  state     String?
+  zip       String?
+  // checked "Course details", comma-separated:
+  // "Dual enrollment with high school" | "Summer program" | "Credit awarded directly by college"
+  courseDetails String?
+  fromDate    DateTime?
+  toDate      DateTime?
+  degreeEarned String? // "AA" | "AS" | "BA" | "BS"
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

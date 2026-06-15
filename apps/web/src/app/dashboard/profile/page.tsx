@@ -7,6 +7,11 @@ import {
   updateOtherSchoolAction,
   deleteOtherSchoolAction,
 } from "@/lib/actions/otherSchools";
+import {
+  addCollegeAction,
+  updateCollegeAction,
+  deleteCollegeAction,
+} from "@/lib/actions/colleges";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +30,10 @@ export default async function ProfilePage() {
     orderBy: { order: "asc" },
   });
   const otherSchools = await db.otherSchool.findMany({
+    where: { applicantId: applicant.id },
+    orderBy: { order: "asc" },
+  });
+  const colleges = await db.college.findMany({
     where: { applicantId: applicant.id },
     orderBy: { order: "asc" },
   });
@@ -146,6 +155,59 @@ export default async function ProfilePage() {
       </div>
     </>
   );
+
+  // Shared field block for one college/university (manual-entry questions plus
+  // course-detail flags, from/to dates, and degree earned).
+  type CollegeRow = {
+    name?: string | null; notListed?: string | null; country?: string | null;
+    address1?: string | null; address2?: string | null; address3?: string | null;
+    city?: string | null; state?: string | null; zip?: string | null;
+    courseDetails?: string | null; fromDate?: Date | null; toDate?: Date | null;
+    degreeEarned?: string | null;
+  };
+  const COURSE_DETAILS = [
+    "Dual enrollment with high school",
+    "Summer program",
+    "Credit awarded directly by college",
+  ];
+  const CollegeFields = ({ v }: { v?: CollegeRow }) => {
+    const picked = (v?.courseDetails ?? "").split(",").map((x) => x.trim()).filter(Boolean);
+    return (
+      <>
+        <div className="row">
+          <F label="College/university name" name="name" value={v?.name} />
+          <Sel label="Not in Common App’s list? (enter manually)" name="notListed"
+            value={v?.notListed ?? "Yes"} flex="1 1 220px" options={["Yes", "No"]} />
+          <Sel label="Degree earned" name="degreeEarned" value={v?.degreeEarned} flex="1 1 160px"
+            options={["AA", "AS", "BA", "BS"]} />
+        </div>
+        <div className="row">
+          <F label="Country/Region/Territory" name="country" value={v?.country} />
+          <F label="From date" name="fromDate" type="date" value={isoDate(v?.fromDate ?? null)} />
+          <F label="To date" name="toDate" type="date" value={isoDate(v?.toDate ?? null)} />
+        </div>
+        <div className="row">
+          <F label="Address line 1" name="address1" value={v?.address1} />
+          <F label="Address line 2" name="address2" value={v?.address2} />
+          <F label="Address line 3" name="address3" value={v?.address3} />
+        </div>
+        <div className="row">
+          <F label="City" name="city" value={v?.city} />
+          <F label="State/Province (US: combobox)" name="state" value={v?.state} />
+          <F label="Zip/Postal code" name="zip" value={v?.zip} />
+        </div>
+        <label>Course details (check all that apply)</label>
+        <div className="row">
+          {COURSE_DETAILS.map((c) => (
+            <label key={c} style={{ margin: 0, display: "flex", gap: 6, alignItems: "center" }}>
+              <input type="checkbox" name="courseDetails" value={c}
+                defaultChecked={picked.includes(c)} style={{ width: "auto" }} /> {c}
+            </label>
+          ))}
+        </div>
+      </>
+    );
+  };
 
   return (
     <main>
@@ -441,6 +503,43 @@ export default async function ProfilePage() {
             <h3 style={{ marginBottom: 4 }}>Add a school</h3>
             <SchoolFields />
             <button type="submit">Add school</button>
+          </form>
+        )}
+      </div>
+
+      <div className="card">
+        <h2>Colleges &amp; universities</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          If you’ve ever taken coursework at a college or university (dual
+          enrollment, summer programs, etc.), add each one (up to 3). The
+          extension sets the college count on Common App and fills each one —
+          including the manual “I don’t see the college” entry when it isn’t in
+          their list, the course-detail flags, dates, and degree earned.
+        </p>
+
+        {colleges.map((col, i) => (
+          <div key={col.id} className="card" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+              <strong>College {i + 1}{col.name ? ` — ${col.name}` : ""}</strong>
+              <form action={deleteCollegeAction}>
+                <input type="hidden" name="collegeId" value={col.id} />
+                <button style={{ marginTop: 0 }}>Delete</button>
+              </form>
+            </div>
+            <form action={updateCollegeAction}>
+              <input type="hidden" name="collegeId" value={col.id} />
+              <CollegeFields v={col} />
+              <button type="submit">Save college {i + 1}</button>
+            </form>
+          </div>
+        ))}
+        {colleges.length === 0 && <p className="muted">No colleges added.</p>}
+
+        {colleges.length < 3 && (
+          <form action={addCollegeAction} style={{ marginTop: 12 }}>
+            <h3 style={{ marginBottom: 4 }}>Add a college</h3>
+            <CollegeFields />
+            <button type="submit">Add college</button>
           </form>
         )}
       </div>

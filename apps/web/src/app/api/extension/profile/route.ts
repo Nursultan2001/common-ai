@@ -62,6 +62,7 @@ export async function GET(req: Request) {
       siblings: { orderBy: { order: "asc" } },
       languages: { orderBy: { order: "asc" } },
       otherSchools: { orderBy: { order: "asc" } },
+      colleges: { orderBy: { order: "asc" } },
       testScores: true,
       courses: { orderBy: { order: "asc" } },
     },
@@ -161,6 +162,23 @@ export async function GET(req: Request) {
         fromDate: o.fromDate,
         toDate: o.toDate,
         reasonLeft: o.reasonLeft,
+      })),
+      // Colleges/universities with prior coursework (page 4/21).
+      collegeCount: String(applicant.colleges.length),
+      colleges: applicant.colleges.map((c) => ({
+        name: c.name,
+        notListed: c.notListed,
+        country: c.country,
+        address1: c.address1,
+        address2: c.address2,
+        address3: c.address3,
+        city: c.city,
+        state: c.state,
+        zip: c.zip,
+        courseDetails: c.courseDetails,
+        fromDate: c.fromDate,
+        toDate: c.toDate,
+        degreeEarned: c.degreeEarned,
       })),
       // The Common App reason box is one field for all of them — combine the
       // per-school reasons, labelled by school, into a single block of text.

@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 17,
+  "version": 18,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -814,6 +814,354 @@
           ],
           "kind": "richtext",
           "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/4/21*",
+      "name": "Education — colleges & universities",
+      "fields": [
+        {
+          "source": "collegeCount",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "0": "#option_ques_267_1072-input",
+            "1": "#option_ques_267_1073-input",
+            "2": "#option_ques_267_1074-input",
+            "3": "#option_ques_267_1075-input"
+          }
+        },
+        {
+          "kind": "school-lookup",
+          "source": "colleges.0.notListed",
+          "nameSource": "colleges.0.name",
+          "requiresConfirm": true,
+          "trigger": "#findSchool268",
+          "search": "#searchTermControl268",
+          "notListedText": "see the college I am looking for",
+          "lookupContinue": "#lookupContinue268",
+          "modalContinue": "#lookupContinue268",
+          "modalFields": [
+            {
+              "source": "colleges.0.name",
+              "selectors": [
+                "#nameControl268"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.0.country",
+              "selectors": [
+                "#countryControl268"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.0.address1",
+              "selectors": [
+                "#address1Control268"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.0.address2",
+              "selectors": [
+                "#address2Control268"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.0.address3",
+              "selectors": [
+                "#address3Control268"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.0.city",
+              "selectors": [
+                "#cityControl268"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.0.state",
+              "selectors": [
+                "#stateControl268"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.0.zip",
+              "selectors": [
+                "#zipControl268"
+              ],
+              "kind": "text"
+            }
+          ]
+        },
+        {
+          "source": "colleges.0.courseDetails",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Dual enrollment with high school": "#ca-checkboxList-1_3789-input",
+            "Summer program": "#ca-checkboxList-1_3790-input",
+            "Credit awarded directly by college": "#ca-checkboxList-1_3791-input"
+          }
+        },
+        {
+          "source": "colleges.0.fromDate",
+          "selectors": [
+            "#text_ques_270"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "colleges.0.toDate",
+          "selectors": [
+            "#text_ques_271"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "colleges.0.degreeEarned",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "AA": "#option_ques_272_1082-input",
+            "AS": "#option_ques_272_1083-input",
+            "BA": "#option_ques_272_1084-input",
+            "BS": "#option_ques_272_1085-input"
+          }
+        },
+        {
+          "kind": "school-lookup",
+          "source": "colleges.1.notListed",
+          "nameSource": "colleges.1.name",
+          "requiresConfirm": true,
+          "trigger": "#findSchool273",
+          "search": "#searchTermControl273",
+          "notListedText": "see the college I am looking for",
+          "lookupContinue": "#lookupContinue273",
+          "modalContinue": "#lookupContinue273",
+          "modalFields": [
+            {
+              "source": "colleges.1.name",
+              "selectors": [
+                "#nameControl273"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.1.country",
+              "selectors": [
+                "#countryControl273"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.1.address1",
+              "selectors": [
+                "#address1Control273"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.1.address2",
+              "selectors": [
+                "#address2Control273"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.1.address3",
+              "selectors": [
+                "#address3Control273"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.1.city",
+              "selectors": [
+                "#cityControl273"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.1.state",
+              "selectors": [
+                "#stateControl273"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.1.zip",
+              "selectors": [
+                "#zipControl273"
+              ],
+              "kind": "text"
+            }
+          ]
+        },
+        {
+          "source": "colleges.1.courseDetails",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Dual enrollment with high school": "#ca-checkboxList-2_3789-input",
+            "Summer program": "#ca-checkboxList-2_3790-input",
+            "Credit awarded directly by college": "#ca-checkboxList-2_3791-input"
+          }
+        },
+        {
+          "source": "colleges.1.fromDate",
+          "selectors": [
+            "#text_ques_275"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "colleges.1.toDate",
+          "selectors": [
+            "#text_ques_276"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "colleges.1.degreeEarned",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "AA": "#option_ques_277_1082-input",
+            "AS": "#option_ques_277_1083-input",
+            "BA": "#option_ques_277_1084-input",
+            "BS": "#option_ques_277_1085-input"
+          }
+        },
+        {
+          "kind": "school-lookup",
+          "source": "colleges.2.notListed",
+          "nameSource": "colleges.2.name",
+          "requiresConfirm": true,
+          "trigger": "#findSchool278",
+          "search": "#searchTermControl278",
+          "notListedText": "see the college I am looking for",
+          "lookupContinue": "#lookupContinue278",
+          "modalContinue": "#lookupContinue278",
+          "modalFields": [
+            {
+              "source": "colleges.2.name",
+              "selectors": [
+                "#nameControl278"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.2.country",
+              "selectors": [
+                "#countryControl278"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.2.address1",
+              "selectors": [
+                "#address1Control278"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.2.address2",
+              "selectors": [
+                "#address2Control278"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.2.address3",
+              "selectors": [
+                "#address3Control278"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.2.city",
+              "selectors": [
+                "#cityControl278"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.2.state",
+              "selectors": [
+                "#stateControl278"
+              ],
+              "kind": "text"
+            },
+            {
+              "source": "colleges.2.zip",
+              "selectors": [
+                "#zipControl278"
+              ],
+              "kind": "text"
+            }
+          ]
+        },
+        {
+          "source": "colleges.2.courseDetails",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Dual enrollment with high school": "#ca-checkboxList-3_3789-input",
+            "Summer program": "#ca-checkboxList-3_3790-input",
+            "Credit awarded directly by college": "#ca-checkboxList-3_3791-input"
+          }
+        },
+        {
+          "source": "colleges.2.fromDate",
+          "selectors": [
+            "#text_ques_280"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "colleges.2.toDate",
+          "selectors": [
+            "#text_ques_281"
+          ],
+          "kind": "date",
+          "format": "MMMM YYYY",
+          "requiresConfirm": true
+        },
+        {
+          "source": "colleges.2.degreeEarned",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "AA": "#option_ques_282_1082-input",
+            "AS": "#option_ques_282_1083-input",
+            "BA": "#option_ques_282_1084-input",
+            "BS": "#option_ques_282_1085-input"
+          }
         }
       ]
     },
