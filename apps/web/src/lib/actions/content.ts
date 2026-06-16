@@ -27,8 +27,29 @@ export async function addActivityAction(formData: FormData) {
       timing: timing || null,
       hoursPerWeek: Number(formData.get("hoursPerWeek")) || null,
       weeksPerYear: Number(formData.get("weeksPerYear")) || null,
+      collegeIntent: String(formData.get("collegeIntent") ?? "") || null,
       rawDescription: raw,
     },
+  });
+  revalidatePath("/dashboard/activities");
+}
+
+// Responsibilities & circumstances (Activities page 7/250). Multi-checkbox; we
+// store the exact Common App option labels as CSV so autofill matches them.
+export async function saveResponsibilitiesAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  // Join with "||" (option labels themselves contain commas).
+  const multi = (k: string) =>
+    formData.getAll(k).map((v) => String(v).trim()).filter(Boolean).join("||") || null;
+  const data = {
+    responsibilities: multi("responsibilities"),
+    circumstances: multi("circumstances"),
+  };
+  await db.masterProfile.upsert({
+    where: { applicantId: applicant.id },
+    update: data,
+    create: { applicantId: applicant.id, ...data },
   });
   revalidatePath("/dashboard/activities");
 }

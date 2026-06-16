@@ -88,6 +88,10 @@ export async function GET(req: Request) {
       fieldMapKey: application.university.fieldMapKey,
       portalType: application.university.portalType,
       profile: applicant.profile ?? {},
+      // Activities (page 7/232): report = Yes when any exist; click "Add another
+      // activity" once per activity beyond the first.
+      reportActivities: applicant.activities.length ? "Yes" : "No",
+      activitiesAddClicks: String(Math.max(0, applicant.activities.length - 1)),
       activities: applicant.activities.map((a) => ({
         category: a.category,
         position: a.position,
@@ -96,8 +100,12 @@ export async function GET(req: Request) {
         timing: a.timing,
         hoursPerWeek: a.hoursPerWeek,
         weeksPerYear: a.weeksPerYear,
+        collegeIntent: a.collegeIntent,
         description: a.status === "APPROVED" ? a.polishedDescription : null,
       })),
+      // Responsibilities & circumstances (page 7/250).
+      responsibilities: applicant.profile?.responsibilities ?? null,
+      circumstances: applicant.profile?.circumstances ?? null,
       // Honors (page 4/25): report = Yes when any exist; the extension clicks
       // "Add another honors" once per honor beyond the first.
       reportHonors: applicant.honors.length ? "Yes" : "No",

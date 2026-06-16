@@ -195,6 +195,11 @@ model MasterProfile {
   permanentHomeWith    String? // "Both Parents" | "Parent 1" | ...
   hasChildren          String? // "Yes" | "No"
 
+  // Responsibilities & circumstances (Activities page 7/250) — CSV of the
+  // exact Common App option labels the student selected.
+  responsibilities String?
+  circumstances    String?
+
   // Free-form structured extras the questionnaire collected, stored as JSON
   // text so we can add intake questions without migrations. Still read-only facts.
   extra String?
@@ -219,6 +224,7 @@ model Activity {
   timing       String?
   hoursPerWeek Int?
   weeksPerYear Int?
+  collegeIntent String? // "Yes" | "No" — intend to continue in college
 
   rawDescription      String
   polishedDescription String?

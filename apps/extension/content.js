@@ -285,7 +285,10 @@
     // the anchor's block (so repeating groups like per-language proficiency,
     // which share option codes, resolve to the correct block).
     if (mapping.kind === "checkbox-map") {
-      const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+      // Default split on , or ; — but some option labels contain commas, so a
+      // field can pass an explicit `delimiter` (e.g. "||") instead.
+      const delim = mapping.delimiter ? mapping.delimiter : /[;,]/;
+      const wants = String(value).split(delim).map((s) => s.trim()).filter(Boolean);
       let scope = document;
       if (mapping.anchor) {
         const a = document.querySelector(mapping.anchor);
