@@ -8,6 +8,24 @@ import {
 
 export const dynamic = "force-dynamic";
 
+// Exact Common App course dropdown option lists (harvested from the live form),
+// so stored values match the combobox options and autofill selects them cleanly.
+const SUBJECTS = [
+  "Pre-Algebra", "Algebra", "Geometry", "Trigonometry", "Pre-Calculus",
+  "Calculus", "Math (Other)", "Biology", "Chemistry", "Physics",
+  "Earth/Environmental Science", "Science (Other)", "English",
+  "History/Social Science", "Foreign/World Language",
+  "Physical Education/Health", "Art (Visual or Performing)",
+  "Computer Science", "Religion", "Other/Elective",
+];
+const LEVELS = [
+  "Regular/Standard", "Accelerated", "Advanced", "Advanced Placement (AP)",
+  "AS/A-level/International A-level, Cambridge AICE", "College Prep",
+  "Dual Enrollment", "Enriched", "GCSE, IGCSE", "Gifted", "High Honors",
+  "Honors", "Intensive", "International Baccalaureate (IB)", "Pre-IB",
+  "Regents", "N/A",
+];
+
 export default async function CoursesPage() {
   const user = await requireUser();
   const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
@@ -25,7 +43,7 @@ export default async function CoursesPage() {
       <p className="muted">
         Your current/senior-year courses (Common App allows up to 12). Add them in
         order; the extension sets the course count, the scheduling system, and
-        fills each course’s subject, name, level, and schedule.
+        fills each course’s subject, name, and level.
       </p>
 
       <div className="card">
@@ -59,7 +77,6 @@ export default async function CoursesPage() {
               <th>Subject</th>
               <th>Course name</th>
               <th>Level</th>
-              <th>Schedule</th>
               <th></th>
             </tr>
           </thead>
@@ -70,7 +87,6 @@ export default async function CoursesPage() {
                 <td>{c.subject ?? "—"}</td>
                 <td>{c.name ?? "—"}</td>
                 <td className="muted">{c.level ?? "—"}</td>
-                <td className="muted">{c.schedule ?? "—"}</td>
                 <td>
                   <form action={deleteCourseAction}>
                     <input type="hidden" name="courseId" value={c.id} />
@@ -81,7 +97,7 @@ export default async function CoursesPage() {
             ))}
             {courses.length === 0 && (
               <tr>
-                <td colSpan={6} className="muted">No courses yet.</td>
+                <td colSpan={5} className="muted">No courses yet.</td>
               </tr>
             )}
           </tbody>
@@ -92,21 +108,23 @@ export default async function CoursesPage() {
         <h2>Add a course</h2>
         <form action={addCourseAction}>
           <div className="row">
-            <div style={{ flex: "1 1 160px" }}>
+            <div style={{ flex: "1 1 200px" }}>
               <label>Subject</label>
-              <input name="subject" placeholder="e.g. Mathematics" />
+              <select name="subject" defaultValue="">
+                <option value="">— Choose a subject —</option>
+                {SUBJECTS.map((o) => <option key={o}>{o}</option>)}
+              </select>
             </div>
-            <div style={{ flex: "1 1 220px" }}>
+            <div style={{ flex: "1 1 240px" }}>
               <label>Course name</label>
               <input name="name" placeholder="e.g. AP Calculus BC" />
             </div>
-            <div style={{ flex: "1 1 140px" }}>
+            <div style={{ flex: "1 1 200px" }}>
               <label>Level</label>
-              <input name="level" placeholder="e.g. AP" />
-            </div>
-            <div style={{ flex: "1 1 140px" }}>
-              <label>Schedule</label>
-              <input name="schedule" placeholder="e.g. Full Year" />
+              <select name="level" defaultValue="">
+                <option value="">— Choose a level —</option>
+                {LEVELS.map((o) => <option key={o}>{o}</option>)}
+              </select>
             </div>
           </div>
           <button className="primary" type="submit">Add course</button>

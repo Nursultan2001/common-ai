@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 20,
+  "version": 21,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -1418,14 +1418,6 @@
           "requiresConfirm": true
         },
         {
-          "source": "courses.0.schedule",
-          "selectors": [
-            "#text_ques_311"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
           "source": "courses.1.subject",
           "selectors": [
             "#text_ques_1074"
@@ -1445,14 +1437,6 @@
           "source": "courses.1.level",
           "selectors": [
             "#text_ques_313"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
-          "source": "courses.1.schedule",
-          "selectors": [
-            "#text_ques_315"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1482,14 +1466,6 @@
           "requiresConfirm": true
         },
         {
-          "source": "courses.2.schedule",
-          "selectors": [
-            "#text_ques_319"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
           "source": "courses.3.subject",
           "selectors": [
             "#text_ques_1076"
@@ -1509,14 +1485,6 @@
           "source": "courses.3.level",
           "selectors": [
             "#text_ques_321"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
-          "source": "courses.3.schedule",
-          "selectors": [
-            "#text_ques_323"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1546,14 +1514,6 @@
           "requiresConfirm": true
         },
         {
-          "source": "courses.4.schedule",
-          "selectors": [
-            "#text_ques_327"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
           "source": "courses.5.subject",
           "selectors": [
             "#text_ques_1078"
@@ -1573,14 +1533,6 @@
           "source": "courses.5.level",
           "selectors": [
             "#text_ques_329"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
-          "source": "courses.5.schedule",
-          "selectors": [
-            "#text_ques_331"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1610,14 +1562,6 @@
           "requiresConfirm": true
         },
         {
-          "source": "courses.6.schedule",
-          "selectors": [
-            "#text_ques_335"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
           "source": "courses.7.subject",
           "selectors": [
             "#text_ques_1080"
@@ -1637,14 +1581,6 @@
           "source": "courses.7.level",
           "selectors": [
             "#text_ques_337"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
-          "source": "courses.7.schedule",
-          "selectors": [
-            "#text_ques_339"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1674,14 +1610,6 @@
           "requiresConfirm": true
         },
         {
-          "source": "courses.8.schedule",
-          "selectors": [
-            "#text_ques_343"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
           "source": "courses.9.subject",
           "selectors": [
             "#text_ques_1082"
@@ -1701,14 +1629,6 @@
           "source": "courses.9.level",
           "selectors": [
             "#text_ques_345"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
-          "source": "courses.9.schedule",
-          "selectors": [
-            "#text_ques_347"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1738,14 +1658,6 @@
           "requiresConfirm": true
         },
         {
-          "source": "courses.10.schedule",
-          "selectors": [
-            "#text_ques_351"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
           "source": "courses.11.subject",
           "selectors": [
             "#text_ques_1084"
@@ -1765,14 +1677,6 @@
           "source": "courses.11.level",
           "selectors": [
             "#text_ques_353"
-          ],
-          "kind": "text",
-          "requiresConfirm": true
-        },
-        {
-          "source": "courses.11.schedule",
-          "selectors": [
-            "#text_ques_355"
           ],
           "kind": "text",
           "requiresConfirm": true
