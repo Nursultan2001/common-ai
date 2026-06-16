@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 24,
+  "version": 25,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -33,6 +33,144 @@
             "#text_ques_11"
           ],
           "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/2/3*",
+      "name": "Testing — ACT",
+      "fields": [
+        {
+          "source": "testScores.actPastCount",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "0": "#option_ques_12_9-input",
+            "1": "#option_ques_12_10-input",
+            "2": "#option_ques_12_11-input",
+            "3": "#option_ques_12_12-input",
+            "4": "#option_ques_12_13-input",
+            "5": "#option_ques_12_14-input"
+          }
+        },
+        {
+          "source": "testScores.actComposite",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_17"
+          ]
+        },
+        {
+          "source": "testScores.actCompositeDate",
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "selectors": [
+            "#text_ques_18"
+          ]
+        },
+        {
+          "source": "testScores.actEnglish",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_19"
+          ]
+        },
+        {
+          "source": "testScores.actEnglishDate",
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "selectors": [
+            "#text_ques_20"
+          ]
+        },
+        {
+          "source": "testScores.actMath",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_21"
+          ]
+        },
+        {
+          "source": "testScores.actMathDate",
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "selectors": [
+            "#text_ques_22"
+          ]
+        },
+        {
+          "source": "testScores.actReading",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_23"
+          ]
+        },
+        {
+          "source": "testScores.actReadingDate",
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "selectors": [
+            "#text_ques_24"
+          ]
+        },
+        {
+          "source": "testScores.actReportScience",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "Yes": "#option_ques_172_1792-input",
+            "No": "#option_ques_172_1793-input"
+          }
+        },
+        {
+          "source": "testScores.actScience",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_25"
+          ]
+        },
+        {
+          "source": "testScores.actScienceDate",
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "selectors": [
+            "#text_ques_26"
+          ]
+        },
+        {
+          "source": "testScores.actReportWriting",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "Yes": "#option_ques_2086_1792-input",
+            "No": "#option_ques_2086_1793-input"
+          }
+        },
+        {
+          "source": "testScores.actWriting",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_27"
+          ]
+        },
+        {
+          "source": "testScores.actWritingDate",
+          "kind": "date",
+          "format": "MMMM D, YYYY",
+          "selectors": [
+            "#text_ques_28"
+          ]
+        },
+        {
+          "source": "testScores.actFutureSittings",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "0": "#option_ques_13_15-input",
+            "1": "#option_ques_13_16-input",
+            "2": "#option_ques_13_17-input",
+            "3": "#option_ques_13_18-input"
+          }
         }
       ]
     },
@@ -135,10 +273,10 @@
       "fields": [
         {
           "source": "testScores.ssleCount",
+          "kind": "text",
           "selectors": [
             "#text_ques_839"
-          ],
-          "kind": "text"
+          ]
         }
       ]
     },

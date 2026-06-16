@@ -11,8 +11,47 @@ const TESTS = [
   "IELTS", "Duolingo English Test",
 ];
 
+// ACT score ranges (composite & sections 1–36, writing 2–12).
+const ACT_SCORES = Array.from({ length: 36 }, (_, i) => String(36 - i));
+const ACT_WRITING = Array.from({ length: 11 }, (_, i) => String(12 - i));
+
 function isoDate(d: Date | null) {
   return d ? d.toISOString().slice(0, 10) : "";
+}
+
+function ScoreSel({ label, name, value, options }:
+  { label: string; name: string; value?: string | null; options: string[] }) {
+  return (
+    <div style={{ flex: "1 1 150px" }}>
+      <label>{label}</label>
+      <select name={name} defaultValue={value ?? ""}>
+        <option value="">—</option>
+        {options.map((o) => <option key={o}>{o}</option>)}
+      </select>
+    </div>
+  );
+}
+function DateInp({ label, name, value }:
+  { label: string; name: string; value?: Date | null }) {
+  return (
+    <div style={{ flex: "1 1 180px" }}>
+      <label>{label}</label>
+      <input name={name} type="date" defaultValue={isoDate(value ?? null)} />
+    </div>
+  );
+}
+function YesNo({ label, name, value }:
+  { label: string; name: string; value?: string | null }) {
+  return (
+    <div style={{ flex: "1 1 200px" }}>
+      <label>{label}</label>
+      <select name={name} defaultValue={value ?? ""}>
+        <option value="">—</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+    </div>
+  );
 }
 
 export default async function TestingPage() {
@@ -96,6 +135,42 @@ export default async function TestingPage() {
               <label>Overall band</label>
               <input name="ieltsOverall" defaultValue={t?.ieltsOverall ?? ""} />
             </div>
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>ACT</h2>
+          <div className="row">
+            <ScoreSel label="Number of past ACT scores to report" name="actPastCount"
+              value={t?.actPastCount} options={["0", "1", "2", "3", "4", "5"]} />
+            <ScoreSel label="Number of future ACT sittings expected" name="actFutureSittings"
+              value={t?.actFutureSittings} options={["0", "1", "2", "3"]} />
+          </div>
+          <div className="row">
+            <ScoreSel label="Highest composite score" name="actComposite" value={t?.actComposite} options={ACT_SCORES} />
+            <DateInp label="Composite date" name="actCompositeDate" value={t?.actCompositeDate} />
+          </div>
+          <div className="row">
+            <ScoreSel label="Highest English score" name="actEnglish" value={t?.actEnglish} options={ACT_SCORES} />
+            <DateInp label="English date" name="actEnglishDate" value={t?.actEnglishDate} />
+          </div>
+          <div className="row">
+            <ScoreSel label="Highest math score" name="actMath" value={t?.actMath} options={ACT_SCORES} />
+            <DateInp label="Math date" name="actMathDate" value={t?.actMathDate} />
+          </div>
+          <div className="row">
+            <ScoreSel label="Highest reading score" name="actReading" value={t?.actReading} options={ACT_SCORES} />
+            <DateInp label="Reading date" name="actReadingDate" value={t?.actReadingDate} />
+          </div>
+          <div className="row">
+            <YesNo label="Report an ACT science score?" name="actReportScience" value={t?.actReportScience} />
+            <ScoreSel label="Highest science score" name="actScience" value={t?.actScience} options={ACT_SCORES} />
+            <DateInp label="Science date" name="actScienceDate" value={t?.actScienceDate} />
+          </div>
+          <div className="row">
+            <YesNo label="Report an ACT writing score?" name="actReportWriting" value={t?.actReportWriting} />
+            <ScoreSel label="Highest writing score" name="actWriting" value={t?.actWriting} options={ACT_WRITING} />
+            <DateInp label="Writing date" name="actWritingDate" value={t?.actWritingDate} />
           </div>
         </div>
 

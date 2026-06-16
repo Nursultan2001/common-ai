@@ -534,6 +534,24 @@ model TestScores {
   ieltsOverall    String?
   ieltsDate       DateTime?
 
+  // ACT (page 2/3). Scores stored as strings (the form uses dropdowns).
+  actPastCount      String?   // 0–5 (radio)
+  actComposite      String?   // 1–36
+  actCompositeDate  DateTime?
+  actEnglish        String?
+  actEnglishDate    DateTime?
+  actMath           String?
+  actMathDate       DateTime?
+  actReading        String?
+  actReadingDate    DateTime?
+  actReportScience  String?   // Yes/No
+  actScience        String?
+  actScienceDate    DateTime?
+  actReportWriting  String?   // Yes/No
+  actWriting        String?   // 2–12
+  actWritingDate    DateTime?
+  actFutureSittings String?   // 0–3 (radio)
+
   // Senior Secondary Leaving Examinations
   ssleCount Int?
 

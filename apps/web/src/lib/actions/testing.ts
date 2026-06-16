@@ -20,6 +20,10 @@ export async function saveTestingAction(formData: FormData) {
   const user = await requireUser();
   const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
   const date = s(formData, "ieltsDate");
+  const d = (k: string) => {
+    const v = s(formData, k);
+    return v ? new Date(v) : null;
+  };
 
   const data = {
     selfReportScores: s(formData, "selfReportScores"),
@@ -34,6 +38,22 @@ export async function saveTestingAction(formData: FormData) {
     ieltsSpeaking: s(formData, "ieltsSpeaking"),
     ieltsOverall: s(formData, "ieltsOverall"),
     ieltsDate: date ? new Date(date) : null,
+    actPastCount: s(formData, "actPastCount"),
+    actComposite: s(formData, "actComposite"),
+    actCompositeDate: d("actCompositeDate"),
+    actEnglish: s(formData, "actEnglish"),
+    actEnglishDate: d("actEnglishDate"),
+    actMath: s(formData, "actMath"),
+    actMathDate: d("actMathDate"),
+    actReading: s(formData, "actReading"),
+    actReadingDate: d("actReadingDate"),
+    actReportScience: s(formData, "actReportScience"),
+    actScience: s(formData, "actScience"),
+    actScienceDate: d("actScienceDate"),
+    actReportWriting: s(formData, "actReportWriting"),
+    actWriting: s(formData, "actWriting"),
+    actWritingDate: d("actWritingDate"),
+    actFutureSittings: s(formData, "actFutureSittings"),
     ssleCount: n(formData, "ssleCount"),
   };
 
