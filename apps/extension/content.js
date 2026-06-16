@@ -411,6 +411,18 @@
         if (!any) return { source: mapping.source, status: "no-matching-option", value: v };
         break;
       }
+      case "click-times": {
+        // Click a button N times to reveal repeating blocks (e.g. Common App
+        // "Add another honors"). N comes from the value (a count string).
+        const n = parseInt(String(v), 10);
+        if (!Number.isFinite(n) || n <= 0) return { source: mapping.source, status: "skip-empty" };
+        for (let i = 0; i < n; i++) {
+          if (!el || el.offsetParent === null) break;
+          el.click();
+          await sleep(450);
+        }
+        return { source: mapping.source, status: "filled" };
+      }
       case "richtext": {
         // CKEditor 5 (Common App "why you left" box). Prefer the editor's own
         // API (the DOM is reconstructed from the model, so writing innerHTML

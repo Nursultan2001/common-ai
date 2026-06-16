@@ -94,11 +94,15 @@ export async function addHonorAction(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   if (!title) return;
 
+  const multi = (k: string) =>
+    formData.getAll(k).map((v) => String(v).trim()).filter(Boolean).join(", ") || null;
+
   await db.honor.create({
     data: {
       applicantId: applicant.id,
       title,
-      level: String(formData.get("level") ?? "") || null,
+      gradeLevels: multi("gradeLevels"),
+      level: multi("level"),
       rawDescription: String(formData.get("rawDescription") ?? "").trim(),
     },
   });

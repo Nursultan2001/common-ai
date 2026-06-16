@@ -98,6 +98,10 @@ export async function GET(req: Request) {
         weeksPerYear: a.weeksPerYear,
         description: a.status === "APPROVED" ? a.polishedDescription : null,
       })),
+      // Honors (page 4/25): report = Yes when any exist; the extension clicks
+      // "Add another honors" once per honor beyond the first.
+      reportHonors: applicant.honors.length ? "Yes" : "No",
+      honorsAddClicks: String(Math.max(0, applicant.honors.length - 1)),
       honors: applicant.honors.map((h) => ({
         title: h.status === "APPROVED" ? h.polishedTitle ?? h.title : h.title,
         gradeLevels: h.gradeLevels,

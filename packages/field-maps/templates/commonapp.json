@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 21,
+  "version": 22,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -1680,6 +1680,183 @@
           ],
           "kind": "text",
           "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/4/25*",
+      "name": "Education — honors",
+      "fields": [
+        {
+          "source": "reportHonors",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "Yes": "#option_ques_1970_2371-input",
+            "No": "#option_ques_1970_2372-input"
+          }
+        },
+        {
+          "source": "honorsAddClicks",
+          "kind": "click-times",
+          "selectors": [
+            "#addQues1971"
+          ]
+        },
+        {
+          "source": "honors.0.title",
+          "selectors": [
+            "#text_ques_349"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "honors.0.gradeLevels",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "9": "#ca-checkboxList-1_1167-input",
+            "10": "#ca-checkboxList-1_1168-input",
+            "11": "#ca-checkboxList-1_1169-input",
+            "12": "#ca-checkboxList-1_1170-input",
+            "Post-graduate": "#ca-checkboxList-1_1171-input"
+          }
+        },
+        {
+          "source": "honors.0.level",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "School": "#ca-checkboxList-2_1175-input",
+            "State/Regional": "#ca-checkboxList-2_1176-input",
+            "National": "#ca-checkboxList-2_1177-input",
+            "International": "#ca-checkboxList-2_1178-input"
+          }
+        },
+        {
+          "source": "honors.1.title",
+          "selectors": [
+            "#text_ques_352"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "honors.1.gradeLevels",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "9": "#ca-checkboxList-3_1167-input",
+            "10": "#ca-checkboxList-3_1168-input",
+            "11": "#ca-checkboxList-3_1169-input",
+            "12": "#ca-checkboxList-3_1170-input",
+            "Post-graduate": "#ca-checkboxList-3_1171-input"
+          }
+        },
+        {
+          "source": "honors.1.level",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "School": "#ca-checkboxList-4_1175-input",
+            "State/Regional": "#ca-checkboxList-4_1176-input",
+            "National": "#ca-checkboxList-4_1177-input",
+            "International": "#ca-checkboxList-4_1178-input"
+          }
+        },
+        {
+          "source": "honors.2.title",
+          "selectors": [
+            "#text_ques_355"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "honors.2.gradeLevels",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "9": "#ca-checkboxList-5_1167-input",
+            "10": "#ca-checkboxList-5_1168-input",
+            "11": "#ca-checkboxList-5_1169-input",
+            "12": "#ca-checkboxList-5_1170-input",
+            "Post-graduate": "#ca-checkboxList-5_1171-input"
+          }
+        },
+        {
+          "source": "honors.2.level",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "School": "#ca-checkboxList-6_1175-input",
+            "State/Regional": "#ca-checkboxList-6_1176-input",
+            "National": "#ca-checkboxList-6_1177-input",
+            "International": "#ca-checkboxList-6_1178-input"
+          }
+        },
+        {
+          "source": "honors.3.title",
+          "selectors": [
+            "#text_ques_358"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "honors.3.gradeLevels",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "9": "#ca-checkboxList-7_1167-input",
+            "10": "#ca-checkboxList-7_1168-input",
+            "11": "#ca-checkboxList-7_1169-input",
+            "12": "#ca-checkboxList-7_1170-input",
+            "Post-graduate": "#ca-checkboxList-7_1171-input"
+          }
+        },
+        {
+          "source": "honors.3.level",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "School": "#ca-checkboxList-8_1175-input",
+            "State/Regional": "#ca-checkboxList-8_1176-input",
+            "National": "#ca-checkboxList-8_1177-input",
+            "International": "#ca-checkboxList-8_1178-input"
+          }
+        },
+        {
+          "source": "honors.4.title",
+          "selectors": [
+            "#text_ques_361"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "honors.4.gradeLevels",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "9": "#ca-checkboxList-9_1167-input",
+            "10": "#ca-checkboxList-9_1168-input",
+            "11": "#ca-checkboxList-9_1169-input",
+            "12": "#ca-checkboxList-9_1170-input",
+            "Post-graduate": "#ca-checkboxList-9_1171-input"
+          }
+        },
+        {
+          "source": "honors.4.level",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "School": "#ca-checkboxList-10_1175-input",
+            "State/Regional": "#ca-checkboxList-10_1176-input",
+            "National": "#ca-checkboxList-10_1177-input",
+            "International": "#ca-checkboxList-10_1178-input"
+          }
         }
       ]
     },
