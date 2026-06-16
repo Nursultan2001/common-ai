@@ -175,6 +175,7 @@ model MasterProfile {
   quartileRank       String? // Top 25% | Top 50% | Top 75% | Top 100% (Quartile)
   rankWeighting      String? // Weighted | Unweighted (class rank)
   gpaWeighting       String? // Weighted | Unweighted (GPA)
+  courseScheduleSystem String? // Semester | Trimester | Quarter | Yearly (Courses page)
 
   satTotal     Int?
   actComposite Int?

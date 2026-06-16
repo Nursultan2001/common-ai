@@ -32,6 +32,20 @@ export async function addCourseAction(formData: FormData) {
   revalidatePath("/dashboard/courses");
 }
 
+// Institution-wide course scheduling system (Semester/Trimester/Quarter/Yearly)
+// — one radio for the whole Courses page, stored on the profile.
+export async function saveCourseSettingsAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const data = { courseScheduleSystem: s(formData, "courseScheduleSystem") };
+  await db.masterProfile.upsert({
+    where: { applicantId: applicant.id },
+    update: data,
+    create: { applicantId: applicant.id, ...data },
+  });
+  revalidatePath("/dashboard/courses");
+}
+
 export async function deleteCourseAction(formData: FormData) {
   const user = await requireUser();
   const id = String(formData.get("courseId") ?? "");

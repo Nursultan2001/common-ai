@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 19,
+  "version": 20,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -1374,9 +1374,29 @@
       "name": "Courses & grades",
       "fields": [
         {
+          "source": "courseCount",
+          "selectors": [
+            "#text_ques_307"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.courseScheduleSystem",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Semester": "#option_ques_1803_3522-input",
+            "Trimester": "#option_ques_1803_3523-input",
+            "Quarter": "#option_ques_1803_804-input",
+            "Yearly": "#option_ques_1803_5356-input"
+          }
+        },
+        {
           "source": "courses.0.subject",
           "selectors": [
-            "label:Course 1 subject"
+            "#text_ques_1073"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1386,7 +1406,8 @@
           "selectors": [
             "#text_ques_308"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.0.level",
@@ -1407,7 +1428,7 @@
         {
           "source": "courses.1.subject",
           "selectors": [
-            "label:Course 2 subject"
+            "#text_ques_1074"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1417,7 +1438,8 @@
           "selectors": [
             "#text_ques_312"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.1.level",
@@ -1438,7 +1460,7 @@
         {
           "source": "courses.2.subject",
           "selectors": [
-            "label:Course 3 subject"
+            "#text_ques_1075"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1448,7 +1470,8 @@
           "selectors": [
             "#text_ques_316"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.2.level",
@@ -1469,7 +1492,7 @@
         {
           "source": "courses.3.subject",
           "selectors": [
-            "label:Course 4 subject"
+            "#text_ques_1076"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1479,7 +1502,8 @@
           "selectors": [
             "#text_ques_320"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.3.level",
@@ -1500,7 +1524,7 @@
         {
           "source": "courses.4.subject",
           "selectors": [
-            "label:Course 5 subject"
+            "#text_ques_1077"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1510,7 +1534,8 @@
           "selectors": [
             "#text_ques_324"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.4.level",
@@ -1531,7 +1556,7 @@
         {
           "source": "courses.5.subject",
           "selectors": [
-            "label:Course 6 subject"
+            "#text_ques_1078"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1541,7 +1566,8 @@
           "selectors": [
             "#text_ques_328"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.5.level",
@@ -1562,7 +1588,7 @@
         {
           "source": "courses.6.subject",
           "selectors": [
-            "label:Course 7 subject"
+            "#text_ques_1079"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1572,7 +1598,8 @@
           "selectors": [
             "#text_ques_332"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.6.level",
@@ -1593,7 +1620,7 @@
         {
           "source": "courses.7.subject",
           "selectors": [
-            "label:Course 8 subject"
+            "#text_ques_1080"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1603,7 +1630,8 @@
           "selectors": [
             "#text_ques_336"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.7.level",
@@ -1624,7 +1652,7 @@
         {
           "source": "courses.8.subject",
           "selectors": [
-            "label:Course 9 subject"
+            "#text_ques_1081"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1634,7 +1662,8 @@
           "selectors": [
             "#text_ques_340"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.8.level",
@@ -1655,7 +1684,7 @@
         {
           "source": "courses.9.subject",
           "selectors": [
-            "label:Course 10 subject"
+            "#text_ques_1082"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1665,7 +1694,8 @@
           "selectors": [
             "#text_ques_344"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.9.level",
@@ -1686,7 +1716,7 @@
         {
           "source": "courses.10.subject",
           "selectors": [
-            "label:Course 11 subject"
+            "#text_ques_1083"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1694,14 +1724,15 @@
         {
           "source": "courses.10.name",
           "selectors": [
-            "label:Course 11 name"
+            "#text_ques_348"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.10.level",
           "selectors": [
-            "label:Course 11 level"
+            "#text_ques_349"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1709,7 +1740,7 @@
         {
           "source": "courses.10.schedule",
           "selectors": [
-            "label:Course 11 schedule"
+            "#text_ques_351"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1717,7 +1748,7 @@
         {
           "source": "courses.11.subject",
           "selectors": [
-            "label:Course 12 subject"
+            "#text_ques_1084"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1725,14 +1756,15 @@
         {
           "source": "courses.11.name",
           "selectors": [
-            "label:Course 12 name"
+            "#text_ques_352"
           ],
-          "kind": "text"
+          "kind": "text",
+          "requiresConfirm": true
         },
         {
           "source": "courses.11.level",
           "selectors": [
-            "label:Course 12 level"
+            "#text_ques_353"
           ],
           "kind": "text",
           "requiresConfirm": true
@@ -1740,7 +1772,7 @@
         {
           "source": "courses.11.schedule",
           "selectors": [
-            "label:Course 12 schedule"
+            "#text_ques_355"
           ],
           "kind": "text",
           "requiresConfirm": true

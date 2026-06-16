@@ -1,24 +1,55 @@
 import { db } from "@/lib/db";
 import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
-import { addCourseAction, deleteCourseAction } from "@/lib/actions/courses";
+import {
+  addCourseAction,
+  deleteCourseAction,
+  saveCourseSettingsAction,
+} from "@/lib/actions/courses";
 
 export const dynamic = "force-dynamic";
 
 export default async function CoursesPage() {
   const user = await requireUser();
   const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
-  const courses = await db.course.findMany({
-    where: { applicantId: applicant.id },
-    orderBy: { order: "asc" },
-  });
+  const [courses, profile] = await Promise.all([
+    db.course.findMany({
+      where: { applicantId: applicant.id },
+      orderBy: { order: "asc" },
+    }),
+    db.masterProfile.findUnique({ where: { applicantId: applicant.id } }),
+  ]);
 
   return (
     <main>
       <h1>Courses &amp; grades</h1>
       <p className="muted">
         Your current/senior-year courses (Common App allows up to 12). Add them in
-        order; the extension fills the course grid.
+        order; the extension sets the course count, the scheduling system, and
+        fills each course’s subject, name, level, and schedule.
       </p>
+
+      <div className="card">
+        <h2>Course settings</h2>
+        <form action={saveCourseSettingsAction}>
+          <div className="row">
+            <div style={{ flex: "1 1 240px" }}>
+              <label>Course scheduling system (your institution)</label>
+              <select name="courseScheduleSystem" defaultValue={profile?.courseScheduleSystem ?? ""}>
+                <option value="">—</option>
+                <option>Semester</option>
+                <option>Trimester</option>
+                <option>Quarter</option>
+                <option>Yearly</option>
+              </select>
+            </div>
+            <div style={{ flex: "1 1 200px" }}>
+              <label>Courses to report</label>
+              <input value={courses.length} disabled readOnly />
+            </div>
+          </div>
+          <button className="primary" type="submit">Save settings</button>
+        </form>
+      </div>
 
       <div className="card">
         <table>

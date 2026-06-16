@@ -140,6 +140,9 @@ export async function GET(req: Request) {
         name: l.name,
         proficiency: l.proficiency,
       })),
+      courseCount: applicant.courses.length
+        ? String(applicant.courses.length)
+        : null,
       courses: applicant.courses.map((c) => ({
         subject: c.subject,
         name: c.name,
