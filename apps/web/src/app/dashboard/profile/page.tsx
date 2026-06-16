@@ -384,7 +384,12 @@ export default async function ProfilePage() {
                 <option>None</option>
               </select>
             </div>
+            <F label="Exact rank (if Exact)" name="classRank" value={p?.classRank} />
             <F label="Decile rank (if Decile)" name="decileRank" value={p?.decileRank} />
+            <Sel label="Quintile (if Quintile)" name="quintileRank" value={p?.quintileRank} flex="1 1 160px"
+              options={["Top 20%", "Top 40%", "Top 60%", "Top 80%", "Top 100%"]} />
+            <Sel label="Quartile (if Quartile)" name="quartileRank" value={p?.quartileRank} flex="1 1 160px"
+              options={["Top 25%", "Top 50%", "Top 75%", "Top 100%"]} />
             <div style={{ flex: "1 1 160px" }}>
               <label>Class rank weighting</label>
               <select name="rankWeighting" defaultValue={p?.rankWeighting ?? ""}>

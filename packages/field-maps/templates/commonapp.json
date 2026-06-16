@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 18,
+  "version": 19,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -1256,6 +1256,39 @@
           "valueMap": {
             "Weighted": "#option_ques_306_841-input",
             "Unweighted": "#option_ques_306_842-input"
+          }
+        },
+        {
+          "source": "profile.classRank",
+          "selectors": [
+            "#text_ques_298"
+          ],
+          "kind": "text",
+          "requiresConfirm": true
+        },
+        {
+          "source": "profile.quintileRank",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Top 20%": "#option_ques_300_832-input",
+            "Top 40%": "#option_ques_300_833-input",
+            "Top 60%": "#option_ques_300_834-input",
+            "Top 80%": "#option_ques_300_835-input",
+            "Top 100%": "#option_ques_300_836-input"
+          }
+        },
+        {
+          "source": "profile.quartileRank",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Top 25%": "#option_ques_301_837-input",
+            "Top 50%": "#option_ques_301_838-input",
+            "Top 75%": "#option_ques_301_839-input",
+            "Top 100%": "#option_ques_301_840-input"
           }
         }
       ]

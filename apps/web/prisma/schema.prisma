@@ -168,9 +168,11 @@ model MasterProfile {
 
   gpa            Float?
   gpaScale       Float?
-  classRank      String?
+  classRank      String? // exact rank, shown when reporting = Exact
   classRankReporting String? // Exact | Decile | Quintile | Quartile | None
-  decileRank         String?
+  decileRank         String? // shown when reporting = Decile
+  quintileRank       String? // Top 20% | Top 40% | Top 60% | Top 80% | Top 100% (Quintile)
+  quartileRank       String? // Top 25% | Top 50% | Top 75% | Top 100% (Quartile)
   rankWeighting      String? // Weighted | Unweighted (class rank)
   gpaWeighting       String? // Weighted | Unweighted (GPA)
 
