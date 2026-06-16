@@ -23,6 +23,10 @@ export async function saveTestingAction(formData: FormData) {
 
   const data = {
     selfReportScores: s(formData, "selfReportScores"),
+    internationalLeavingExam: s(formData, "internationalLeavingExam"),
+    testsToReport:
+      formData.getAll("testsToReport").map((v) => String(v).trim()).filter(Boolean).join(", ") ||
+      null,
     ieltsTimesTaken: n(formData, "ieltsTimesTaken"),
     ieltsListening: s(formData, "ieltsListening"),
     ieltsReading: s(formData, "ieltsReading"),

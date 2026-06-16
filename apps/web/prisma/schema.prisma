@@ -522,6 +522,8 @@ model TestScores {
   applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
 
   selfReportScores String? // "Yes" | "No"
+  internationalLeavingExam String? // "Yes" | "No" (intl promotion by leaving exams)
+  testsToReport String? // CSV of CA test options (ACT Tests, SAT Tests, IELTS, …)
 
   // IELTS — one date applied to all sub-scores for simplicity.
   ieltsTimesTaken Int?

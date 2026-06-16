@@ -411,6 +411,32 @@
         if (!any) return { source: mapping.source, status: "no-matching-option", value: v };
         break;
       }
+      case "multi-combobox": {
+        // A combobox that accepts several selections (Common App "Tests Taken"
+        // → "Indicate all tests"). Type each value, pick its overlay option,
+        // clear, repeat. Value is a CSV of exact option labels.
+        const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+        let any = false;
+        const missed = [];
+        for (const w of wants) {
+          if (el.focus) el.focus();
+          setNativeValue(el, w);
+          const opt = await waitFor(() => pickOption(overlayOptions(), w), 1400);
+          if (opt) { opt.click(); any = true; await sleep(200); }
+          else missed.push(w);
+          setNativeValue(el, "");
+          await sleep(120);
+        }
+        if (el.blur) el.blur();
+        document.body.click();
+        markFilled(el, mapping.requiresConfirm);
+        if (!any) return { source: mapping.source, status: "no-matching-option", value };
+        return {
+          source: mapping.source,
+          status: mapping.requiresConfirm ? "filled-confirm" : "filled",
+          missed: missed.length ? missed : undefined,
+        };
+      }
       case "click-times": {
         // Click a button N times to reveal repeating blocks (e.g. Common App
         // "Add another honors"). N comes from the value (a count string).

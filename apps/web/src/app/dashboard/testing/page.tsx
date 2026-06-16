@@ -4,6 +4,13 @@ import { saveTestingAction } from "@/lib/actions/testing";
 
 export const dynamic = "force-dynamic";
 
+// Exact Common App "Tests Taken" (2/2) multi-select options.
+const TESTS = [
+  "ACT Tests", "SAT Tests", "SAT Subject Tests", "AP Subject Tests",
+  "IB Subject Tests", "Cambridge", "TOEFL iBT", "PTE Academic Test",
+  "IELTS", "Duolingo English Test",
+];
+
 function isoDate(d: Date | null) {
   return d ? d.toISOString().slice(0, 10) : "";
 }
@@ -24,12 +31,36 @@ export default async function TestingPage() {
       <form action={saveTestingAction}>
         <div className="card">
           <h2>General</h2>
-          <label>Do you wish to self-report scores?</label>
-          <select name="selfReportScores" defaultValue={t?.selfReportScores ?? ""} style={{ maxWidth: 220 }}>
-            <option value="">—</option>
-            <option>Yes</option>
-            <option>No</option>
-          </select>
+          <div className="row">
+            <div style={{ flex: "1 1 260px" }}>
+              <label>Do you wish to self-report scores or future test dates?</label>
+              <select name="selfReportScores" defaultValue={t?.selfReportScores ?? ""}>
+                <option value="">—</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+            <div style={{ flex: "1 1 260px" }}>
+              <label>International: promotion based on standard leaving exams?</label>
+              <select name="internationalLeavingExam" defaultValue={t?.internationalLeavingExam ?? ""}>
+                <option value="">—</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </div>
+          </div>
+          <label style={{ marginTop: 12 }}>Tests you wish to report (check all that apply)</label>
+          <div className="row">
+            {TESTS.map((o) => {
+              const picked = (t?.testsToReport ?? "").split(",").map((x) => x.trim());
+              return (
+                <label key={o} style={{ margin: 0, display: "flex", gap: 6, alignItems: "center" }}>
+                  <input type="checkbox" name="testsToReport" value={o}
+                    defaultChecked={picked.includes(o)} style={{ width: "auto" }} /> {o}
+                </label>
+              );
+            })}
+          </div>
         </div>
 
         <div className="card">

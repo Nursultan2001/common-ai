@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 23,
+  "version": 24,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -12,11 +12,27 @@
           "source": "testScores.selfReportScores",
           "kind": "radio-map",
           "selectors": [],
-          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_837_2371-input",
+            "No": "#option_ques_837_2372-input"
+          }
+        },
+        {
+          "source": "testScores.internationalLeavingExam",
+          "kind": "radio-map",
+          "selectors": [],
           "valueMap": {
             "Yes": "#option_ques_925_2371-input",
             "No": "#option_ques_925_2372-input"
           }
+        },
+        {
+          "source": "testScores.testsToReport",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_11"
+          ],
+          "requiresConfirm": true
         }
       ]
     },
