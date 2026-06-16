@@ -14,6 +14,9 @@ const TESTS = [
 // ACT score ranges (composite & sections 1–36, writing 2–12).
 const ACT_SCORES = Array.from({ length: 36 }, (_, i) => String(36 - i));
 const ACT_WRITING = Array.from({ length: 11 }, (_, i) => String(12 - i));
+// SAT ranges: sections 200–800, total 400–1600 (steps of 10).
+const SAT_SECTION = Array.from({ length: 61 }, (_, i) => String(800 - i * 10));
+const SAT_TOTAL = Array.from({ length: 121 }, (_, i) => String(1600 - i * 10));
 
 function isoDate(d: Date | null) {
   return d ? d.toISOString().slice(0, 10) : "";
@@ -63,8 +66,9 @@ export default async function TestingPage() {
     <main>
       <h1>Testing</h1>
       <p className="muted">
-        Self-reported test scores. IELTS-focused for now (we’ll add SAT/ACT/AP
-        next). One IELTS test date is applied to all sub-scores on Common App.
+        Self-reported test scores. Fill the tests that apply to you — the
+        extension reports them and fills each score and date on Common App.
+        (One IELTS test date is applied to all IELTS sub-scores.)
       </p>
 
       <form action={saveTestingAction}>
@@ -135,6 +139,29 @@ export default async function TestingPage() {
               <label>Overall band</label>
               <input name="ieltsOverall" defaultValue={t?.ieltsOverall ?? ""} />
             </div>
+          </div>
+        </div>
+
+        <div className="card">
+          <h2>SAT</h2>
+          <div className="row">
+            <ScoreSel label="Number of past SAT scores to report" name="satPastCount"
+              value={t?.satPastCount} options={["0", "1", "2", "3"]} />
+            <ScoreSel label="Number of future SAT sittings expected" name="satFutureSittings"
+              value={t?.satFutureSittings} options={["0", "1", "2", "3"]} />
+          </div>
+          <div className="row">
+            <ScoreSel label="Highest total score" name="satTotal" value={t?.satTotal} options={SAT_TOTAL} />
+            <DateInp label="Total date" name="satTotalDate" value={t?.satTotalDate} />
+          </div>
+          <div className="row">
+            <ScoreSel label="Highest Reading & Writing score" name="satReadingWriting"
+              value={t?.satReadingWriting} options={SAT_SECTION} />
+            <DateInp label="Reading & Writing date" name="satReadingWritingDate" value={t?.satReadingWritingDate} />
+          </div>
+          <div className="row">
+            <ScoreSel label="Highest math score" name="satMath" value={t?.satMath} options={SAT_SECTION} />
+            <DateInp label="Math date" name="satMathDate" value={t?.satMathDate} />
           </div>
         </div>
 

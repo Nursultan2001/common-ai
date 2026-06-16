@@ -534,6 +534,16 @@ model TestScores {
   ieltsOverall    String?
   ieltsDate       DateTime?
 
+  // SAT (page 2/4). Sections 200–800, total 400–1600 (dropdowns).
+  satPastCount         String?  // count (dropdown)
+  satFutureSittings    String?  // 0–3 (radio)
+  satTotal             String?
+  satTotalDate         DateTime?
+  satReadingWriting    String?  // Evidence-Based Reading & Writing
+  satReadingWritingDate DateTime?
+  satMath              String?
+  satMathDate          DateTime?
+
   // ACT (page 2/3). Scores stored as strings (the form uses dropdowns).
   actPastCount      String?   // 0–5 (radio)
   actComposite      String?   // 1–36
