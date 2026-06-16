@@ -181,8 +181,9 @@ model MasterProfile {
   actComposite Int?
 
   intendedMajor  String?
-  highestDegree  String? // e.g. "Bachelor's", "Master's"
-  careerInterest String?
+  highestDegree  String? // Common App "Highest degree you intend to earn" option
+  careerInterest String? // Common App "Career interest" option
+  enrollmentPlan String? // Future Plans "Which best describes you?" option
 
   // Common App Fee Waiver (a certification — the student must truly qualify).
   feeWaiverEligible  String? // "Yes" | "No"

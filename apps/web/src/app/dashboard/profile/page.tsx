@@ -17,6 +17,38 @@ export const dynamic = "force-dynamic";
 
 const PROFICIENCY = ["First Language", "Speak", "Read", "Write", "Spoken at Home"];
 
+// Exact Common App "Future Plans" (4/197) dropdown/radio options.
+const ENROLLMENT_PLANS = [
+  "Applying as a first-year student and plan to start college in 2025 or 2026",
+  "Planning to start college in 2027",
+  "Planning to start college in 2028 or beyond",
+  "Already a college student",
+];
+const DEGREES = [
+  "Associate's (AA, AS)", "Bachelor's (BA, BS)", "Master's (MA, MS)",
+  "Business (MBA, MAcc)", "Law (JD, LLM)", "Medicine (MD, DO, DVM, DDS)",
+  "Doctorate (PhD, EdD, etc)", "Other", "Undecided",
+];
+const CAREERS = [
+  "Accountant or actuary", "Actor or entertainer", "Architect or urban planner",
+  "Artist", "Business (clerical)", "Business executive (management, administrator)",
+  "Business owner or proprietor", "Business salesperson or buyer", "Chef",
+  "Clergy (minister, priest)", "Clergy (other religious)", "Clinical psychologist",
+  "College administrator/staff", "College teacher", "Computer programmer or analyst",
+  "Conservationist or forester", "Dentist (including orthodontist)",
+  "Dietitian or nutritionist", "Engineer", "Farmer or rancher",
+  "Foreign service worker (including diplomat)", "Homemaker (full-time)",
+  "Hospitality Management (Hotels, Restaurant)", "Interior decorator (including designer)",
+  "Lab technician or hygienist", "Laborer", "Law enforcement officer",
+  "Lawyer (attorney) or judge", "Military service (career)",
+  "Musician (performer, composer)", "Nurse", "Optometrist", "Pharmacist",
+  "Physician", "Policymaker/Government", "School counselor",
+  "School principal or superintendent", "Scientific researcher", "Skilled trades",
+  "Social, welfare, or recreation worker", "Teacher or administrator (elementary)",
+  "Teacher or administrator (secondary)", "Therapist (physical, occupational, speech)",
+  "Veterinarian", "Writer or journalist", "Other", "Undecided",
+];
+
 function isoDate(d: Date | null) {
   return d ? d.toISOString().slice(0, 10) : "";
 }
@@ -412,8 +444,14 @@ export default async function ProfilePage() {
         <div className="card">
           <h2>College plans</h2>
           <div className="row">
-            <F label="Highest degree you intend to earn" name="highestDegree" value={p?.highestDegree} />
-            <F label="Career interest" name="careerInterest" value={p?.careerInterest} />
+            <Sel label="Which best describes you?" name="enrollmentPlan" value={p?.enrollmentPlan}
+              flex="1 1 100%" options={ENROLLMENT_PLANS} />
+          </div>
+          <div className="row">
+            <Sel label="Highest degree you intend to earn" name="highestDegree"
+              value={p?.highestDegree} flex="1 1 280px" options={DEGREES} />
+            <Sel label="Career interest" name="careerInterest"
+              value={p?.careerInterest} flex="1 1 280px" options={CAREERS} />
           </div>
         </div>
 

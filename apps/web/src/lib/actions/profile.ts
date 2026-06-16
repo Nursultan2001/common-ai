@@ -94,6 +94,7 @@ export async function saveProfileAction(formData: FormData) {
     intendedMajor: str(formData, "intendedMajor"),
     highestDegree: str(formData, "highestDegree"),
     careerInterest: str(formData, "careerInterest"),
+    enrollmentPlan: str(formData, "enrollmentPlan"),
     feeWaiverEligible: str(formData, "feeWaiverEligible"),
     feeWaiverSignature: str(formData, "feeWaiverSignature"),
     ustriveMentor: str(formData, "ustriveMentor"),

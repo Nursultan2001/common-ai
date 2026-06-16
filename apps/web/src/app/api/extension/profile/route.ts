@@ -153,6 +153,9 @@ export async function GET(req: Request) {
         level: c.level,
         schedule: c.schedule,
       })),
+      // Community-Based Organizations (page 4/22): always 0 — we are the
+      // student's free application assistance, so no outside org is reported.
+      communityOrgsCount: "0",
       // Additional secondary/high schools (page 4/19).
       otherSchoolsCount: String(applicant.otherSchools.length),
       otherSchools: applicant.otherSchools.map((o) => ({

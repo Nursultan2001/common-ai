@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 22,
+  "version": 23,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -818,6 +818,20 @@
       ]
     },
     {
+      "urlPattern": "https://apply.commonapp.org/common/4/22*",
+      "name": "Education — community-based organizations",
+      "fields": [
+        {
+          "source": "communityOrgsCount",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "0": "#option_ques_283_1086-input"
+          }
+        }
+      ]
+    },
+    {
       "urlPattern": "https://apply.commonapp.org/common/4/21*",
       "name": "Education — colleges & universities",
       "fields": [
@@ -1170,20 +1184,29 @@
       "name": "Education — future plans",
       "fields": [
         {
+          "source": "profile.enrollmentPlan",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "Applying as a first-year student and plan to start college in 2025 or 2026": "#option_ques_2071_5703-input",
+            "Planning to start college in 2027": "#option_ques_2071_5704-input",
+            "Planning to start college in 2028 or beyond": "#option_ques_2071_5705-input",
+            "Already a college student": "#option_ques_2071_5706-input"
+          }
+        },
+        {
           "source": "profile.highestDegree",
-          "selectors": [
-            "label:Highest degree you intend to earn"
-          ],
           "kind": "text",
-          "requiresConfirm": true
+          "selectors": [
+            "#text_ques_1493"
+          ]
         },
         {
           "source": "profile.careerInterest",
-          "selectors": [
-            "label:Career interest"
-          ],
           "kind": "text",
-          "requiresConfirm": true
+          "selectors": [
+            "#text_ques_1492"
+          ]
         }
       ]
     },
