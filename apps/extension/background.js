@@ -86,7 +86,7 @@ async function fillTabPage(tabId) {
 // Every Common App section page we know (from the user's captures). The deep
 // scraper walks all of them; pages that 404/redirect simply yield no fields.
 const COMMONAPP_PAGES = [
-  "2/2", "2/3", "2/10", "2/37",
+  "2/2", "2/3", "2/236", "2/10", "2/37",
   "3/11", "3/12", "3/13", "3/14", "3/16", "3/17", "3/53",
   "4/18", "4/19", "4/21", "4/22", "4/23", "4/24", "4/25", "4/197",
   "5/26", "5/27", "5/28", "5/30",

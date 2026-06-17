@@ -545,15 +545,19 @@ model TestScores {
   ieltsOverall    String?
   ieltsDate       DateTime?
 
-  // SAT (page 2/4). Sections 200–800, total 400–1600 (dropdowns).
-  satPastCount         String?  // count (dropdown)
+  // SAT (page 2/236): EBRW + Math (200–800), optional Essay (combined 6–24).
+  satPastCount         String?  // 0–5 (dropdown)
   satFutureSittings    String?  // 0–3 (radio)
-  satTotal             String?
-  satTotalDate         DateTime?
-  satReadingWriting    String?  // Evidence-Based Reading & Writing
+  satFutureDate1       DateTime?
+  satFutureDate2       DateTime?
+  satFutureDate3       DateTime?
+  satReadingWriting    String?  // Highest Evidence-Based Reading & Writing
   satReadingWritingDate DateTime?
-  satMath              String?
+  satMath              String?  // Highest Math
   satMathDate          DateTime?
+  satEssayReport       String?  // "Yes" | "No" — report a combined essay score?
+  satEssay             String?  // Highest combined essay score (6–24)
+  satEssayDate         DateTime?
 
   // ACT (page 2/3). Scores stored as strings (the form uses dropdowns).
   actPastCount      String?   // 0–5 (radio)

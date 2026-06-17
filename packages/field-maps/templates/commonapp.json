@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 28,
+  "version": 29,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -171,6 +171,108 @@
             "2": "#option_ques_13_17-input",
             "3": "#option_ques_13_18-input"
           }
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/2/236*",
+      "name": "Testing — SAT",
+      "fields": [
+        {
+          "source": "testScores.satPastCount",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_1839"
+          ]
+        },
+        {
+          "source": "testScores.satFutureSittings",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "0": "#option_ques_30_15-input",
+            "1": "#option_ques_30_16-input",
+            "2": "#option_ques_30_17-input",
+            "3": "#option_ques_30_18-input"
+          }
+        },
+        {
+          "source": "testScores.satFutureDate1",
+          "kind": "date",
+          "selectors": [
+            "#text_ques_31"
+          ],
+          "format": "MMMM D, YYYY"
+        },
+        {
+          "source": "testScores.satFutureDate2",
+          "kind": "date",
+          "selectors": [
+            "#text_ques_32"
+          ],
+          "format": "MMMM D, YYYY"
+        },
+        {
+          "source": "testScores.satFutureDate3",
+          "kind": "date",
+          "selectors": [
+            "#text_ques_33"
+          ],
+          "format": "MMMM D, YYYY"
+        },
+        {
+          "source": "testScores.satReadingWriting",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_1840"
+          ]
+        },
+        {
+          "source": "testScores.satReadingWritingDate",
+          "kind": "date",
+          "selectors": [
+            "#text_ques_1841"
+          ],
+          "format": "MMMM D, YYYY"
+        },
+        {
+          "source": "testScores.satMath",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_1842"
+          ]
+        },
+        {
+          "source": "testScores.satMathDate",
+          "kind": "date",
+          "selectors": [
+            "#text_ques_1843"
+          ],
+          "format": "MMMM D, YYYY"
+        },
+        {
+          "source": "testScores.satEssayReport",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "Yes": "#option_ques_1844_1792-input",
+            "No": "#option_ques_1844_1793-input"
+          }
+        },
+        {
+          "source": "testScores.satEssay",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_1845"
+          ]
+        },
+        {
+          "source": "testScores.satEssayDate",
+          "kind": "date",
+          "selectors": [
+            "#text_ques_1846"
+          ],
+          "format": "MMMM D, YYYY"
         }
       ]
     },

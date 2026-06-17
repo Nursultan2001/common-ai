@@ -14,9 +14,9 @@ const TESTS = [
 // ACT score ranges (composite & sections 1–36, writing 2–12).
 const ACT_SCORES = Array.from({ length: 36 }, (_, i) => String(36 - i));
 const ACT_WRITING = Array.from({ length: 11 }, (_, i) => String(12 - i));
-// SAT ranges: sections 200–800, total 400–1600 (steps of 10).
+// SAT ranges: sections 200–800 (step 10); combined essay 6–24.
 const SAT_SECTION = Array.from({ length: 61 }, (_, i) => String(800 - i * 10));
-const SAT_TOTAL = Array.from({ length: 121 }, (_, i) => String(1600 - i * 10));
+const SAT_ESSAY = Array.from({ length: 19 }, (_, i) => String(24 - i));
 
 function isoDate(d: Date | null) {
   return d ? d.toISOString().slice(0, 10) : "";
@@ -146,22 +146,29 @@ export default async function TestingPage() {
           <h2>SAT</h2>
           <div className="row">
             <ScoreSel label="Number of past SAT scores to report" name="satPastCount"
-              value={t?.satPastCount} options={["0", "1", "2", "3"]} />
+              value={t?.satPastCount} options={["0", "1", "2", "3", "4", "5"]} />
             <ScoreSel label="Number of future SAT sittings expected" name="satFutureSittings"
               value={t?.satFutureSittings} options={["0", "1", "2", "3"]} />
           </div>
           <div className="row">
-            <ScoreSel label="Highest total score" name="satTotal" value={t?.satTotal} options={SAT_TOTAL} />
-            <DateInp label="Total date" name="satTotalDate" value={t?.satTotalDate} />
+            <DateInp label="Future testing date 1" name="satFutureDate1" value={t?.satFutureDate1} />
+            <DateInp label="Future testing date 2" name="satFutureDate2" value={t?.satFutureDate2} />
+            <DateInp label="Future testing date 3" name="satFutureDate3" value={t?.satFutureDate3} />
           </div>
           <div className="row">
-            <ScoreSel label="Highest Reading & Writing score" name="satReadingWriting"
+            <ScoreSel label="Highest Evidence-Based Reading & Writing" name="satReadingWriting"
               value={t?.satReadingWriting} options={SAT_SECTION} />
             <DateInp label="Reading & Writing date" name="satReadingWritingDate" value={t?.satReadingWritingDate} />
           </div>
           <div className="row">
             <ScoreSel label="Highest math score" name="satMath" value={t?.satMath} options={SAT_SECTION} />
             <DateInp label="Math date" name="satMathDate" value={t?.satMathDate} />
+          </div>
+          <div className="row">
+            <ScoreSel label="Report a combined essay score?" name="satEssayReport"
+              value={t?.satEssayReport} options={["Yes", "No"]} />
+            <ScoreSel label="Highest combined essay score" name="satEssay" value={t?.satEssay} options={SAT_ESSAY} />
+            <DateInp label="Combined essay date" name="satEssayDate" value={t?.satEssayDate} />
           </div>
         </div>
 
