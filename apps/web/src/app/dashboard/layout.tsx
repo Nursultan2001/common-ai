@@ -10,6 +10,7 @@ const LINKS = [
   { href: "/dashboard/profile", label: "Profile" },
   { href: "/dashboard/courses", label: "Courses" },
   { href: "/dashboard/activities", label: "Activities" },
+  { href: "/dashboard/writing", label: "Writing" },
   { href: "/dashboard/honors", label: "Honors" },
   { href: "/dashboard/family", label: "Family" },
   { href: "/dashboard/testing", label: "Testing" },

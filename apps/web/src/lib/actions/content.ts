@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
 import { canAccessApplicant } from "@/lib/auth";
-import { polishActivity, polishHonor } from "@/lib/ai";
+import { polishActivity, polishHonor, draftEssayScaffold, refineEssay } from "@/lib/ai";
+import { PERSONAL_ESSAY_PROMPTS, PERSONAL_ESSAY_WORD_LIMIT } from "@/lib/essayPrompts";
 
 // ---- Activities ----
 
@@ -176,4 +177,102 @@ export async function deleteHonorAction(formData: FormData) {
   if (!honor || !(await canAccessApplicant(user, honor.applicantId))) return;
   await db.honor.delete({ where: { id } });
   revalidatePath("/dashboard/honors");
+}
+
+// ---- Personal essay (Common App Writing) ----
+// One PERSONAL_STATEMENT essay per applicant. The student picks a prompt and
+// either brain-dumps their material (AI drafts from it) or writes their own
+// draft (AI refines it). Either way the student edits and approves the final —
+// they remain the author.
+
+async function getOrCreatePersonalEssay(applicantId: string) {
+  const existing = await db.essay.findFirst({
+    where: { applicantId, kind: "PERSONAL_STATEMENT" },
+  });
+  if (existing) return existing;
+  return db.essay.create({
+    data: { applicantId, kind: "PERSONAL_STATEMENT", wordLimit: PERSONAL_ESSAY_WORD_LIMIT },
+  });
+}
+
+function promptFromIndex(formData: FormData): string | null {
+  const idx = Number(formData.get("promptIndex"));
+  return idx >= 1 && idx <= PERSONAL_ESSAY_PROMPTS.length
+    ? PERSONAL_ESSAY_PROMPTS[idx - 1]
+    : null;
+}
+
+// Save prompt choice, the student's notes, and/or the student's own draft.
+export async function saveEssayAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const essay = await getOrCreatePersonalEssay(applicant.id);
+  await db.essay.update({
+    where: { id: essay.id },
+    data: {
+      prompt: promptFromIndex(formData) ?? essay.prompt,
+      studentNotes: String(formData.get("studentNotes") ?? "") || null,
+      draft: String(formData.get("draft") ?? "") || essay.draft,
+    },
+  });
+  revalidatePath("/dashboard/writing");
+}
+
+// Mode A — generate a first draft from the student's notes/material.
+export async function generateEssayAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const essay = await getOrCreatePersonalEssay(applicant.id);
+  const prompt = promptFromIndex(formData) ?? essay.prompt;
+  const studentNotes = String(formData.get("studentNotes") ?? "").trim();
+  if (!prompt || !studentNotes) return;
+
+  const r = await draftEssayScaffold({
+    prompt,
+    wordLimit: essay.wordLimit,
+    studentNotes,
+  });
+  await db.essay.update({
+    where: { id: essay.id },
+    data: { prompt, studentNotes, outline: r.outline || null, draft: r.draft || null, status: "DRAFTED" },
+  });
+  revalidatePath("/dashboard/writing");
+}
+
+// Mode B — refine the student's OWN draft into its strongest version.
+export async function refineEssayAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const essay = await getOrCreatePersonalEssay(applicant.id);
+  const prompt = promptFromIndex(formData) ?? essay.prompt;
+  const studentDraft = String(formData.get("draft") ?? "").trim();
+  if (!prompt || !studentDraft) return;
+
+  const r = await refineEssay({ prompt, wordLimit: essay.wordLimit, studentDraft });
+  await db.essay.update({
+    where: { id: essay.id },
+    data: {
+      prompt,
+      // keep the student's original words in studentNotes for reference
+      studentNotes: essay.studentNotes ?? studentDraft,
+      outline: r.notes.length ? r.notes.join("\n") : essay.outline,
+      draft: r.draft || studentDraft,
+      status: "DRAFTED",
+    },
+  });
+  revalidatePath("/dashboard/writing");
+}
+
+// Approve the final essay (the student's edited text) for autofill.
+export async function approveEssayAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const essay = await getOrCreatePersonalEssay(applicant.id);
+  const finalText = String(formData.get("finalText") ?? "").trim();
+  if (!finalText) return;
+  await db.essay.update({
+    where: { id: essay.id },
+    data: { finalText, draft: finalText, status: "APPROVED" },
+  });
+  revalidatePath("/dashboard/writing");
 }

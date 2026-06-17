@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { resolveSessionUser, canAccessApplicant, corsHeaders } from "@/lib/auth";
 import { isApplicationUnlocked } from "@/lib/entitlements";
+import { PERSONAL_ESSAY_PROMPTS } from "@/lib/essayPrompts";
 
 export async function OPTIONS() {
   return new NextResponse(null, { status: 204, headers: corsHeaders() });
@@ -120,6 +121,21 @@ export async function GET(req: Request) {
         prompt: e.prompt,
         text: e.finalText, // only the student's own final text
       })),
+      // Personal essay (Writing page): only the APPROVED statement is exposed.
+      // essayUnderstand always checks the acknowledgment; essayPromptIndex picks
+      // the matching prompt radio; essayText fills the editor.
+      ...(() => {
+        const ps = applicant.essays.find(
+          (e) => e.kind === "PERSONAL_STATEMENT" && e.status === "APPROVED" && e.finalText
+        );
+        if (!ps) return {};
+        const idx = ps.prompt ? PERSONAL_ESSAY_PROMPTS.indexOf(ps.prompt) + 1 : 0;
+        return {
+          essayUnderstand: "I understand",
+          essayPromptIndex: idx >= 1 ? String(idx) : null,
+          essayText: ps.finalText,
+        };
+      })(),
       parents: applicant.parents.map((p) => ({
         parentType: p.parentType,
         isLiving: p.isLiving,
