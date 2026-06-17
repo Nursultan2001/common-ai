@@ -276,3 +276,20 @@ export async function approveEssayAction(formData: FormData) {
   });
   revalidatePath("/dashboard/writing");
 }
+
+// Additional Information (Common App Writing section). Two optional free-text
+// boxes; the Yes/No radios are derived from whether each box has content.
+export async function saveAdditionalInfoAction(formData: FormData) {
+  const user = await requireUser();
+  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const data = {
+    addlInfoText: String(formData.get("addlInfoText") ?? "").trim() || null,
+    addlQualificationsText: String(formData.get("addlQualificationsText") ?? "").trim() || null,
+  };
+  await db.masterProfile.upsert({
+    where: { applicantId: applicant.id },
+    update: data,
+    create: { applicantId: applicant.id, ...data },
+  });
+  revalidatePath("/dashboard/writing");
+}

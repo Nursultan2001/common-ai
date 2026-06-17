@@ -121,6 +121,11 @@ export async function GET(req: Request) {
         prompt: e.prompt,
         text: e.finalText, // only the student's own final text
       })),
+      // Additional Information (Writing): Yes/No derived from whether text exists.
+      addlInfoShare: applicant.profile?.addlInfoText ? "Yes" : "No",
+      addlInfoText: applicant.profile?.addlInfoText ?? null,
+      addlQualificationsShare: applicant.profile?.addlQualificationsText ? "Yes" : "No",
+      addlQualificationsText: applicant.profile?.addlQualificationsText ?? null,
       // Personal essay (Writing page): only the APPROVED statement is exposed.
       // essayUnderstand always checks the acknowledgment; essayPromptIndex picks
       // the matching prompt radio; essayText fills the editor.

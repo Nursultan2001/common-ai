@@ -5,6 +5,7 @@ import {
   generateEssayAction,
   refineEssayAction,
   approveEssayAction,
+  saveAdditionalInfoAction,
 } from "@/lib/actions/content";
 import {
   PERSONAL_ESSAY_PROMPTS,
@@ -19,9 +20,12 @@ const wordCount = (s?: string | null) =>
 export default async function WritingPage() {
   const user = await requireUser();
   const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
-  const essay = await db.essay.findFirst({
-    where: { applicantId: applicant.id, kind: "PERSONAL_STATEMENT" },
-  });
+  const [essay, profile] = await Promise.all([
+    db.essay.findFirst({
+      where: { applicantId: applicant.id, kind: "PERSONAL_STATEMENT" },
+    }),
+    db.masterProfile.findUnique({ where: { applicantId: applicant.id } }),
+  ]);
   const selectedIndex = essay?.prompt
     ? PERSONAL_ESSAY_PROMPTS.indexOf(essay.prompt) + 1
     : 0;
@@ -132,6 +136,32 @@ export default async function WritingPage() {
           {essay?.status === "APPROVED" && (
             <span className="badge paid" style={{ marginLeft: 10 }}>APPROVED</span>
           )}
+        </form>
+      </div>
+
+      <div className="card">
+        <h2>Additional information</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Both questions are optional. Leave a box empty and the extension answers
+          “No”; write something and it answers “Yes” and fills your text on Common
+          App. Plain, factual context works best here — this isn’t a second essay.
+        </p>
+        <form action={saveAdditionalInfoAction}>
+          <label>
+            Challenges or circumstances that affected your application (e.g. health,
+            family obligations, housing, disruption) — optional
+          </label>
+          <textarea name="addlInfoText" rows={5} defaultValue={profile?.addlInfoText ?? ""} />
+          <label style={{ marginTop: 12 }}>
+            Other details or qualifications not reflected elsewhere in your
+            application — optional
+          </label>
+          <textarea
+            name="addlQualificationsText"
+            rows={5}
+            defaultValue={profile?.addlQualificationsText ?? ""}
+          />
+          <button className="primary" type="submit">Save additional information</button>
         </form>
       </div>
     </main>

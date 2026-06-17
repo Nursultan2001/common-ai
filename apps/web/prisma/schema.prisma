@@ -200,6 +200,11 @@ model MasterProfile {
   responsibilities String?
   circumstances    String?
 
+  // Additional Information (Writing section). Each Yes/No is derived from whether
+  // the student wrote anything in the matching box.
+  addlInfoText           String? // challenges/circumstances details
+  addlQualificationsText String? // other details/qualifications not reflected elsewhere
+
   // Free-form structured extras the questionnaire collected, stored as JSON
   // text so we can add intake questions without migrations. Still read-only facts.
   extra String?
