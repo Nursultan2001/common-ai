@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 26,
+  "version": 27,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -3314,6 +3314,43 @@
             "Yes": "#option_ques_1911_2371-input",
             "No": "#option_ques_1911_2372-input"
           }
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/6/33*",
+      "name": "Writing — personal essay",
+      "fields": [
+        {
+          "source": "essayUnderstand",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "valueMap": {
+            "I understand": "#ca-checkboxList-1_655298-input"
+          }
+        },
+        {
+          "source": "essayPromptIndex",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "1": "#option_ques_831_1308-input",
+            "2": "#option_ques_831_1309-input",
+            "3": "#option_ques_831_1310-input",
+            "4": "#option_ques_831_5315-input",
+            "5": "#option_ques_831_1312-input",
+            "6": "#option_ques_831_1209-input",
+            "7": "#option_ques_831_2999-input"
+          }
+        },
+        {
+          "source": "essayText",
+          "kind": "richtext",
+          "selectors": [
+            ".ck-content[contenteditable=\"true\"]"
+          ],
+          "requiresConfirm": true
         }
       ]
     }
