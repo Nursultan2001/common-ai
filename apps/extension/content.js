@@ -582,12 +582,121 @@
     };
   }
 
+  // courses-grid: the Courses & Grades transcript modal (pages 13/55–13/58).
+  //   1. open the grade's grid (#addCG), 2. fill the transcript header
+  //      (school/year/scale/schedule mat-selects), 3. fill each course into a
+  //      row (Subject mat-select, Course Name text, Course Level mat-select),
+  //      adding rows when needed, 4. remove leftover empty rows (with their
+  //      confirm dialog), 5. Continue to save the grid.
+  // Skips when the grade has no courses (the student instead ticks "I have
+  // reported all" on the page, handled as a separate checkbox field).
+  async function fillCoursesGrid(mapping, payload) {
+    const data = get(payload, mapping.source);
+    const courses = (data && Array.isArray(data.courses)) ? data.courses.filter(
+      (c) => c && (c.subject || c.courseName || c.courseLevel)
+    ) : [];
+    if (!data || courses.length === 0) {
+      return { source: mapping.source, status: "skip-no-courses" };
+    }
+
+    const fullClick = (el) =>
+      ["mousedown", "mouseup", "click"].forEach((t) =>
+        el.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+      );
+    const dlg = () => document.querySelector("mat-dialog-container, [role='dialog']");
+    const dlgBtn = (re) => {
+      const d = dlg();
+      if (!d) return null;
+      return Array.from(d.querySelectorAll("button")).find((b) => re.test((b.textContent || "").trim()));
+    };
+    const setText = (el, v) => {
+      setNativeValue(el, String(v));
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      el.dispatchEvent(new Event("blur", { bubbles: true }));
+    };
+
+    // 1. open the modal.
+    const trigger = findEl([mapping.trigger || "#addCG"]);
+    if (!trigger) return { source: mapping.source, status: "add-grade-button-not-found" };
+    trigger.click();
+    const ready = await waitFor(() => document.getElementById("schoolNameControl1"), 3500);
+    if (!ready) return { source: mapping.source, status: "grid-modal-not-open" };
+
+    const sub = [];
+    const matById = async (id, val) => {
+      if (!val) return;
+      const el = document.getElementById(id);
+      if (!el) { sub.push({ source: id, status: "field-not-found" }); return; }
+      const r = await fillMatSelect(el, val);
+      sub.push({ source: id, status: r === "filled" ? "filled" : r, value: val });
+      await sleep(150);
+    };
+
+    // 2. transcript header.
+    await matById("schoolNameControl1", data.schoolName);
+    await matById("schoolYearControl1", data.schoolYear);
+    await matById("gradingScaleControl1", data.gradingScale);
+    await matById("scheduleControl1", data.schedule);
+
+    // 3. courses — one per row (T1C1, T1C2, …), adding rows as needed.
+    for (let i = 0; i < courses.length; i++) {
+      const n = i + 1;
+      let subjEl = document.getElementById(`subjectControl_T1C${n}`);
+      if (!subjEl) {
+        const add = dlgBtn(/add another course/i);
+        if (add) fullClick(add);
+        subjEl = await waitFor(() => document.getElementById(`subjectControl_T1C${n}`), 2500);
+      }
+      if (!subjEl) { sub.push({ source: `course ${n}`, status: "row-not-created" }); continue; }
+      const c = courses[i];
+      if (c.subject) { await fillMatSelect(subjEl, c.subject); await sleep(120); }
+      const nameEl = document.getElementById(`courseNameControl_T1C${n}`);
+      if (nameEl && c.courseName) setText(nameEl, c.courseName);
+      const lvlEl = document.getElementById(`levelControl_T1C${n}`);
+      if (lvlEl && c.courseLevel) { await fillMatSelect(lvlEl, c.courseLevel); await sleep(120); }
+      sub.push({ source: `course ${n}`, status: "filled" });
+    }
+
+    // 4. remove leftover empty rows (fresh grid starts with 2; confirm dialog).
+    for (let guard = 0; guard < 6; guard++) {
+      const rows = document.querySelectorAll('[id^="subjectControl_T1C"]').length;
+      if (rows <= courses.length) break;
+      const dels = dlg() ? dlg().querySelectorAll(".course__delete, button[aria-label^='Remove transcript']") : [];
+      const del = dels[dels.length - 1];
+      if (!del) break;
+      fullClick(del);
+      await sleep(400);
+      // a confirm dialog may open — click its confirm button.
+      const confirm = await waitFor(() => {
+        const btns = Array.from(document.querySelectorAll("button"));
+        return btns.find((b) => /^(remove|delete|yes|confirm)\b/i.test((b.textContent || "").trim()));
+      }, 1200);
+      if (confirm) { fullClick(confirm); await sleep(400); }
+    }
+
+    // 5. Continue saves the grid and closes the modal.
+    const cont = dlgBtn(/continue/i);
+    if (cont) { fullClick(cont); await sleep(500); }
+
+    const filled = sub.filter((r) => r.status === "filled").length;
+    return {
+      source: mapping.source,
+      status: "filled-confirm",
+      detail: `${data.schoolName || "transcript"}: ${courses.length} course(s), ${filled} fields ok`,
+      sub,
+    };
+  }
+
   async function applyPage(pageMap, payload) {
     const report = [];
 
     for (const m of pageMap.fields || []) {
       if (m.kind === "school-lookup") {
         report.push(await fillSchoolLookup(m, payload));
+        continue;
+      }
+      if (m.kind === "courses-grid") {
+        report.push(await fillCoursesGrid(m, payload));
         continue;
       }
       report.push((await fillField(m, get(payload, m.source))) || { source: m.source, status: "empty" });

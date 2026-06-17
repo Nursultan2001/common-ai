@@ -94,6 +94,7 @@ model Applicant {
   colleges     College[]
   testScores   TestScores?
   courses      Course[]
+  gradeReports GradeReport[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -204,6 +205,9 @@ model MasterProfile {
   // the student wrote anything in the matching box.
   addlInfoText           String? // challenges/circumstances details
   addlQualificationsText String? // other details/qualifications not reflected elsewhere
+
+  // Courses & Grades transcript section (13/54): can access transcript/grades?
+  transcriptAccess String? // "Yes" | "No"
 
   // Free-form structured extras the questionnaire collected, stored as JSON
   // text so we can add intake questions without migrations. Still read-only facts.
@@ -504,6 +508,45 @@ model College {
 
   @@unique([applicantId, order])
   @@index([applicantId])
+}
+
+// Courses & Grades transcript section (Common App pages 13/55–13/58, one per
+// grade 9–12). Each grade has a transcript header (school/year/scale/schedule)
+// and a list of courses entered in the modal grid. One transcript per grade.
+model GradeReport {
+  id          String   @id @default(cuid())
+  applicantId String
+  applicant   Applicant @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  grade        String  // "9" | "10" | "11" | "12"
+  schoolName   String?
+  schoolYear   String? // e.g. "2024-25"
+  gradingScale String? // "A-F" | "1-100" | "0.0-4.0" | "0.0-5.0" | "1-7" | "1-10" | "1-11" | "1-20" | "Other"
+  schedule     String? // "Semesters" | "Trimesters" | "Quarters" | "Yearly" | "Other"
+  reportedAll  Boolean @default(false)
+
+  courses GradeCourse[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([applicantId, grade])
+  @@index([applicantId])
+}
+
+model GradeCourse {
+  id            String @id @default(cuid())
+  gradeReportId String
+  report        GradeReport @relation(fields: [gradeReportId], references: [id], onDelete: Cascade)
+
+  order       Int     @default(0)
+  subject     String? // one of the Common App subject options
+  courseName  String?
+  courseLevel String? // one of the Common App course-level options
+
+  createdAt DateTime @default(now())
+
+  @@index([gradeReportId])
 }
 
 model Language {

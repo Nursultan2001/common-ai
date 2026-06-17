@@ -66,6 +66,7 @@ export async function GET(req: Request) {
       colleges: { orderBy: { order: "asc" } },
       testScores: true,
       courses: { orderBy: { order: "asc" } },
+      gradeReports: { include: { courses: { orderBy: { order: "asc" } } } },
     },
   });
   if (!applicant) {
@@ -121,6 +122,25 @@ export async function GET(req: Request) {
         prompt: e.prompt,
         text: e.finalText, // only the student's own final text
       })),
+      // Courses & Grades transcript (13/54–13/58): intro access + per-grade data.
+      transcriptAccess: applicant.profile?.transcriptAccess ?? null,
+      gradeData: Object.fromEntries(
+        applicant.gradeReports.map((r) => [
+          r.grade,
+          {
+            schoolName: r.schoolName,
+            schoolYear: r.schoolYear,
+            gradingScale: r.gradingScale,
+            schedule: r.schedule,
+            reportedAll: r.reportedAll,
+            courses: r.courses.map((c) => ({
+              subject: c.subject,
+              courseName: c.courseName,
+              courseLevel: c.courseLevel,
+            })),
+          },
+        ])
+      ),
       // Additional Information (Writing): Yes/No derived from whether text exists.
       addlInfoShare: applicant.profile?.addlInfoText ? "Yes" : "No",
       addlInfoText: applicant.profile?.addlInfoText ?? null,
