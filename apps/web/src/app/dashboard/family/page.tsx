@@ -26,6 +26,8 @@ type ParentRow = {
   occupationOther: string | null;
   employmentStatus: string | null;
   educationLevel: string | null;
+  parentCollegeEmployment: string | null;
+  parentInstitutionsAttended: string | null;
 };
 
 function Sel({
@@ -118,6 +120,14 @@ function ParentForm({ order, p }: { order: 0 | 1; p?: ParentRow }) {
           <Inp label="Other occupation details" name="occupationOther" value={p?.occupationOther} flex="1 1 200px" />
           <Sel label="Employment status" name="employmentStatus" value={p?.employmentStatus} flex="1 1 180px" options={EMPLOYMENT} />
           <Sel label="Highest education level" name="educationLevel" value={p?.educationLevel} flex="1 1 220px" options={EDU} />
+        </div>
+        <div className="row">
+          <Sel label="Employed by / retired from a college or university?" name="parentCollegeEmployment"
+            value={p?.parentCollegeEmployment} flex="1 1 300px"
+            options={["Currently employed at a college/university", "Retired from a college/university", "Not employed at a college/university"]} />
+          <Sel label="Total number of institutions attended" name="parentInstitutionsAttended"
+            value={p?.parentInstitutionsAttended} flex="1 1 200px"
+            options={["1", "2", "3", "4", "5"]} />
         </div>
         <button className="primary" type="submit">Save parent {order + 1}</button>
       </form>

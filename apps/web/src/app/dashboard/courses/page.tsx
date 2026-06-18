@@ -25,6 +25,9 @@ const LEVELS = [
   "Honors", "Intensive", "International Baccalaureate (IB)", "Pre-IB",
   "Regents", "N/A",
 ];
+// Per-course schedule (Common App requires it; options depend on the scheduling
+// system — these are the Semester-system options, which cover most cases).
+const SCHEDULES = ["Full Year", "First Semester", "Second Semester"];
 
 export default async function CoursesPage() {
   const user = await requireUser();
@@ -43,7 +46,7 @@ export default async function CoursesPage() {
       <p className="muted">
         Your current/senior-year courses (Common App allows up to 12). Add them in
         order; the extension sets the course count, the scheduling system, and
-        fills each course’s subject, name, and level.
+        fills each course’s subject, name, level, and schedule.
       </p>
 
       <div className="card">
@@ -77,6 +80,7 @@ export default async function CoursesPage() {
               <th>Subject</th>
               <th>Course name</th>
               <th>Level</th>
+              <th>Schedule</th>
               <th></th>
             </tr>
           </thead>
@@ -87,6 +91,7 @@ export default async function CoursesPage() {
                 <td>{c.subject ?? "—"}</td>
                 <td>{c.name ?? "—"}</td>
                 <td className="muted">{c.level ?? "—"}</td>
+                <td className="muted">{c.schedule ?? "—"}</td>
                 <td>
                   <form action={deleteCourseAction}>
                     <input type="hidden" name="courseId" value={c.id} />
@@ -97,7 +102,7 @@ export default async function CoursesPage() {
             ))}
             {courses.length === 0 && (
               <tr>
-                <td colSpan={5} className="muted">No courses yet.</td>
+                <td colSpan={6} className="muted">No courses yet.</td>
               </tr>
             )}
           </tbody>
@@ -124,6 +129,12 @@ export default async function CoursesPage() {
               <select name="level" defaultValue="">
                 <option value="">— Choose a level —</option>
                 {LEVELS.map((o) => <option key={o}>{o}</option>)}
+              </select>
+            </div>
+            <div style={{ flex: "1 1 180px" }}>
+              <label>Schedule</label>
+              <select name="schedule" defaultValue="Full Year">
+                {SCHEDULES.map((o) => <option key={o}>{o}</option>)}
               </select>
             </div>
           </div>

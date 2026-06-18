@@ -35,6 +35,8 @@ export async function saveParentAction(formData: FormData) {
     occupationOther: s(formData, "occupationOther"),
     employmentStatus: s(formData, "employmentStatus"),
     educationLevel: s(formData, "educationLevel"),
+    parentCollegeEmployment: s(formData, "parentCollegeEmployment"),
+    parentInstitutionsAttended: s(formData, "parentInstitutionsAttended"),
   };
 
   await db.parent.upsert({

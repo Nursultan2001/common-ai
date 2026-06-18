@@ -26,6 +26,7 @@ export async function addCourseAction(formData: FormData) {
       subject,
       name,
       level: s(formData, "level"),
+      schedule: s(formData, "schedule"),
     },
   });
   revalidatePath("/dashboard/courses");

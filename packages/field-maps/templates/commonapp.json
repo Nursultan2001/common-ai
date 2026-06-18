@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 34,
+  "version": 35,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -2016,6 +2016,90 @@
           ],
           "kind": "text",
           "requiresConfirm": true
+        },
+        {
+          "source": "courses.0.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_311"
+          ]
+        },
+        {
+          "source": "courses.1.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_315"
+          ]
+        },
+        {
+          "source": "courses.2.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_319"
+          ]
+        },
+        {
+          "source": "courses.3.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_323"
+          ]
+        },
+        {
+          "source": "courses.4.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_327"
+          ]
+        },
+        {
+          "source": "courses.5.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_331"
+          ]
+        },
+        {
+          "source": "courses.6.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_335"
+          ]
+        },
+        {
+          "source": "courses.7.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_339"
+          ]
+        },
+        {
+          "source": "courses.8.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_343"
+          ]
+        },
+        {
+          "source": "courses.9.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_347"
+          ]
+        },
+        {
+          "source": "courses.10.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_351"
+          ]
+        },
+        {
+          "source": "courses.11.schedule",
+          "kind": "multi-combobox",
+          "selectors": [
+            "#text_ques_355"
+          ]
         }
       ]
     },
@@ -3292,6 +3376,30 @@
           ],
           "kind": "combo-pick",
           "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.parentCollegeEmployment",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Currently employed at a college/university": "#option_ques_388_3687-input",
+            "Retired from a college/university": "#option_ques_388_3688-input",
+            "Not employed at a college/university": "#option_ques_388_3689-input"
+          }
+        },
+        {
+          "source": "parents.0.parentInstitutionsAttended",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "1": "#option_ques_392_1282-input",
+            "2": "#option_ques_392_1283-input",
+            "3": "#option_ques_392_1284-input",
+            "4": "#option_ques_392_1285-input",
+            "5": "#option_ques_392_1286-input"
+          }
         }
       ]
     },
@@ -3434,6 +3542,30 @@
           ],
           "kind": "combo-pick",
           "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.parentCollegeEmployment",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Currently employed at a college/university": "#option_ques_470_3687-input",
+            "Retired from a college/university": "#option_ques_470_3688-input",
+            "Not employed at a college/university": "#option_ques_470_3689-input"
+          }
+        },
+        {
+          "source": "parents.1.parentInstitutionsAttended",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "1": "#option_ques_474_1282-input",
+            "2": "#option_ques_474_1283-input",
+            "3": "#option_ques_474_1284-input",
+            "4": "#option_ques_474_1285-input",
+            "5": "#option_ques_474_1286-input"
+          }
         }
       ]
     },

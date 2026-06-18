@@ -424,6 +424,8 @@ model Parent {
   occupationOther  String?
   employmentStatus String? // Employed | Self-Employed | Retired | ...
   educationLevel   String? // "Some high/secondary school" | "Bachelor's degree" | ...
+  parentCollegeEmployment  String? // "Currently employed at a college/university" | "Retired from a college/university" | "Not employed at a college/university"
+  parentInstitutionsAttended String? // "1".."5"
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -78,12 +78,14 @@ async function main() {
       prefix: "Mrs.", firstName: "Gulnara", middleInitial: "A", lastName: "Sultanova", suffix: "",
       email: "gulnara.sultanova@example.com", phoneType: "Mobile", phoneCountryCode: "Kazakhstan",
       phoneNumber: "7019876543", occupation: "Teacher or administrator (secondary)", employmentStatus: "Employed",
-      educationLevel: "Graduate school" },
+      educationLevel: "Graduate school",
+      parentCollegeEmployment: "Not employed at a college/university", parentInstitutionsAttended: "1" },
     { applicantId: aid, order: 1, parentType: "Father", relationship: "Father", isLiving: "Yes",
       prefix: "Mr.", firstName: "Nurlan", middleInitial: "B", lastName: "Sultanov", suffix: "",
       email: "nurlan.sultanov@example.com", phoneType: "Mobile", phoneCountryCode: "Kazakhstan",
       phoneNumber: "7017654321", occupation: "Engineer", employmentStatus: "Employed",
-      educationLevel: "Graduated from college/university" },
+      educationLevel: "Graduated from college/university",
+      parentCollegeEmployment: "Not employed at a college/university", parentInstitutionsAttended: "1" },
   ]});
 
   // ---- Siblings ----
@@ -105,14 +107,14 @@ async function main() {
 
   // ---- Current-year courses (4/24) ----
   const curCourses = [
-    ["Calculus", "AP Calculus BC", "Advanced Placement (AP)"],
-    ["Physics", "AP Physics C: Mechanics", "Advanced Placement (AP)"],
-    ["English", "English Literature", "Honors"],
-    ["Computer Science", "AP Computer Science A", "Advanced Placement (AP)"],
-    ["History/Social Science", "World History", "Honors"],
+    ["Calculus", "AP Calculus BC", "Advanced Placement (AP)", "Full Year"],
+    ["Physics", "AP Physics C: Mechanics", "Advanced Placement (AP)", "Full Year"],
+    ["English", "English Literature", "Honors", "Full Year"],
+    ["Computer Science", "AP Computer Science A", "Advanced Placement (AP)", "Full Year"],
+    ["History/Social Science", "World History", "Honors", "Full Year"],
   ];
-  await db.course.createMany({ data: curCourses.map(([subject, name, level], i) => ({
-    applicantId: aid, order: i, subject, name, level,
+  await db.course.createMany({ data: curCourses.map(([subject, name, level, schedule], i) => ({
+    applicantId: aid, order: i, subject, name, level, schedule,
   }))});
 
   // ---- Grade transcripts 9-12 ----

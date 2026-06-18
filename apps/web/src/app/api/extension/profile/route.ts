@@ -179,6 +179,8 @@ export async function GET(req: Request) {
         occupationOther: p.occupationOther,
         employmentStatus: p.employmentStatus,
         educationLevel: p.educationLevel,
+        parentCollegeEmployment: p.parentCollegeEmployment,
+        parentInstitutionsAttended: p.parentInstitutionsAttended,
       })),
       siblingsCount: String(applicant.siblings.length),
       siblings: applicant.siblings.map((s) => ({
