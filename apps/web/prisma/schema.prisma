@@ -134,6 +134,7 @@ model MasterProfile {
   state        String?
   postalCode   String?
   country      String?
+  alternateMailingAddress String? // "No alternate address" | "Send mail to a temporary or alternate address"
 
   citizenship       String?
   citizenshipStatus String? // exact Common App option, e.g. "Citizen of non-U.S. country"

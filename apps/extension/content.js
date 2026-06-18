@@ -304,8 +304,14 @@
       }
       let any = false;
       const missed = [];
+      // Apostrophe-tolerant valueMap lookup: Common App labels use a curly
+      // apostrophe (’); stored values may use a straight one ('). Match either.
+      const norm = (s) => String(s).replace(/[‘’′]/g, "'").trim();
+      const vmap = mapping.valueMap || {};
+      const normMap = {};
+      for (const k of Object.keys(vmap)) normMap[norm(k)] = vmap[k];
       for (const w of wants) {
-        const sel = mapping.valueMap && mapping.valueMap[w];
+        const sel = vmap[w] || normMap[norm(w)];
         if (!sel) { missed.push(w); continue; }
         const cb = scope.querySelector(sel);
         if (!cb) { missed.push(w); continue; }

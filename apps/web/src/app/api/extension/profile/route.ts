@@ -180,6 +180,7 @@ export async function GET(req: Request) {
         employmentStatus: p.employmentStatus,
         educationLevel: p.educationLevel,
       })),
+      siblingsCount: String(applicant.siblings.length),
       siblings: applicant.siblings.map((s) => ({
         firstName: s.firstName,
         lastName: s.lastName,

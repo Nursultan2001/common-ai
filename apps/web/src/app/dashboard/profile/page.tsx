@@ -362,6 +362,11 @@ export default async function ProfilePage() {
             <F label="Postal code" name="postalCode" value={p?.postalCode} />
             <F label="Country" name="country" value={p?.country} />
           </div>
+          <div className="row">
+            <Sel label="Alternate mailing address" name="alternateMailingAddress"
+              value={p?.alternateMailingAddress ?? "No alternate address"} flex="1 1 320px"
+              options={["No alternate address", "Send mail to a temporary or alternate address"]} />
+          </div>
         </div>
 
         <div className="card">

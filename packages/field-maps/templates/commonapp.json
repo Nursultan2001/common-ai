@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 33,
+  "version": 34,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -464,6 +464,21 @@
           "kind": "date",
           "format": "MM/DD/YYYY",
           "requiresConfirm": true
+        }
+      ]
+    },
+    {
+      "urlPattern": "https://apply.commonapp.org/common/3/12*",
+      "name": "Address — alternate mailing",
+      "fields": [
+        {
+          "source": "profile.alternateMailingAddress",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "No alternate address": "#option_ques_183_1796-input",
+            "Send mail to a temporary or alternate address": "#option_ques_183_1797-input"
+          }
         }
       ]
     },
@@ -1487,14 +1502,14 @@
         },
         {
           "source": "profile.highestDegree",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_1493"
           ]
         },
         {
           "source": "profile.careerInterest",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_1492"
           ]
@@ -1611,6 +1626,13 @@
       "urlPattern": "https://apply.commonapp.org/common/5/30*",
       "name": "Family — Siblings",
       "fields": [
+        {
+          "source": "siblingsCount",
+          "kind": "combo-pick",
+          "selectors": [
+            "#text_ques_614"
+          ]
+        },
         {
           "source": "siblings.0.firstName",
           "selectors": [
