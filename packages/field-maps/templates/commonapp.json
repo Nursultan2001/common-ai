@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 35,
+  "version": 37,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -55,7 +55,7 @@
         },
         {
           "source": "testScores.actComposite",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_17"
           ]
@@ -70,7 +70,7 @@
         },
         {
           "source": "testScores.actEnglish",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_19"
           ]
@@ -85,7 +85,7 @@
         },
         {
           "source": "testScores.actMath",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_21"
           ]
@@ -100,7 +100,7 @@
         },
         {
           "source": "testScores.actReading",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_23"
           ]
@@ -124,7 +124,7 @@
         },
         {
           "source": "testScores.actScience",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_25"
           ]
@@ -148,7 +148,7 @@
         },
         {
           "source": "testScores.actWriting",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_27"
           ]
@@ -180,7 +180,7 @@
       "fields": [
         {
           "source": "testScores.satPastCount",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_1839"
           ]
@@ -222,7 +222,7 @@
         },
         {
           "source": "testScores.satReadingWriting",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_1840"
           ]
@@ -237,7 +237,7 @@
         },
         {
           "source": "testScores.satMath",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_1842"
           ]
@@ -261,7 +261,7 @@
         },
         {
           "source": "testScores.satEssay",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_1845"
           ]
@@ -375,7 +375,7 @@
       "fields": [
         {
           "source": "testScores.ssleCount",
-          "kind": "text",
+          "kind": "combo-pick",
           "selectors": [
             "#text_ques_839"
           ]
