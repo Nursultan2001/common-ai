@@ -55,6 +55,10 @@ async function main() {
     addlInfoText: "During 11th grade I balanced school with a part-time job after my father's hours were cut, which briefly affected my grades in the fall semester.",
     addlQualificationsText: "I am a self-taught full-stack developer and have shipped two small web apps used by my classmates.",
     transcriptAccess: "Yes",
+    collegeStartTerm: "Fall 2026",
+    collegeAdmissionPlan: "Regular Decision",
+    collegeResidence: "On Campus",
+    collegeSatActPlan: "Yes",
   };
   await db.masterProfile.upsert({ where: { applicantId: aid }, update: profile, create: { applicantId: aid, ...profile } });
 

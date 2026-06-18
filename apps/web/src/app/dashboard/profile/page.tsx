@@ -484,6 +484,29 @@ export default async function ProfilePage() {
         </div>
 
         <div className="card">
+          <h2>College questions (My Colleges supplements)</h2>
+          <p className="muted" style={{ marginTop: 0 }}>
+            General answers reused across every college’s supplement. The
+            extension fills these on a college’s Questions page <em>only if that
+            college asks</em> — open the college’s page and use “Autofill this
+            page only”. Options vary by college, so a value fills only when that
+            college offers it (e.g. a college with no Early Action won’t take it).
+          </p>
+          <div className="row">
+            <F label="Preferred start term" name="collegeStartTerm" value={p?.collegeStartTerm} />
+            <Sel label="Preferred admission plan" name="collegeAdmissionPlan" value={p?.collegeAdmissionPlan}
+              flex="1 1 240px"
+              options={["Regular Decision", "Early Action", "Restrictive Early Action", "Early Decision", "Early Decision II", "Rolling"]} />
+          </div>
+          <div className="row">
+            <Sel label="Preferred residence (first year)" name="collegeResidence" value={p?.collegeResidence}
+              flex="1 1 220px" options={["On Campus", "Off Campus", "Commuter", "With family"]} />
+            <Sel label="Did/do you plan to take the SAT or ACT?" name="collegeSatActPlan"
+              value={p?.collegeSatActPlan} flex="1 1 220px" options={["Yes", "No"]} />
+          </div>
+        </div>
+
+        <div className="card">
           <h2>Fee waiver</h2>
           <p className="muted" style={{ marginTop: 0 }}>
             Only answer “Yes” if you genuinely meet a Common App fee-waiver

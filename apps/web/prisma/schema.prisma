@@ -213,6 +213,13 @@ model MasterProfile {
   // Courses & Grades transcript section (13/54): can access transcript/grades?
   transcriptAccess String? // "Yes" | "No"
 
+  // My Colleges supplement answers — general, reused across every college.
+  // Filled by label (page IDs differ per college), best-effort.
+  collegeStartTerm     String? // e.g. "Fall 2026"
+  collegeAdmissionPlan String? // "Regular Decision" | "Early Action" | ...
+  collegeResidence     String? // "On Campus" | "Off Campus" | "Commuter" | "With family"
+  collegeSatActPlan    String? // "Yes" | "No" — did/do you plan to take SAT or ACT?
+
   // Free-form structured extras the questionnaire collected, stored as JSON
   // text so we can add intake questions without migrations. Still read-only facts.
   extra String?
