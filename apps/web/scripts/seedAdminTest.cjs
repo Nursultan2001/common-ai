@@ -82,18 +82,19 @@ async function main() {
       prefix: "Mrs.", firstName: "Gulnara", middleInitial: "A", lastName: "Sultanova", suffix: "",
       email: "gulnara.sultanova@example.com", phoneType: "Mobile", phoneCountryCode: "Kazakhstan",
       phoneNumber: "7019876543", occupation: "Teacher or administrator (secondary)", employmentStatus: "Employed",
-      educationLevel: "Graduate school",
+      educationLevel: "Graduate school", title: "Mathematics Teacher", employer: "Turkistan Lyceum No. 5",
       parentCollegeEmployment: "Not employed at a college/university", parentInstitutionsAttended: "1" },
     { applicantId: aid, order: 1, parentType: "Father", relationship: "Father", isLiving: "Yes",
       prefix: "Mr.", firstName: "Nurlan", middleInitial: "B", lastName: "Sultanov", suffix: "",
       email: "nurlan.sultanov@example.com", phoneType: "Mobile", phoneCountryCode: "Kazakhstan",
       phoneNumber: "7017654321", occupation: "Engineer", employmentStatus: "Employed",
-      educationLevel: "Graduated from college/university",
+      educationLevel: "Graduated from college/university", title: "Civil Engineer", employer: "KazMunayGas",
       parentCollegeEmployment: "Not employed at a college/university", parentInstitutionsAttended: "1" },
   ]});
 
   // ---- Siblings ----
-  await db.sibling.create({ data: { applicantId: aid, order: 0, firstName: "Dana", lastName: "Sultanova", ageOrGrade: "14" } });
+  await db.sibling.create({ data: { applicantId: aid, order: 0, firstName: "Dana", lastName: "Sultanova", ageOrGrade: "14",
+    educationLevel: "Some high/secondary school", degreeEarned: "Other", collegeName: "" } });
 
   // ---- Languages ----
   await db.language.createMany({ data: [

@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 38,
+  "version": 39,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -3819,6 +3819,158 @@
           "kind": "combo-pick",
           "selectors": [
             "label:plan to take the SAT or ACT"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.title",
+          "kind": "text",
+          "selectors": [
+            "label:Parent 1 Position/Title"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.0.employer",
+          "kind": "text",
+          "selectors": [
+            "label:Parent 1 Current employer"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.title",
+          "kind": "text",
+          "selectors": [
+            "label:Parent 2 Position/Title"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "parents.1.employer",
+          "kind": "text",
+          "selectors": [
+            "label:Parent 2 Current employer"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.0.educationLevel",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 1 Education level"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.0.degreeEarned",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 1 Degree earned"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.0.collegeName",
+          "kind": "text",
+          "selectors": [
+            "label:Sibling 1 College name"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.1.educationLevel",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 2 Education level"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.1.degreeEarned",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 2 Degree earned"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.1.collegeName",
+          "kind": "text",
+          "selectors": [
+            "label:Sibling 2 College name"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.2.educationLevel",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 3 Education level"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.2.degreeEarned",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 3 Degree earned"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.2.collegeName",
+          "kind": "text",
+          "selectors": [
+            "label:Sibling 3 College name"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.3.educationLevel",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 4 Education level"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.3.degreeEarned",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 4 Degree earned"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.3.collegeName",
+          "kind": "text",
+          "selectors": [
+            "label:Sibling 4 College name"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.4.educationLevel",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 5 Education level"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.4.degreeEarned",
+          "kind": "combo-pick",
+          "selectors": [
+            "label:Sibling 5 Degree earned"
+          ],
+          "requiresConfirm": true
+        },
+        {
+          "source": "siblings.4.collegeName",
+          "kind": "text",
+          "selectors": [
+            "label:Sibling 5 College name"
           ],
           "requiresConfirm": true
         }

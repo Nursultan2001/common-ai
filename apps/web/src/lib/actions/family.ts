@@ -37,6 +37,8 @@ export async function saveParentAction(formData: FormData) {
     educationLevel: s(formData, "educationLevel"),
     parentCollegeEmployment: s(formData, "parentCollegeEmployment"),
     parentInstitutionsAttended: s(formData, "parentInstitutionsAttended"),
+    title: s(formData, "title"),
+    employer: s(formData, "employer"),
   };
 
   await db.parent.upsert({
@@ -79,6 +81,9 @@ export async function addSiblingAction(formData: FormData) {
       firstName: first,
       lastName: last,
       ageOrGrade: s(formData, "ageOrGrade"),
+      educationLevel: s(formData, "educationLevel"),
+      degreeEarned: s(formData, "degreeEarned"),
+      collegeName: s(formData, "collegeName"),
     },
   });
   revalidatePath("/dashboard/family");

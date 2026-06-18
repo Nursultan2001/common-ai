@@ -28,6 +28,8 @@ type ParentRow = {
   educationLevel: string | null;
   parentCollegeEmployment: string | null;
   parentInstitutionsAttended: string | null;
+  title: string | null;
+  employer: string | null;
 };
 
 function Sel({
@@ -68,6 +70,13 @@ const EDU = [
   "Graduate school",
 ];
 const EMPLOYMENT = ["Employed", "Unemployed", "Retired", "Self-Employed"];
+// Sibling education detail (college supplements). Education list matches EDU.
+const SIBLING_EDU = EDU;
+const SIBLING_DEGREE = [
+  "Associate's (AA, AS)", "Bachelor's (BA, BS)", "Master's (MA, MS)",
+  "Business (MBA, MAcc)", "Law (JD, LLM)", "Medicine (MD, DO, DVM, DDS)",
+  "Doctorate (PhD, EdD, etc)", "Other",
+];
 const OCCUPATIONS = [
   "Accountant or actuary", "Actor or entertainer", "Architect or urban planner", "Artist",
   "Business (clerical)", "Business executive (management, administrator)", "Business owner or proprietor",
@@ -120,6 +129,10 @@ function ParentForm({ order, p }: { order: 0 | 1; p?: ParentRow }) {
           <Inp label="Other occupation details" name="occupationOther" value={p?.occupationOther} flex="1 1 200px" />
           <Sel label="Employment status" name="employmentStatus" value={p?.employmentStatus} flex="1 1 180px" options={EMPLOYMENT} />
           <Sel label="Highest education level" name="educationLevel" value={p?.educationLevel} flex="1 1 220px" options={EDU} />
+        </div>
+        <div className="row">
+          <Inp label="Job title / position (college supplements)" name="title" value={p?.title} flex="1 1 240px" />
+          <Inp label="Current employer (college supplements)" name="employer" value={p?.employer} flex="1 1 240px" />
         </div>
         <div className="row">
           <Sel label="Employed by / retired from a college or university?" name="parentCollegeEmployment"
@@ -195,6 +208,14 @@ export default async function FamilyPage() {
             <Inp label="First name" name="firstName" />
             <Inp label="Last name" name="lastName" />
             <Inp label="Age / grade (optional)" name="ageOrGrade" flex="1 1 140px" />
+          </div>
+          <p className="muted" style={{ marginBottom: 4 }}>
+            For college supplements that ask about siblings’ education (optional):
+          </p>
+          <div className="row">
+            <Sel label="Education level" name="educationLevel" flex="1 1 240px" options={SIBLING_EDU} />
+            <Sel label="Degree earned or expected" name="degreeEarned" flex="1 1 220px" options={SIBLING_DEGREE} />
+            <Inp label="College/university name" name="collegeName" flex="1 1 220px" />
           </div>
           <button type="submit">Add sibling</button>
         </form>

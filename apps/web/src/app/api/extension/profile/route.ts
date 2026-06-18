@@ -179,6 +179,8 @@ export async function GET(req: Request) {
         occupationOther: p.occupationOther,
         employmentStatus: p.employmentStatus,
         educationLevel: p.educationLevel,
+        title: p.title,
+        employer: p.employer,
         parentCollegeEmployment: p.parentCollegeEmployment,
         parentInstitutionsAttended: p.parentInstitutionsAttended,
       })),
@@ -187,6 +189,9 @@ export async function GET(req: Request) {
         firstName: s.firstName,
         lastName: s.lastName,
         ageOrGrade: s.ageOrGrade,
+        educationLevel: s.educationLevel,
+        degreeEarned: s.degreeEarned,
+        collegeName: s.collegeName,
       })),
       testScores: applicant.testScores ?? {},
       languageCount: applicant.languages.length

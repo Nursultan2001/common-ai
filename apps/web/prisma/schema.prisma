@@ -431,6 +431,8 @@ model Parent {
   occupationOther  String?
   employmentStatus String? // Employed | Self-Employed | Retired | ...
   educationLevel   String? // "Some high/secondary school" | "Bachelor's degree" | ...
+  title            String? // college supplements: "Position/Title"
+  employer         String? // college supplements: "Current employer"
   parentCollegeEmployment  String? // "Currently employed at a college/university" | "Retired from a college/university" | "Not employed at a college/university"
   parentInstitutionsAttended String? // "1".."5"
 
@@ -450,6 +452,10 @@ model Sibling {
   firstName  String?
   lastName   String?
   ageOrGrade String?
+  // College supplements (some colleges re-ask sibling education detail).
+  educationLevel String? // exact CA option, e.g. "Graduated from college/university"
+  degreeEarned   String? // "Bachelor's (BA, BS)" | "Master's (MA, MS)" | ...
+  collegeName    String? // sibling's college/university name (free text)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
