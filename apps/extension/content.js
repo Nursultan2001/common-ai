@@ -422,22 +422,43 @@
       }
       case "multi-combobox": {
         // A combobox that accepts several selections (Common App "Tests Taken"
-        // → "Indicate all tests"). Type each value, pick its overlay option,
-        // clear, repeat. Value is a CSV of exact option labels.
+        // → "Indicate all tests"; per-course "schedule"). CLICK to open and use
+        // THIS field's own listbox (via aria-controls) — a global overlay lookup
+        // mis-resolves across repeated fields, so only the first one filled.
         const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+        if (el.focus) el.focus();
+        el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+        el.click();
+        el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
+        const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
+        const lb = await waitFor(
+          () =>
+            (owns && document.getElementById(owns)) ||
+            [...document.querySelectorAll("[role='listbox']")].filter((x) => x.offsetParent !== null).pop(),
+          1500
+        );
         let any = false;
         const missed = [];
-        for (const w of wants) {
-          if (el.focus) el.focus();
-          setNativeValue(el, w);
-          const opt = await waitFor(() => pickOption(overlayOptions(), w), 1400);
-          if (opt) { opt.click(); any = true; await sleep(200); }
-          else missed.push(w);
-          setNativeValue(el, "");
-          await sleep(120);
+        if (lb) {
+          for (const w of wants) {
+            const wl = w.toLowerCase();
+            const nodes = [...lb.querySelectorAll("[role='option'], li, mat-option")];
+            const txt = (n) => (n.textContent || "").trim().toLowerCase();
+            const opt =
+              nodes.find((n) => txt(n) === wl) ||
+              nodes.find((n) => txt(n).includes(wl)) ||
+              nodes.find((n) => wl.includes(txt(n)) && txt(n).length > 1);
+            if (opt) {
+              ["mousedown", "mouseup", "click"].forEach((t) =>
+                opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+              );
+              any = true;
+              await sleep(200);
+            } else missed.push(w);
+          }
         }
-        if (el.blur) el.blur();
         document.body.click();
+        await sleep(150);
         markFilled(el, mapping.requiresConfirm);
         if (!any) return { source: mapping.source, status: "no-matching-option", value };
         return {
