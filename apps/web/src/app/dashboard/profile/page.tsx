@@ -289,7 +289,17 @@ export default async function ProfilePage() {
           <div className="row">
             <Sel label="Hold a valid U.S. visa?" name="holdsUSVisa" value={p?.holdsUSVisa} flex="1 1 180px" options={["Yes", "No"]} />
             <Sel label="Intend to apply for a U.S. visa?" name="intendsUSVisa" value={p?.intendsUSVisa} flex="1 1 220px" options={["Yes", "No"]} />
-            <F label="Visa type (e.g. F-1 Student)" name="visaType" value={p?.visaType} />
+            <Sel label="Visa type" name="visaType" value={p?.visaType} flex="1 1 320px"
+              options={[
+                "I do not know which visa I will hold", "A-1 Foreign Diplomatic Personnel",
+                "A-2  Dependent Foreign Diplomatic Personnel", "A-3 Employee of Foreign Gov Office",
+                "B-2  Tourist", "E-2  Dependent of Treaty Investor", "F-1  Student",
+                "F-2  Dependent of F-1 Student", "G-1  Representative of Intl. Org.",
+                "G-2  Dependent of Representative of Intl. Org.", "G-3  Dependent of Representative of Intl. Org.",
+                "G-4  Dependent of Representative of Intl. Org.", "H-4  Dependent of H Visa Holder",
+                "J-1  Exchange Visitor", "J-2  Dependent of J-1 Visa Holder",
+                "L-2  Dependent of L-1 Visa Holder", "Other Visa Type", "R-2  Dependent of R-1 Visa Holder",
+              ]} />
           </div>
         </div>
 
@@ -305,6 +315,19 @@ export default async function ProfilePage() {
           <div className="row">
             <Checks label="Pronouns" name="pronouns" value={p?.pronouns}
               options={["He/Him", "She/Her", "They/Them"]} />
+          </div>
+          <div className="row">
+            <Sel label="U.S. Armed Forces status" name="armedForces" value={p?.armedForces} flex="1 1 240px"
+              options={["None", "Currently Serving", "Previously Served", "Current Dependent"]} />
+            <Sel label="Hispanic or Latino/a/x?" name="hispanicLatino" value={p?.hispanicLatino}
+              flex="1 1 180px" options={["Yes", "No"]} />
+          </div>
+          <div className="row">
+            <Checks label="Race/ethnicity (select one or more)" name="raceEthnicity" value={p?.raceEthnicity}
+              options={[
+                "American Indian or Alaska Native", "Asian", "Black or African American",
+                "Native Hawaiian or Other Pacific Islander", "White",
+              ]} />
           </div>
         </div>
 

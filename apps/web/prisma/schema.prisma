@@ -144,6 +144,9 @@ model MasterProfile {
   gender            String? // checkbox(es), comma-separated: "Female" | "Male" | "Nonbinary"
   legalSex          String? // "Female" | "Male" | "X or another legal sex"
   pronouns          String? // checkbox(es), comma-separated: "He/Him" | "She/Her" | "They/Them"
+  armedForces       String? // "None" | "Currently Serving" | "Previously Served" | "Current Dependent"
+  hispanicLatino    String? // "Yes" | "No"
+  raceEthnicity     String? // multi, comma-separated CA labels (American Indian or Alaska Native, Asian, …)
 
   highSchoolName String?
   graduationYear Int?

@@ -52,17 +52,36 @@ function Inp({
   );
 }
 
+// Exact Common App parent dropdown options (harvested live, page 5/27).
 const EDU = [
+  "None",
+  "Some grade/primary school",
+  "Completed grade/primary school",
   "Some high/secondary school",
-  "High/secondary school diploma",
+  "Graduated from high/secondary school (or equivalent)",
+  "Some trade school or community college",
+  "Graduated from trade school or community college",
   "Some college/university",
-  "Associate degree",
-  "Bachelor's degree",
-  "Master's degree",
-  "Doctorate degree",
-  "Other",
+  "Graduated from college/university",
+  "Graduate school",
 ];
-const EMPLOYMENT = ["Employed", "Self-Employed", "Retired", "Not employed", "Other"];
+const EMPLOYMENT = ["Employed", "Unemployed", "Retired", "Self-Employed"];
+const OCCUPATIONS = [
+  "Accountant or actuary", "Actor or entertainer", "Architect or urban planner", "Artist",
+  "Business (clerical)", "Business executive (management, administrator)", "Business owner or proprietor",
+  "Business salesperson or buyer", "Clergy (minister, priest)", "Clergy (other religious)",
+  "Clinical psychologist", "College administrator/staff", "College teacher",
+  "Computer programmer or analyst", "Conservationist or forester", "Dentist (including orthodontist)",
+  "Dietitian or nutritionist", "Engineer", "Farmer or rancher",
+  "Foreign service worker (including diplomat)", "Homemaker (full-time)",
+  "Interior decorator (including designer)", "Lab technician or hygienist", "Laborer",
+  "Law enforcement officer", "Lawyer (attorney) or judge", "Military service (career)",
+  "Musician (performer, composer)", "Nurse", "Optometrist", "Pharmacist", "Physician",
+  "Policymaker/Government", "School counselor", "School principal or superintendent",
+  "Scientific researcher", "Skilled trades", "Social, welfare, or recreation worker",
+  "Teacher or administrator (elementary)", "Teacher or administrator (secondary)",
+  "Therapist (physical, occupational, speech)", "Veterinarian", "Writer or journalist", "Other",
+];
 
 function ParentForm({ order, p }: { order: 0 | 1; p?: ParentRow }) {
   return (
@@ -95,7 +114,7 @@ function ParentForm({ order, p }: { order: 0 | 1; p?: ParentRow }) {
           <Inp label="Phone number" name="phoneNumber" type="tel" value={p?.phoneNumber} />
         </div>
         <div className="row">
-          <Inp label="Occupation" name="occupation" value={p?.occupation} flex="1 1 200px" />
+          <Sel label="Occupation" name="occupation" value={p?.occupation} flex="1 1 240px" options={OCCUPATIONS} />
           <Inp label="Other occupation details" name="occupationOther" value={p?.occupationOther} flex="1 1 200px" />
           <Sel label="Employment status" name="employmentStatus" value={p?.employmentStatus} flex="1 1 180px" options={EMPLOYMENT} />
           <Sel label="Highest education level" name="educationLevel" value={p?.educationLevel} flex="1 1 220px" options={EDU} />

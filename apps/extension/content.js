@@ -452,6 +452,41 @@
         }
         return { source: mapping.source, status: "filled" };
       }
+      case "combo-pick": {
+        // Open a combobox and CLICK the matching option — no typing. Some Common
+        // App comboboxes (e.g. phone country code) don't filter on synthetic
+        // input, so type-then-pick leaves the default. Options live in a listbox
+        // referenced by aria-controls (fallback: any visible listbox).
+        el.focus();
+        el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+        el.click();
+        el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
+        const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
+        const lb = await waitFor(
+          () =>
+            (owns && document.getElementById(owns)) ||
+            [...document.querySelectorAll("[role='listbox']")].filter((x) => x.offsetParent !== null).pop(),
+          1500
+        );
+        if (!lb) return { source: mapping.source, status: "dropdown-did-not-open" };
+        const want = String(v).trim().toLowerCase();
+        const nodes = [...lb.querySelectorAll("[role='option'], li, mat-option")];
+        const txt = (n) => (n.textContent || "").trim().toLowerCase();
+        const opt =
+          nodes.find((n) => txt(n) === want) ||
+          nodes.find((n) => txt(n).includes(want)) ||
+          nodes.find((n) => want.includes(txt(n)) && txt(n).length > 1);
+        if (!opt) {
+          document.body.click();
+          return { source: mapping.source, status: "no-matching-option", value: v };
+        }
+        ["mousedown", "mouseup", "click"].forEach((t) =>
+          opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+        );
+        markFilled(el, mapping.requiresConfirm);
+        await sleep(150);
+        return { source: mapping.source, status: mapping.requiresConfirm ? "filled-confirm" : "filled" };
+      }
       case "richtext": {
         // CKEditor 5 (Common App "why you left" box). Prefer the editor's own
         // API (the DOM is reconstructed from the model, so writing innerHTML

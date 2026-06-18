@@ -33,8 +33,9 @@ async function main() {
     addressLine1: "12 Tauke Khan Avenue", addressLine2: "Apt 4",
     city: "Turkistan", state: "Turkistan Region", postalCode: "161200", country: "Kazakhstan",
     citizenship: "Kazakhstan", citizenshipStatus: "Citizen of non-U.S. country",
-    yearsInUS: "0", holdsUSVisa: "No", intendsUSVisa: "Yes", visaType: "F-1 Student",
+    yearsInUS: "0", holdsUSVisa: "No", intendsUSVisa: "Yes", visaType: "F-1  Student",
     gender: "Male", legalSex: "Male", pronouns: "He/Him",
+    armedForces: "None", hispanicLatino: "No", raceEthnicity: "Asian",
     highSchoolName: "Nazarbayev Intellectual School of Turkistan",
     graduationYear: 2026, dateOfEntry: D("2022-09-01"), graduationDate: D("2026-05-30"), classSize: 120,
     highSchoolNotListed: "Yes", highSchoolCountry: "Kazakhstan", highSchoolType: "Independent",
@@ -75,13 +76,13 @@ async function main() {
     { applicantId: aid, order: 0, parentType: "Mother", relationship: "Mother", isLiving: "Yes",
       prefix: "Mrs.", firstName: "Gulnara", middleInitial: "A", lastName: "Sultanova", suffix: "",
       email: "gulnara.sultanova@example.com", phoneType: "Mobile", phoneCountryCode: "Kazakhstan",
-      phoneNumber: "7019876543", occupation: "Secondary school teacher", employmentStatus: "Employed",
-      educationLevel: "Master's degree" },
+      phoneNumber: "7019876543", occupation: "Teacher or administrator (secondary)", employmentStatus: "Employed",
+      educationLevel: "Graduate school" },
     { applicantId: aid, order: 1, parentType: "Father", relationship: "Father", isLiving: "Yes",
       prefix: "Mr.", firstName: "Nurlan", middleInitial: "B", lastName: "Sultanov", suffix: "",
       email: "nurlan.sultanov@example.com", phoneType: "Mobile", phoneCountryCode: "Kazakhstan",
-      phoneNumber: "7017654321", occupation: "Civil engineer", employmentStatus: "Employed",
-      educationLevel: "Bachelor's degree" },
+      phoneNumber: "7017654321", occupation: "Engineer", employmentStatus: "Employed",
+      educationLevel: "Graduated from college/university" },
   ]});
 
   // ---- Siblings ----

@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 30,
+  "version": 33,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -415,7 +415,7 @@
           "selectors": [
             "#text_ques_176"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -542,9 +542,9 @@
         {
           "source": "profile.visaType",
           "selectors": [
-            "label:Visa type"
+            "#text_ques_1837"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         }
       ]
@@ -568,7 +568,7 @@
           "selectors": [
             "#ctrycode_ques_189"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -628,6 +628,41 @@
             "He/Him": "[id$=\"_5320-input\"]",
             "She/Her": "[id$=\"_5321-input\"]",
             "They/Them": "[id$=\"_5322-input\"]"
+          }
+        },
+        {
+          "source": "profile.armedForces",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "None": "#option_ques_194_1841-input",
+            "Currently Serving": "#option_ques_194_1842-input",
+            "Previously Served": "#option_ques_194_1843-input",
+            "Current Dependent": "#option_ques_194_1844-input"
+          }
+        },
+        {
+          "source": "profile.hispanicLatino",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_200_2371-input",
+            "No": "#option_ques_200_2372-input"
+          }
+        },
+        {
+          "source": "profile.raceEthnicity",
+          "kind": "checkbox-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "American Indian or Alaska Native": "[id$=\"_1860-input\"]",
+            "Asian": "[id$=\"_1861-input\"]",
+            "Black or African American": "[id$=\"_1862-input\"]",
+            "Native Hawaiian or Other Pacific Islander": "[id$=\"_1863-input\"]",
+            "White": "[id$=\"_1864-input\"]"
           }
         }
       ]
@@ -2969,14 +3004,13 @@
           "source": "languages.0.proficiency",
           "kind": "checkbox-map",
           "selectors": [],
-          "anchor": "#text_ques_224",
           "requiresConfirm": true,
           "valueMap": {
-            "First Language": "[id$=\"_2096-input\"]",
-            "Speak": "[id$=\"_2093-input\"]",
-            "Read": "[id$=\"_2094-input\"]",
-            "Write": "[id$=\"_2095-input\"]",
-            "Spoken at Home": "[id$=\"_2097-input\"]"
+            "First Language": "#ca-checkboxList-1_2096-input",
+            "Speak": "#ca-checkboxList-1_2093-input",
+            "Read": "#ca-checkboxList-1_2094-input",
+            "Write": "#ca-checkboxList-1_2095-input",
+            "Spoken at Home": "#ca-checkboxList-1_2097-input"
           }
         },
         {
@@ -2991,14 +3025,13 @@
           "source": "languages.1.proficiency",
           "kind": "checkbox-map",
           "selectors": [],
-          "anchor": "#text_ques_226",
           "requiresConfirm": true,
           "valueMap": {
-            "First Language": "[id$=\"_2096-input\"]",
-            "Speak": "[id$=\"_2093-input\"]",
-            "Read": "[id$=\"_2094-input\"]",
-            "Write": "[id$=\"_2095-input\"]",
-            "Spoken at Home": "[id$=\"_2097-input\"]"
+            "First Language": "#ca-checkboxList-2_2096-input",
+            "Speak": "#ca-checkboxList-2_2093-input",
+            "Read": "#ca-checkboxList-2_2094-input",
+            "Write": "#ca-checkboxList-2_2095-input",
+            "Spoken at Home": "#ca-checkboxList-2_2097-input"
           }
         },
         {
@@ -3013,14 +3046,13 @@
           "source": "languages.2.proficiency",
           "kind": "checkbox-map",
           "selectors": [],
-          "anchor": "#text_ques_228",
           "requiresConfirm": true,
           "valueMap": {
-            "First Language": "[id$=\"_2096-input\"]",
-            "Speak": "[id$=\"_2093-input\"]",
-            "Read": "[id$=\"_2094-input\"]",
-            "Write": "[id$=\"_2095-input\"]",
-            "Spoken at Home": "[id$=\"_2097-input\"]"
+            "First Language": "#ca-checkboxList-3_2096-input",
+            "Speak": "#ca-checkboxList-3_2093-input",
+            "Read": "#ca-checkboxList-3_2094-input",
+            "Write": "#ca-checkboxList-3_2095-input",
+            "Spoken at Home": "#ca-checkboxList-3_2097-input"
           }
         },
         {
@@ -3035,14 +3067,13 @@
           "source": "languages.3.proficiency",
           "kind": "checkbox-map",
           "selectors": [],
-          "anchor": "#text_ques_230",
           "requiresConfirm": true,
           "valueMap": {
-            "First Language": "[id$=\"_2096-input\"]",
-            "Speak": "[id$=\"_2093-input\"]",
-            "Read": "[id$=\"_2094-input\"]",
-            "Write": "[id$=\"_2095-input\"]",
-            "Spoken at Home": "[id$=\"_2097-input\"]"
+            "First Language": "#ca-checkboxList-4_2096-input",
+            "Speak": "#ca-checkboxList-4_2093-input",
+            "Read": "#ca-checkboxList-4_2094-input",
+            "Write": "#ca-checkboxList-4_2095-input",
+            "Spoken at Home": "#ca-checkboxList-4_2097-input"
           }
         },
         {
@@ -3057,14 +3088,13 @@
           "source": "languages.4.proficiency",
           "kind": "checkbox-map",
           "selectors": [],
-          "anchor": "#text_ques_232",
           "requiresConfirm": true,
           "valueMap": {
-            "First Language": "[id$=\"_2096-input\"]",
-            "Speak": "[id$=\"_2093-input\"]",
-            "Read": "[id$=\"_2094-input\"]",
-            "Write": "[id$=\"_2095-input\"]",
-            "Spoken at Home": "[id$=\"_2097-input\"]"
+            "First Language": "#ca-checkboxList-5_2096-input",
+            "Speak": "#ca-checkboxList-5_2093-input",
+            "Read": "#ca-checkboxList-5_2094-input",
+            "Write": "#ca-checkboxList-5_2095-input",
+            "Spoken at Home": "#ca-checkboxList-5_2097-input"
           }
         }
       ]
@@ -3131,7 +3161,7 @@
           "selectors": [
             "#text_ques_374"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3171,7 +3201,7 @@
           "selectors": [
             "#text_ques_378"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3198,7 +3228,7 @@
           "selectors": [
             "#ctrycode_ques_382"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3214,7 +3244,7 @@
           "selectors": [
             "#text_ques_385"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3230,7 +3260,7 @@
           "selectors": [
             "#text_ques_386"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3238,7 +3268,7 @@
           "selectors": [
             "#text_ques_391"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         }
       ]
@@ -3273,7 +3303,7 @@
           "selectors": [
             "#text_ques_456"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3313,7 +3343,7 @@
           "selectors": [
             "#text_ques_460"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3340,7 +3370,7 @@
           "selectors": [
             "#ctrycode_ques_464"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3356,7 +3386,7 @@
           "selectors": [
             "#text_ques_467"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3372,7 +3402,7 @@
           "selectors": [
             "#text_ques_468"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -3380,7 +3410,7 @@
           "selectors": [
             "#text_ques_473"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         }
       ]
