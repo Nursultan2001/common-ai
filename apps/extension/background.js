@@ -161,6 +161,32 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         return sendResponse({ ok: true, results });
       }
 
+      // Clear EVERY mapped page: navigate to each, clear all answers, then click
+      // Continue to persist the cleared state. Common App blocks saving an empty
+      // REQUIRED field, so those pages clear but report saved:false.
+      if (msg.type === "CLEAR_ALL_PAGES") {
+        const tabId = msg.tabId;
+        const bundle = await buildBundle();
+        if (!bundle.ok) return sendResponse(bundle);
+        const pages = bundle.data.template.pages || [];
+        const results = [];
+        for (const p of pages) {
+          await chrome.tabs.update(tabId, { url: p.urlPattern.replace(/\*+$/, "") });
+          await waitComplete(tabId);
+          await sleep(1800);
+          const r = await messageTabWithInject(tabId, { type: "CLEAR_CURRENT_PAGE" });
+          await sleep(500);
+          const c = await messageTabWithInject(tabId, { type: "CLICK_CONTINUE" });
+          results.push({
+            name: p.name,
+            cleared: (r && r.cleared) || 0,
+            saved: !!(c && c.saved),
+            errors: (c && c.errors) || 0,
+          });
+        }
+        return sendResponse({ ok: true, results });
+      }
+
       // Walk every known Common App page, deep-scrape each (read-only), then
       // export one combined JSON file from the final page.
       if (msg.type === "DEEP_SCRAPE_ALL") {

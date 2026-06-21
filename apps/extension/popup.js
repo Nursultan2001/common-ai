@@ -85,6 +85,31 @@ $("deepall").onclick = async () => {
   });
 };
 
+$("clearall").onclick = async () => {
+  // Destructive — require an explicit confirmation before wiping answers.
+  const ok = window.confirm(
+    "⚠️ Clear ALL answers on your Common App?\n\n" +
+      "This walks every mapped page and clears every field that was filled, " +
+      "then tries to save each page.\n\n" +
+      "• This cannot be undone by the extension.\n" +
+      "• Required fields Common App won't save empty will clear on screen but " +
+      "revert on reload.\n\n" +
+      "Continue?"
+  );
+  if (!ok) return status("Clear cancelled.");
+  status("Clearing all pages… the tab walks each section. Don’t close it.");
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  chrome.runtime.sendMessage({ type: "CLEAR_ALL_PAGES", tabId: tab.id }, (r) => {
+    if (!r || !r.ok) return status(`Error: ${(r && r.error) || "failed"}`);
+    const total = r.results.reduce((n, x) => n + (x.cleared || 0), 0);
+    const saved = r.results.filter((x) => x.saved).length;
+    status(
+      `Cleared ${total} field(s); saved ${saved}/${r.results.length} page(s). ` +
+        `Pages with required fields may revert on reload.`
+    );
+  });
+};
+
 $("capture").onclick = async () => {
   status("Capturing fields on this page…");
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });

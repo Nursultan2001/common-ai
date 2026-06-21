@@ -60,6 +60,8 @@
         box-shadow: 0 8px 22px -10px rgba(91,140,255,.85);
       }
       button.primary:hover { box-shadow: 0 12px 26px -10px rgba(91,140,255,1); }
+      button.danger { border-color: rgba(255,107,122,.4); color: #ff9aa6; }
+      button.danger:hover { background: rgba(255,77,99,.14); color: #ffd2d7; border-color: rgba(255,107,122,.7); }
       .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
       .sep { height: 1px; background: var(--line); margin: 14px 0 4px; }
@@ -109,6 +111,7 @@
           <button id="runall">Autofill all (no save)</button>
           <button id="capture">Capture fields (build a map)</button>
           <button id="deepall">Deep scrape all pages → file</button>
+          <button id="clearall" class="danger">🗑 Clear ALL answers</button>
         </div>
       </details>
 

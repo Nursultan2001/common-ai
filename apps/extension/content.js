@@ -1250,6 +1250,11 @@
       clickContinue().then(sendResponse);
       return true;
     }
+    // Clear every answer the autofill (or the student) entered on THIS page.
+    if (msg.type === "CLEAR_CURRENT_PAGE") {
+      clearPage().then(sendResponse);
+      return true;
+    }
     // Read-only structural inventory of the current page (accumulates).
     if (msg.type === "DEEP_SCRAPE_PAGE") {
       (async () => {
@@ -1318,6 +1323,66 @@
       "mat-error, [role='alert'], .mat-mdc-form-field-error, .ca-error, .error-message"
     ).length;
     return { ok: true, clicked: true, saved: !!advanced, advanced: !!advanced, errors };
+  }
+
+  // Clear every answer entered on THIS page (best-effort). Common App has no
+  // single "reset" — we click each "Clear answer"/"Clear selection" control,
+  // empty text/combobox inputs, uncheck boxes, and blank rich-text editors.
+  // NOTE: Common App won't SAVE an empty required field, so required pages clear
+  // visually but revert on reload unless re-answered. Never touches Submit/Pay.
+  async function clearPage() {
+    let cleared = 0;
+    const isCky = (el) => /cky|consent/i.test(el.id || "") || el.closest("#cookieConsent, .cky-consent-container");
+
+    // 1) "Clear answer" / "Clear selection" buttons (radios + checkbox lists).
+    //    Re-query across a few passes since clearing can re-render the page.
+    for (let pass = 0; pass < 4; pass++) {
+      const btns = [...document.querySelectorAll("button")].filter((b) => {
+        const t = (b.textContent || "").trim().toLowerCase();
+        return (t === "clear answer" || t === "clear selection") && b.offsetParent !== null && !b.disabled;
+      });
+      if (!btns.length) break;
+      for (const b of btns) { try { b.click(); cleared++; await sleep(90); } catch {} }
+      await sleep(220);
+    }
+
+    // 2) Combobox/select clear (×) controls scoped to a field.
+    for (const x of document.querySelectorAll(
+      "[aria-label='Clear'], [aria-label='Clear selection'], [aria-label^='Clear ' i], button.mat-mdc-select-clear"
+    )) {
+      if (x.offsetParent !== null && !isCky(x)) { try { x.click(); cleared++; await sleep(60); } catch {} }
+    }
+
+    // 3) Empty remaining text inputs / textareas / comboboxes (Common App ques_*).
+    for (const el of document.querySelectorAll(
+      "input[id*='ques_'], textarea[id*='ques_'], input[role='combobox']"
+    )) {
+      if (el.type === "radio" || el.type === "checkbox" || isCky(el)) continue;
+      if (el.value) {
+        setNativeValue(el, "");
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+        el.dispatchEvent(new Event("change", { bubbles: true }));
+        if (el.blur) el.blur();
+        cleared++;
+      }
+    }
+
+    // 4) Uncheck anything still checked (skip cookie-consent toggles).
+    for (const el of document.querySelectorAll("input[type='checkbox'], input[type='radio']")) {
+      if (el.checked && !isCky(el)) { (el.closest("label") || el).click(); cleared++; await sleep(40); }
+    }
+
+    // 5) Rich-text editors (CKEditor).
+    for (const ck of document.querySelectorAll(".ck-content[contenteditable='true']")) {
+      try {
+        if (ck.ckeditorInstance && typeof ck.ckeditorInstance.setData === "function") {
+          ck.ckeditorInstance.setData("");
+        } else { ck.innerHTML = "<p><br></p>"; ck.dispatchEvent(new Event("input", { bubbles: true })); }
+        cleared++;
+      } catch {}
+    }
+
+    return { ok: true, cleared };
   }
 
   async function runAutofill({ quiet } = {}) {
