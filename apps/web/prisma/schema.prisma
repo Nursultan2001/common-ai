@@ -80,6 +80,12 @@ model Applicant {
   orgId       String?
   org         Org?     @relation(fields: [orgId], references: [id])
 
+  // Agency client intake: an unguessable token lets a client fill a no-login
+  // form that writes to THIS applicant. Set when an agency creates a client.
+  intakeToken       String?   @unique
+  intakeClientName  String?   // display label for the agency's client list
+  intakeSubmittedAt DateTime?
+
   profile      MasterProfile?
   activities   Activity[]
   honors       Honor[]

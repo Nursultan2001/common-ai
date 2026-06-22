@@ -24,8 +24,12 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const user = await requireUser();
-  const links =
-    user.role === "ADMIN" ? [...LINKS, { href: "/admin", label: "Admin" }] : LINKS;
+  const isAgency = user.role === "COUNSELOR" || user.role === "ADMIN";
+  const links = [
+    ...(isAgency ? [{ href: "/dashboard/clients", label: "Clients" }] : []),
+    ...LINKS,
+    ...(user.role === "ADMIN" ? [{ href: "/admin", label: "Admin" }] : []),
+  ];
   return (
     <>
       <AppBackground />
