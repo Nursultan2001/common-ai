@@ -22,10 +22,12 @@ async function upsertProfile(applicantId: string, data: Record<string, unknown>)
 function stay(token: string) {
   revalidatePath(`/intake/${token}`);
 }
-// Save then advance to the next step (used by single-save steps).
-function advance(token: string, step: string) {
+// Save then advance to the next step (used by single-save steps), preserving lang.
+function advance(fd: FormData, step: string) {
+  const token = String(fd.get("token"));
+  const lang = String(fd.get("lang") || "en");
   revalidatePath(`/intake/${token}`);
-  redirect(`/intake/${token}?step=${step}`);
+  redirect(`/intake/${token}?step=${step}&lang=${lang}`);
 }
 
 export async function saveIntakePersonal(fd: FormData) {
@@ -50,7 +52,7 @@ export async function saveIntakePersonal(fd: FormData) {
     hispanicLatino: str(fd, "hispanicLatino"),
     raceEthnicity: multi(fd, "raceEthnicity"),
   });
-  advance(String(fd.get("token")), "contact");
+  advance(fd, "contact");
 }
 
 export async function saveIntakeContact(fd: FormData) {
@@ -71,7 +73,7 @@ export async function saveIntakeContact(fd: FormData) {
     postalCode: str(fd, "postalCode"),
     country: str(fd, "country"),
   });
-  advance(String(fd.get("token")), "citizenship");
+  advance(fd, "citizenship");
 }
 
 export async function saveIntakeCitizenship(fd: FormData) {
@@ -85,7 +87,7 @@ export async function saveIntakeCitizenship(fd: FormData) {
     intendsUSVisa: str(fd, "intendsUSVisa"),
     visaType: str(fd, "visaType"),
   });
-  advance(String(fd.get("token")), "languages");
+  advance(fd, "languages");
 }
 
 export async function saveIntakeEducation(fd: FormData) {
@@ -116,7 +118,7 @@ export async function saveIntakeEducation(fd: FormData) {
     careerInterest: str(fd, "careerInterest"),
     enrollmentPlan: str(fd, "enrollmentPlan"),
   });
-  advance(String(fd.get("token")), "testing");
+  advance(fd, "testing");
 }
 
 export async function saveIntakeHousehold(fd: FormData) {
@@ -223,7 +225,7 @@ export async function saveIntakeTesting(fd: FormData) {
     actCompositeDate: d("actCompositeDate"),
   };
   await db.testScores.upsert({ where: { applicantId: id }, update: data, create: { applicantId: id, ...data } });
-  advance(String(fd.get("token")), "activities");
+  advance(fd, "activities");
 }
 
 export async function addIntakeActivity(fd: FormData) {

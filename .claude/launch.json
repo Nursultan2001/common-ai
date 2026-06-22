@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "start", "--workspace=apps/web", "--", "-p", "3100"],
       "port": 3100
+    },
+    {
+      "name": "web-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--workspace=apps/web", "--", "-p", "3100"],
+      "port": 3100
     }
   ]
 }
