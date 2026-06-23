@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { saveTestingAction } from "@/lib/actions/testing";
 
 export const dynamic = "force-dynamic";
@@ -59,7 +59,7 @@ function YesNo({ label, name, value }:
 
 export default async function TestingPage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const t = await db.testScores.findUnique({ where: { applicantId: applicant.id } });
 
   return (

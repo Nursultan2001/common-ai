@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { canAccessApplicant } from "@/lib/auth";
 
 function s(fd: FormData, k: string): string | null {
@@ -24,7 +24,7 @@ async function getOrCreateReport(applicantId: string, grade: string) {
 // Save a grade's transcript header (school/year/scale/schedule) + reportedAll.
 export async function saveGradeReportAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const grade = String(formData.get("grade") ?? "");
   if (!GRADES.includes(grade)) return;
 
@@ -53,7 +53,7 @@ export async function saveGradeReportAction(formData: FormData) {
 // Intro page (13/54): "I can access a copy of my transcript(s)".
 export async function saveTranscriptAccessAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const v = s(formData, "transcriptAccess");
   await db.masterProfile.upsert({
     where: { applicantId: applicant.id },
@@ -65,7 +65,7 @@ export async function saveTranscriptAccessAction(formData: FormData) {
 
 export async function addGradeCourseAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const grade = String(formData.get("grade") ?? "");
   const report = await getOrCreateReport(applicant.id, grade);
   if (!report) return;

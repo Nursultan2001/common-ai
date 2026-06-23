@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { createCheckoutForApplication } from "@/lib/checkout";
 
 export async function addApplicationAction(formData: FormData) {
@@ -11,7 +11,7 @@ export async function addApplicationAction(formData: FormData) {
   const universityId = String(formData.get("universityId") ?? "");
   if (!universityId) return;
 
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
 
   await db.application.upsert({
     where: { applicantId_universityId: { applicantId: applicant.id, universityId } },

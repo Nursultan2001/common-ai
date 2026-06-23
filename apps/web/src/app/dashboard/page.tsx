@@ -1,9 +1,8 @@
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import {
-  requireUser,
+import { requireUser,
   getOrCreateApplicantForStudent,
-  mintExtensionToken,
-} from "@/lib/server-auth";
+  mintExtensionToken, getActiveApplicant, getActiveClientId } from "@/lib/server-auth";
 import { formatUsd, quotePrice } from "@/lib/pricing";
 import { resolveDiscountBps } from "@/lib/entitlements";
 import {
@@ -16,7 +15,10 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardOverview() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  // Agencies don't have a personal application — send them to their client list
+  // unless they're actively managing a client.
+  if (user.role === "COUNSELOR" && !getActiveClientId()) redirect("/dashboard/clients");
+  const applicant = await getActiveApplicant();
 
   const [profile, activities, honors, docs, applications, universities, discountBps] =
     await Promise.all([

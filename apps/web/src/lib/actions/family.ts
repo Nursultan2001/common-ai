@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { canAccessApplicant } from "@/lib/auth";
 
 function s(fd: FormData, k: string): string | null {
@@ -14,7 +14,7 @@ function s(fd: FormData, k: string): string | null {
 // Parent 1 / Parent 2 are addressed by a fixed `order` (0 or 1).
 export async function saveParentAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const order = Number(formData.get("order")) === 1 ? 1 : 0;
 
   const data = {
@@ -52,7 +52,7 @@ export async function saveParentAction(formData: FormData) {
 // Household: marital status, with whom you live, whether you have children.
 export async function saveHouseholdAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const data = {
     parentsMaritalStatus: s(formData, "parentsMaritalStatus"),
     permanentHomeWith: s(formData, "permanentHomeWith"),
@@ -68,7 +68,7 @@ export async function saveHouseholdAction(formData: FormData) {
 
 export async function addSiblingAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const first = s(formData, "firstName");
   const last = s(formData, "lastName");
   if (!first && !last) return;

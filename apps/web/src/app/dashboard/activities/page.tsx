@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import {
   addActivityAction,
   polishActivityAction,
@@ -44,7 +44,7 @@ const CIRCUMSTANCES = [
 
 export default async function ActivitiesPage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const [activities, profile] = await Promise.all([
     db.activity.findMany({
       where: { applicantId: applicant.id },

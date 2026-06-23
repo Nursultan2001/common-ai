@@ -2,6 +2,13 @@ import { db } from "@/lib/db";
 import { formatUsd } from "@/lib/pricing";
 import { requireAdmin } from "@/lib/server-auth";
 import { bulkInviteAction } from "@/lib/actions/waitlist";
+import {
+  setUserRoleAction, setUserOrgAction, createOrgAction, toggleOrgActiveAction,
+} from "@/lib/actions/admin";
+
+const ROLE_LABEL: Record<string, string> = {
+  STUDENT: "Individual", COUNSELOR: "Agency", ADMIN: "Admin",
+};
 
 // Admin dashboard. Server component — reads live data. ADMIN-only.
 export const dynamic = "force-dynamic";
@@ -31,14 +38,19 @@ export default async function AdminPage() {
     }),
     db.auditEvent.findMany({ orderBy: { createdAt: "desc" }, take: 15 }),
     db.org.findMany({
-      include: { _count: { select: { applicants: true } } },
+      include: { _count: { select: { applicants: true, users: true } } },
       orderBy: { createdAt: "desc" },
-      take: 10,
     }),
     db.waitlistEntry.count(),
     db.waitlistEntry.count({ where: { invited: false } }),
     db.waitlistEntry.findMany({ orderBy: { createdAt: "desc" }, take: 25 }),
   ]);
+
+  const users = await db.user.findMany({
+    orderBy: { createdAt: "desc" },
+    take: 100,
+    include: { org: { select: { name: true } }, _count: { select: { ownedApplicants: true } } },
+  });
 
   const revenue = revenueAgg._sum.amountCents ?? 0;
   const appUrl = process.env.APP_URL ?? "http://localhost:3000";
@@ -75,16 +87,66 @@ export default async function AdminPage() {
       </div>
 
       <div className="card">
-        <h2>Agencies</h2>
+        <h2>Users &amp; access</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Set each person’s role — <strong>Individual</strong> fills their own
+          application; <strong>Agency</strong> manages clients; <strong>Admin</strong>
+          controls everything. Assign agency staff to an org.
+        </p>
         <table>
           <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Discount</th>
-              <th>Applicants</th>
-              <th>Active</th>
-            </tr>
+            <tr><th>Email</th><th>Role</th><th>Agency / org</th><th>Owns</th></tr>
+          </thead>
+          <tbody>
+            {users.map((u) => (
+              <tr key={u.id}>
+                <td>{u.email}<div className="muted" style={{ fontSize: 11 }}>{u.name ?? ""}</div></td>
+                <td>
+                  <form action={setUserRoleAction} style={{ display: "flex", gap: 6 }}>
+                    <input type="hidden" name="userId" value={u.id} />
+                    <select name="role" defaultValue={u.role} style={{ width: "auto" }}>
+                      {Object.keys(ROLE_LABEL).map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
+                    </select>
+                    <button style={{ marginTop: 0 }}>Set</button>
+                  </form>
+                </td>
+                <td>
+                  <form action={setUserOrgAction} style={{ display: "flex", gap: 6 }}>
+                    <input type="hidden" name="userId" value={u.id} />
+                    <select name="orgId" defaultValue={u.orgId ?? ""} style={{ width: "auto" }}>
+                      <option value="">— none —</option>
+                      {orgs.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
+                    </select>
+                    <button style={{ marginTop: 0 }}>Save</button>
+                  </form>
+                </td>
+                <td className="muted">{u._count.ownedApplicants}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="card">
+        <h2>Agencies</h2>
+        <form action={createOrgAction} className="row" style={{ alignItems: "flex-end", gap: 8 }}>
+          <div style={{ flex: "1 1 220px" }}>
+            <label>New agency name</label>
+            <input name="name" placeholder="e.g. Bright Futures Consulting" required />
+          </div>
+          <div style={{ flex: "0 0 130px" }}>
+            <label>Type</label>
+            <select name="type" defaultValue="AGENCY"><option>AGENCY</option><option>SCHOOL</option></select>
+          </div>
+          <div style={{ flex: "0 0 130px" }}>
+            <label>Discount %</label>
+            <input name="discountPct" type="number" min={0} max={100} defaultValue={0} />
+          </div>
+          <button className="primary" style={{ marginTop: 0 }}>Create</button>
+        </form>
+        <table style={{ marginTop: 14 }}>
+          <thead>
+            <tr><th>Name</th><th>Type</th><th>Discount</th><th>Staff</th><th>Clients</th><th>Access</th></tr>
           </thead>
           <tbody>
             {orgs.map((o) => (
@@ -92,16 +154,20 @@ export default async function AdminPage() {
                 <td>{o.name}</td>
                 <td>{o.type}</td>
                 <td>{(o.discountBps / 100).toFixed(0)}%</td>
+                <td>{o._count.users}</td>
                 <td>{o._count.applicants}</td>
-                <td>{o.active ? "yes" : "no"}</td>
+                <td>
+                  <form action={toggleOrgActiveAction}>
+                    <input type="hidden" name="orgId" value={o.id} />
+                    <button style={{ marginTop: 0 }} className={o.active ? "" : "primary"}>
+                      {o.active ? "Active — revoke" : "Disabled — grant"}
+                    </button>
+                  </form>
+                </td>
               </tr>
             ))}
             {orgs.length === 0 && (
-              <tr>
-                <td colSpan={5} className="muted">
-                  No agencies yet.
-                </td>
-              </tr>
+              <tr><td colSpan={6} className="muted">No agencies yet.</td></tr>
             )}
           </tbody>
         </table>

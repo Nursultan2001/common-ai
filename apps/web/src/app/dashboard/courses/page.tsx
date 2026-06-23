@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import {
   addCourseAction,
   deleteCourseAction,
@@ -31,7 +31,7 @@ const SCHEDULES = ["Full Year", "First Semester", "Second Semester"];
 
 export default async function CoursesPage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const [courses, profile] = await Promise.all([
     db.course.findMany({
       where: { applicantId: applicant.id },

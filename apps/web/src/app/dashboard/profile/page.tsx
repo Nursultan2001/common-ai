@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { saveProfileAction } from "@/lib/actions/profile";
 import { addLanguageAction, deleteLanguageAction } from "@/lib/actions/languages";
 import {
@@ -55,7 +55,7 @@ function isoDate(d: Date | null) {
 
 export default async function ProfilePage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const p = await db.masterProfile.findUnique({ where: { applicantId: applicant.id } });
   const languages = await db.language.findMany({
     where: { applicantId: applicant.id },

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 
 function s(fd: FormData, k: string): string | null {
   const v = fd.get(k);
@@ -18,7 +18,7 @@ function n(fd: FormData, k: string): number | null {
 
 export async function saveTestingAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const date = s(formData, "ieltsDate");
   const d = (k: string) => {
     const v = s(formData, k);

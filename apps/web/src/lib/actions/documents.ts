@@ -3,7 +3,7 @@
 import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { canAccessApplicant } from "@/lib/auth";
 import { encryptBytes } from "@/lib/crypto";
 import { putObject, deleteObject } from "@/lib/storage";
@@ -22,7 +22,7 @@ const MAX_BYTES = 10 * 1024 * 1024; // 10 MB
 
 export async function uploadDocumentAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
 
   const file = formData.get("file");
   const typeRaw = String(formData.get("type") ?? "OTHER");

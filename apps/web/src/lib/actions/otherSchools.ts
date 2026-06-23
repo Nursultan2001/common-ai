@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { canAccessApplicant } from "@/lib/auth";
 
 function s(fd: FormData, k: string): string | null {
@@ -18,7 +18,7 @@ function d(fd: FormData, k: string): Date | null {
 // Add another secondary/high school (Common App allows up to 3 extra).
 export async function addOtherSchoolAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const name = s(formData, "name");
   if (!name) return;
 

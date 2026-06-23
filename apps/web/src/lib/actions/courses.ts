@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { canAccessApplicant } from "@/lib/auth";
 
 function s(fd: FormData, k: string): string | null {
@@ -13,7 +13,7 @@ function s(fd: FormData, k: string): string | null {
 
 export async function addCourseAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const name = s(formData, "name");
   const subject = s(formData, "subject");
   if (!name && !subject) return;
@@ -36,7 +36,7 @@ export async function addCourseAction(formData: FormData) {
 // — one radio for the whole Courses page, stored on the profile.
 export async function saveCourseSettingsAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const data = { courseScheduleSystem: s(formData, "courseScheduleSystem") };
   await db.masterProfile.upsert({
     where: { applicantId: applicant.id },

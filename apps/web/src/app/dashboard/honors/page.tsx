@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import {
   addHonorAction,
   polishHonorAction,
@@ -30,7 +30,7 @@ function CheckRow({ label, name, options }: { label: string; name: string; optio
 
 export default async function HonorsPage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const honors = await db.honor.findMany({
     where: { applicantId: applicant.id },
     orderBy: { createdAt: "asc" },

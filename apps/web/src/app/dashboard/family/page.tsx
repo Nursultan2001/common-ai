@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import {
   saveParentAction,
   saveHouseholdAction,
@@ -150,7 +150,7 @@ function ParentForm({ order, p }: { order: 0 | 1; p?: ParentRow }) {
 
 export default async function FamilyPage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const [parents, siblings, profile] = await Promise.all([
     db.parent.findMany({ where: { applicantId: applicant.id }, orderBy: { order: "asc" } }),
     db.sibling.findMany({ where: { applicantId: applicant.id }, orderBy: { order: "asc" } }),

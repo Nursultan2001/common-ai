@@ -70,3 +70,32 @@ export async function getOrCreateApplicantForStudent(userId: string, orgId: stri
     data: { ownerUserId: userId, orgId: orgId ?? undefined, profile: { create: {} } },
   });
 }
+
+export const ACTIVE_CLIENT_COOKIE = "activeClientId";
+
+/**
+ * The applicant the current page/action edits.
+ *  - STUDENT  → their own applicant (auto-created).
+ *  - COUNSELOR/ADMIN → the client they're "managing" (cookie), if accessible;
+ *    otherwise their own (admins may also fill a personal application).
+ * This lets agencies edit a client's FULL application through the same pages,
+ * while individuals edit their own — no duplicated UI.
+ */
+export async function getActiveApplicant() {
+  const user = await requireUser();
+  if (user.role === "COUNSELOR" || user.role === "ADMIN") {
+    const id = cookies().get(ACTIVE_CLIENT_COOKIE)?.value;
+    if (id) {
+      const a = await db.applicant.findUnique({ where: { id } });
+      if (a && (user.role === "ADMIN" || a.ownerUserId === user.id || (a.orgId && a.orgId === user.orgId))) {
+        return a;
+      }
+    }
+  }
+  return getOrCreateApplicantForStudent(user.id, user.orgId);
+}
+
+/** The active client id (for layout banners), or null. */
+export function getActiveClientId() {
+  return cookies().get(ACTIVE_CLIENT_COOKIE)?.value ?? null;
+}

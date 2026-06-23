@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/server-auth";
-import { createClientAction, regenerateClientLinkAction } from "@/lib/actions/clients";
+import { createClientAction, regenerateClientLinkAction, manageClientAction } from "@/lib/actions/clients";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +73,10 @@ export default async function ClientsPage() {
             <div className="row" style={{ marginTop: 8, gap: 8 }}>
               <span className="muted" style={{ fontSize: 12 }}>Applicant ID (for the extension): <code>{c.id}</code></span>
               <span className="spacer" />
+              <form action={manageClientAction}>
+                <input type="hidden" name="applicantId" value={c.id} />
+                <button className="primary" style={{ marginTop: 0 }}>Fill out / edit →</button>
+              </form>
               <form action={regenerateClientLinkAction}>
                 <input type="hidden" name="applicantId" value={c.id} />
                 <button style={{ marginTop: 0 }}>Regenerate link</button>

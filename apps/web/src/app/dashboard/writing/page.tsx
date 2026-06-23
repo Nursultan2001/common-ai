@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import {
   saveEssayAction,
   generateEssayAction,
@@ -19,7 +19,7 @@ const wordCount = (s?: string | null) =>
 
 export default async function WritingPage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const [essay, profile] = await Promise.all([
     db.essay.findFirst({
       where: { applicantId: applicant.id, kind: "PERSONAL_STATEMENT" },

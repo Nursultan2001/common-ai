@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import {
   saveTranscriptAccessAction,
   saveGradeReportAction,
@@ -114,7 +114,7 @@ function GradeCard({ grade, report }: { grade: string; report?: ReportT }) {
 
 export default async function GradesPage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const [profile, reports] = await Promise.all([
     db.masterProfile.findUnique({ where: { applicantId: applicant.id } }),
     db.gradeReport.findMany({

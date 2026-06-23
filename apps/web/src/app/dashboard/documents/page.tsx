@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import {
   uploadDocumentAction,
   deleteDocumentAction,
@@ -25,7 +25,7 @@ function fmtSize(n: number) {
 
 export default async function DocumentsPage() {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const docs = await db.document.findMany({
     where: { applicantId: applicant.id },
     orderBy: { createdAt: "desc" },

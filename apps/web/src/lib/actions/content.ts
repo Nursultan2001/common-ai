@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { requireUser, getOrCreateApplicantForStudent } from "@/lib/server-auth";
+import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { canAccessApplicant } from "@/lib/auth";
 import { polishActivity, polishHonor, draftEssayScaffold, refineEssay } from "@/lib/ai";
 import { PERSONAL_ESSAY_PROMPTS, PERSONAL_ESSAY_WORD_LIMIT } from "@/lib/essayPrompts";
@@ -11,7 +11,7 @@ import { PERSONAL_ESSAY_PROMPTS, PERSONAL_ESSAY_WORD_LIMIT } from "@/lib/essayPr
 
 export async function addActivityAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const raw = String(formData.get("rawDescription") ?? "").trim();
   if (!raw) return;
 
@@ -39,7 +39,7 @@ export async function addActivityAction(formData: FormData) {
 // store the exact Common App option labels as CSV so autofill matches them.
 export async function saveResponsibilitiesAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   // Join with "||" (option labels themselves contain commas).
   const multi = (k: string) =>
     formData.getAll(k).map((v) => String(v).trim()).filter(Boolean).join("||") || null;
@@ -112,7 +112,7 @@ export async function deleteActivityAction(formData: FormData) {
 
 export async function addHonorAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const title = String(formData.get("title") ?? "").trim();
   if (!title) return;
 
@@ -205,7 +205,7 @@ function promptFromIndex(formData: FormData): string | null {
 // Save prompt choice, the student's notes, and/or the student's own draft.
 export async function saveEssayAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const essay = await getOrCreatePersonalEssay(applicant.id);
   await db.essay.update({
     where: { id: essay.id },
@@ -221,7 +221,7 @@ export async function saveEssayAction(formData: FormData) {
 // Mode A — generate a first draft from the student's notes/material.
 export async function generateEssayAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const essay = await getOrCreatePersonalEssay(applicant.id);
   const prompt = promptFromIndex(formData) ?? essay.prompt;
   const studentNotes = String(formData.get("studentNotes") ?? "").trim();
@@ -242,7 +242,7 @@ export async function generateEssayAction(formData: FormData) {
 // Mode B — refine the student's OWN draft into its strongest version.
 export async function refineEssayAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const essay = await getOrCreatePersonalEssay(applicant.id);
   const prompt = promptFromIndex(formData) ?? essay.prompt;
   const studentDraft = String(formData.get("draft") ?? "").trim();
@@ -266,7 +266,7 @@ export async function refineEssayAction(formData: FormData) {
 // Approve the final essay (the student's edited text) for autofill.
 export async function approveEssayAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const essay = await getOrCreatePersonalEssay(applicant.id);
   const finalText = String(formData.get("finalText") ?? "").trim();
   if (!finalText) return;
@@ -281,7 +281,7 @@ export async function approveEssayAction(formData: FormData) {
 // boxes; the Yes/No radios are derived from whether each box has content.
 export async function saveAdditionalInfoAction(formData: FormData) {
   const user = await requireUser();
-  const applicant = await getOrCreateApplicantForStudent(user.id, user.orgId);
+  const applicant = await getActiveApplicant();
   const data = {
     addlInfoText: String(formData.get("addlInfoText") ?? "").trim() || null,
     addlQualificationsText: String(formData.get("addlQualificationsText") ?? "").trim() || null,
