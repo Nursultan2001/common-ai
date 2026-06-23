@@ -61,9 +61,12 @@ export default async function ClientsPage() {
         {clients.map((c) => (
           <div key={c.id} style={{ borderTop: "1px solid var(--line, rgba(140,160,210,.16))", padding: "12px 0" }}>
             <div className="row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-              <strong>{c.intakeClientName || "(unnamed client)"}</strong>
+              <a href={`/dashboard/clients/${c.id}`} style={{ fontWeight: 700, fontSize: 16 }}>
+                {c.intakeClientName || "(unnamed client)"}
+              </a>
               <span className={`badge ${c.intakeSubmittedAt ? "paid" : "locked"}`}>{statusOf(c)}</span>
             </div>
+            <a href={`/dashboard/clients/${c.id}`} className="muted" style={{ fontSize: 12 }}>View results →</a>
             <label style={{ marginTop: 8 }}>Client fill-out link (share this)</label>
             <input readOnly value={`${origin}/intake/${c.intakeToken}`}
               style={{ fontFamily: "ui-monospace, monospace", fontSize: 12 }} />
