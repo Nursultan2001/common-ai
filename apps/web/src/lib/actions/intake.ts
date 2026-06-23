@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { applicantIdFromToken, str, num, dateOf, multi } from "@/lib/intake";
+import { PERSONAL_ESSAY_PROMPTS, PERSONAL_ESSAY_WORD_LIMIT } from "@/lib/essayPrompts";
 
 // All actions are scoped by the intake token (the form is no-login). Each step
 // writes only its own fields, so steps never clobber each other.
@@ -281,6 +282,35 @@ export async function deleteIntakeHonor(fd: FormData) {
   if (!id || !honor || honor.applicantId !== id) return;
   await db.honor.delete({ where: { id: honorId } });
   stay(String(fd.get("token")));
+}
+
+// The client drafts their personal essay (and optional extra context) in their
+// own words; the agency refines/approves it later via the Writing tab.
+export async function saveIntakeWriting(fd: FormData) {
+  const id = await aid(fd);
+  if (!id) return;
+  const idx = Number(fd.get("promptIndex"));
+  const prompt =
+    idx >= 1 && idx <= PERSONAL_ESSAY_PROMPTS.length ? PERSONAL_ESSAY_PROMPTS[idx - 1] : null;
+  const text = str(fd, "essayText");
+  const existing = await db.essay.findFirst({
+    where: { applicantId: id, kind: "PERSONAL_STATEMENT" },
+  });
+  if (existing) {
+    await db.essay.update({
+      where: { id: existing.id },
+      data: { prompt: prompt ?? existing.prompt, studentNotes: text ?? existing.studentNotes, draft: text ?? existing.draft },
+    });
+  } else {
+    await db.essay.create({
+      data: { applicantId: id, kind: "PERSONAL_STATEMENT", wordLimit: PERSONAL_ESSAY_WORD_LIMIT, prompt, studentNotes: text, draft: text },
+    });
+  }
+  await upsertProfile(id, {
+    addlInfoText: str(fd, "addlInfoText"),
+    addlQualificationsText: str(fd, "addlQualificationsText"),
+  });
+  advance(fd, "review");
 }
 
 export async function submitIntake(fd: FormData) {

@@ -29,7 +29,7 @@ const en: Dict = {
 
   s_personal: "Personal", s_contact: "Contact & address", s_citizenship: "Citizenship",
   s_languages: "Languages", s_family: "Family", s_education: "Education", s_testing: "Testing",
-  s_activities: "Activities", s_honors: "Honors", s_review: "Review & submit",
+  s_activities: "Activities", s_honors: "Honors", s_writing: "Writing", s_review: "Review & submit",
 
   legalFirst: "Legal first name", middle: "Middle name", legalLast: "Legal last name", suffix: "Suffix",
   preferredFirst: "Preferred first name", shareDifferent: "Share a different first name?",
@@ -81,6 +81,11 @@ const en: Dict = {
   recognition: "Level(s) of recognition", contextOptional: "Context (optional)",
   addHonor: "Add honor", noHonors: "No honors yet.",
 
+  writingTitle: "Personal essay", choosePrompt: "Choose a prompt",
+  essayHelp: "Write as much as you can in your own words — your counselor will help refine it. Aim for 250–650 words, but anything is a great start.",
+  essayLabel: "Your essay", addlInfoLabel: "Anything else colleges should know? (optional)",
+  addlQualLabel: "Other details or qualifications not shown elsewhere (optional)",
+
   reviewTitle: "Review & submit",
   reviewHelper: "Everything saves as you go. Submitting just tells your counselor you’re done — you can still edit afterward.",
   rName: "Name", rEmail: "Email", rHS: "High school", rCounts: "Languages: {l} · Activities: {a} · Honors: {h}",
@@ -100,7 +105,7 @@ const ru: Dict = {
 
   s_personal: "Личные данные", s_contact: "Контакты и адрес", s_citizenship: "Гражданство",
   s_languages: "Языки", s_family: "Семья", s_education: "Образование", s_testing: "Тесты",
-  s_activities: "Деятельность", s_honors: "Награды", s_review: "Проверка и отправка",
+  s_activities: "Деятельность", s_honors: "Награды", s_writing: "Эссе", s_review: "Проверка и отправка",
 
   legalFirst: "Имя (по документам)", middle: "Отчество / среднее имя", legalLast: "Фамилия (по документам)", suffix: "Суффикс",
   preferredFirst: "Предпочитаемое имя", shareDifferent: "Указать другое имя?",
@@ -152,6 +157,11 @@ const ru: Dict = {
   recognition: "Уровень признания", contextOptional: "Контекст (необязательно)",
   addHonor: "Добавить", noHonors: "Пока ничего нет.",
 
+  writingTitle: "Личное эссе", choosePrompt: "Выберите тему",
+  essayHelp: "Напишите как можно больше своими словами — консультант поможет доработать. Ориентир 250–650 слов, но любой текст — хорошее начало.",
+  essayLabel: "Ваше эссе", addlInfoLabel: "Что ещё стоит знать колледжам? (необязательно)",
+  addlQualLabel: "Другие сведения или качества, не указанные выше (необязательно)",
+
   reviewTitle: "Проверка и отправка",
   reviewHelper: "Всё сохраняется по ходу. Отправка просто сообщает консультанту, что вы закончили — редактировать можно и дальше.",
   rName: "Имя", rEmail: "Эл. почта", rHS: "Школа", rCounts: "Языки: {l} · Деятельность: {a} · Награды: {h}",
@@ -171,7 +181,7 @@ const kk: Dict = {
 
   s_personal: "Жеке деректер", s_contact: "Байланыс және мекенжай", s_citizenship: "Азаматтық",
   s_languages: "Тілдер", s_family: "Отбасы", s_education: "Білім", s_testing: "Тесттер",
-  s_activities: "Қызмет", s_honors: "Марапаттар", s_review: "Тексеру және жіберу",
+  s_activities: "Қызмет", s_honors: "Марапаттар", s_writing: "Эссе", s_review: "Тексеру және жіберу",
 
   legalFirst: "Аты (құжат бойынша)", middle: "Әкесінің аты / орта аты", legalLast: "Тегі (құжат бойынша)", suffix: "Жұрнақ (suffix)",
   preferredFirst: "Қалаған аты", shareDifferent: "Басқа атты көрсету керек пе?",
@@ -222,6 +232,11 @@ const kk: Dict = {
   honorsTitle: "Марапаттар мен жетістіктер", titleField: "Атауы", gradeLevelsH: "Сынып(тар)",
   recognition: "Тану деңгейі", contextOptional: "Мәтінмән (міндетті емес)",
   addHonor: "Қосу", noHonors: "Әзірге жоқ.",
+
+  writingTitle: "Жеке эссе", choosePrompt: "Тақырып таңдаңыз",
+  essayHelp: "Қолыңыздан келгенше өз сөзіңізбен жазыңыз — кеңесші жетілдіруге көмектеседі. 250–650 сөз шамасында, бірақ кез келген мәтін — жақсы бастама.",
+  essayLabel: "Сіздің эссеңіз", addlInfoLabel: "Колледждер білуі керек тағы не бар? (міндетті емес)",
+  addlQualLabel: "Жоғарыда көрсетілмеген басқа мәліметтер немесе қасиеттер (міндетті емес)",
 
   reviewTitle: "Тексеру және жіберу",
   reviewHelper: "Бәрі жол-жөнекей сақталады. Жіберу — кеңесшіге дайын екеніңізді білдіреді; кейін де өңдей аласыз.",

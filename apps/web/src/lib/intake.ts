@@ -45,5 +45,6 @@ export const INTAKE_STEPS = [
   { key: "testing", label: "Testing" },
   { key: "activities", label: "Activities" },
   { key: "honors", label: "Honors" },
+  { key: "writing", label: "Writing" },
   { key: "review", label: "Review & submit" },
 ] as const;

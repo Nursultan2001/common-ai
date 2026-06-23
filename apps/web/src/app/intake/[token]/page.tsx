@@ -7,8 +7,10 @@ import {
   saveIntakePersonal, saveIntakeContact, saveIntakeCitizenship, saveIntakeEducation,
   saveIntakeHousehold, saveIntakeParent, addIntakeSibling, deleteIntakeSibling,
   addIntakeLanguage, deleteIntakeLanguage, saveIntakeTesting,
-  addIntakeActivity, deleteIntakeActivity, addIntakeHonor, deleteIntakeHonor, submitIntake,
+  addIntakeActivity, deleteIntakeActivity, addIntakeHonor, deleteIntakeHonor,
+  saveIntakeWriting, submitIntake,
 } from "@/lib/actions/intake";
+import { PERSONAL_ESSAY_PROMPTS } from "@/lib/essayPrompts";
 
 export const dynamic = "force-dynamic";
 
@@ -88,12 +90,15 @@ export default async function IntakePage({
       profile: true, parents: { orderBy: { order: "asc" } }, siblings: { orderBy: { order: "asc" } },
       languages: { orderBy: { order: "asc" } }, testScores: true,
       activities: { orderBy: { createdAt: "asc" } }, honors: { orderBy: { createdAt: "asc" } },
+      essays: { where: { kind: "PERSONAL_STATEMENT" }, take: 1 },
     },
   });
   if (!applicant) notFound();
 
   const p = applicant.profile;
   const t = applicant.testScores;
+  const essay = applicant.essays[0];
+  const essayPromptIdx = essay?.prompt ? PERSONAL_ESSAY_PROMPTS.indexOf(essay.prompt) + 1 : 0;
   const step = INTAKE_STEPS.find((s) => s.key === (searchParams.step || "personal")) ? (searchParams.step || "personal") : "personal";
   const idx = INTAKE_STEPS.findIndex((s) => s.key === step);
   const nextKey = INTAKE_STEPS[idx + 1]?.key;
@@ -450,6 +455,40 @@ export default async function IntakePage({
             </form>
           )}
           <NextLink />
+        </div>
+      )}
+
+      {step === "writing" && (
+        <div className="card">
+          <h2>{T.writingTitle}</h2>
+          <p className="muted" style={{ marginTop: 0 }}>{T.essayHelp}</p>
+          <form action={saveIntakeWriting}>
+            <Tok />
+            <label>{T.choosePrompt}</label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 10 }}>
+              {PERSONAL_ESSAY_PROMPTS.map((pr, i) => (
+                <label key={i} style={{ margin: 0, display: "flex", gap: 8, alignItems: "flex-start" }}>
+                  <input type="radio" name="promptIndex" value={i + 1} defaultChecked={essayPromptIdx === i + 1} style={{ width: "auto", marginTop: 4 }} />
+                  <span style={{ fontSize: 13 }}>{pr}</span>
+                </label>
+              ))}
+            </div>
+            <label>{T.essayLabel}</label>
+            <textarea name="essayText" rows={12} defaultValue={essay?.draft ?? essay?.studentNotes ?? ""} />
+            <div className="row" style={{ marginTop: 10 }}>
+              <div style={{ flex: "1 1 100%" }}>
+                <label>{T.addlInfoLabel}</label>
+                <textarea name="addlInfoText" rows={3} defaultValue={p?.addlInfoText ?? ""} />
+              </div>
+            </div>
+            <div className="row">
+              <div style={{ flex: "1 1 100%" }}>
+                <label>{T.addlQualLabel}</label>
+                <textarea name="addlQualificationsText" rows={3} defaultValue={p?.addlQualificationsText ?? ""} />
+              </div>
+            </div>
+            <button className="primary" type="submit">{T.saveContinue}</button>
+          </form>
         </div>
       )}
 
