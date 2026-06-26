@@ -48,13 +48,14 @@ export default async function DashboardLayout({
   //  - COUNSELOR (agency): Clients only — plus the application tabs ONLY while
   //    managing a client (they fill/adjust the client's form, never their own).
   //  - ADMIN: everything.
+  const ext = { href: "/dashboard/extension", label: "Extension" };
   let links: { href: string; label: string }[];
   if (isAdmin) {
-    links = [{ href: "/dashboard/clients", label: "Clients" }, ...APP_TABS, { href: "/admin", label: "Admin" }];
+    links = [{ href: "/dashboard/clients", label: "Clients" }, ...APP_TABS, ext, { href: "/admin", label: "Admin" }];
   } else if (isAgency) {
-    links = [{ href: "/dashboard/clients", label: "Clients" }, ...(managing ? APP_TABS : [])];
+    links = [{ href: "/dashboard/clients", label: "Clients" }, ...(managing ? APP_TABS : []), ext];
   } else {
-    links = APP_TABS;
+    links = [...APP_TABS, ext];
   }
 
   return (
