@@ -137,6 +137,9 @@ export async function GET(req: Request) {
               subject: c.subject,
               courseName: c.courseName,
               courseLevel: c.courseLevel,
+              grade1: c.grade1, grade2: c.grade2, grade3: c.grade3, grade4: c.grade4, gradeFinal: c.gradeFinal,
+              credit1: c.credit1, credit2: c.credit2, credit3: c.credit3, credit4: c.credit4, creditFinal: c.creditFinal,
+              creditNA: c.creditNA,
             })),
           },
         ])

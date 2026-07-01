@@ -137,6 +137,9 @@ async function main() {
     }});
     await db.gradeCourse.createMany({ data: gradeCourses[grade].map(([subject, courseName, courseLevel], i) => ({
       gradeReportId: rep.id, order: i, subject, courseName, courseLevel,
+      // Semesters schedule → S1 (grade1), S2 (grade2), Final; credits 0.5/0.5/1.0.
+      grade1: "A", grade2: "A", gradeFinal: "A",
+      credit1: "0.5", credit2: "0.5", creditFinal: "1.0",
     }))});
   }
 

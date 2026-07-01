@@ -13,6 +13,17 @@ function s(fd: FormData, k: string): string | null {
 
 const GRADES = ["9", "10", "11", "12"];
 
+// Per-term grade + credit fields (which columns matter depends on the schedule).
+function termData(fd: FormData) {
+  return {
+    grade1: s(fd, "grade1"), grade2: s(fd, "grade2"), grade3: s(fd, "grade3"),
+    grade4: s(fd, "grade4"), gradeFinal: s(fd, "gradeFinal"),
+    credit1: s(fd, "credit1"), credit2: s(fd, "credit2"), credit3: s(fd, "credit3"),
+    credit4: s(fd, "credit4"), creditFinal: s(fd, "creditFinal"),
+    creditNA: fd.get("creditNA") === "on",
+  };
+}
+
 async function getOrCreateReport(applicantId: string, grade: string) {
   if (!GRADES.includes(grade)) return null;
   const existing = await db.gradeReport.findUnique({
@@ -81,6 +92,25 @@ export async function addGradeCourseAction(formData: FormData) {
       subject,
       courseName,
       courseLevel: s(formData, "courseLevel"),
+      ...termData(formData),
+    },
+  });
+  revalidatePath("/dashboard/grades");
+}
+
+// Edit an existing course row (grades/credits are usually added after the row).
+export async function updateGradeCourseAction(formData: FormData) {
+  const user = await requireUser();
+  const id = String(formData.get("courseId") ?? "");
+  const course = await db.gradeCourse.findUnique({ where: { id }, include: { report: true } });
+  if (!course || !(await canAccessApplicant(user, course.report.applicantId))) return;
+  await db.gradeCourse.update({
+    where: { id },
+    data: {
+      subject: s(formData, "subject"),
+      courseName: s(formData, "courseName"),
+      courseLevel: s(formData, "courseLevel"),
+      ...termData(formData),
     },
   });
   revalidatePath("/dashboard/grades");

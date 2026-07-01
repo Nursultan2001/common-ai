@@ -569,6 +569,22 @@ model GradeCourse {
   courseName  String?
   courseLevel String? // one of the Common App course-level options
 
+  // Per-term grades + credits. Which columns apply depends on the transcript's
+  // schedule: Yearly→Final; Semesters→1,2,Final; Trimesters→1,2,3,Final;
+  // Quarters→1,2,3,4,Final. Grades are the exact Common App option for the
+  // grading scale (e.g. "A", "3.8", "95"); credits are free text (e.g. "1.0").
+  grade1 String?
+  grade2 String?
+  grade3 String?
+  grade4 String?
+  gradeFinal String?
+  credit1 String?
+  credit2 String?
+  credit3 String?
+  credit4 String?
+  creditFinal String?
+  creditNA Boolean @default(false) // "N/A" — course carries no credit
+
   createdAt DateTime @default(now())
 
   @@index([gradeReportId])
