@@ -716,6 +716,34 @@
       if (nameEl && c.courseName) setText(nameEl, c.courseName);
       const lvlEl = document.getElementById(`levelControl_T1C${n}`);
       if (lvlEl && c.courseLevel) { await fillMatSelect(lvlEl, c.courseLevel); await sleep(120); }
+
+      // Per-term grades (mat-select) + credits (text). Which term columns render
+      // depends on the schedule chosen above; the cell ids are stable:
+      //   grade{key}Control_T1C{n} / credit{key}Control_T1C{n}, key ∈ 1..4|Final.
+      const TERM_KEYS = {
+        Yearly: ["Final"], Semesters: ["1", "2", "Final"],
+        Trimesters: ["1", "2", "3", "Final"], Quarters: ["1", "2", "3", "4", "Final"],
+        Other: ["Final"],
+      };
+      const keys = TERM_KEYS[data.schedule] || ["Final"];
+      // "N/A" (course carries no credit) — tick it before touching credit inputs.
+      if (c.creditNA) {
+        const na = document.getElementById(`creditNA_T1C${n}-input`);
+        if (na && !na.checked) fullClick(na.closest("label") || na);
+        await sleep(120);
+      }
+      for (const k of keys) {
+        const g = c[`grade${k}`];
+        if (g) {
+          const ge = document.getElementById(`grade${k}Control_T1C${n}`);
+          if (ge && ge.offsetParent !== null) { await fillMatSelect(ge, g); await sleep(100); }
+        }
+        if (!c.creditNA) {
+          const cr = c[`credit${k}`];
+          const ce = document.getElementById(`credit${k}Control_T1C${n}`);
+          if (cr && ce && ce.offsetParent !== null) setText(ce, cr);
+        }
+      }
       sub.push({ source: `course ${n}`, status: "filled" });
     }
 

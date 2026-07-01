@@ -133,7 +133,7 @@ async function main() {
   for (const grade of ["9", "10", "11", "12"]) {
     const rep = await db.gradeReport.create({ data: {
       applicantId: aid, grade, schoolName: "Nazarbayev Intellectual School of Turkistan",
-      schoolYear: gradeYears[grade], gradingScale: "0.0-4.0", schedule: "Semesters", reportedAll: true,
+      schoolYear: gradeYears[grade], gradingScale: "A-F", schedule: "Semesters", reportedAll: true,
     }});
     await db.gradeCourse.createMany({ data: gradeCourses[grade].map(([subject, courseName, courseLevel], i) => ({
       gradeReportId: rep.id, order: i, subject, courseName, courseLevel,
