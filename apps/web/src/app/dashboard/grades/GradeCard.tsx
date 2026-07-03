@@ -120,8 +120,8 @@ export function GradeCard({ grade, report }: { grade: string; report?: ReportT }
       </form>
       <form action={loadKazakhstanCoursesAction} style={{ marginTop: 6 }}>
         <input type="hidden" name="grade" value={grade} />
-        <button type="submit" title="Replaces this grade's courses with the Kazakhstan list, all grades preset to 5">
-          🇰🇿 Load Kazakhstan courses (grades = 5)
+        <button type="submit" title="Replaces this grade's courses with the Kazakhstan list on the 0.0-5.0 scale, every term preset to 5.0">
+          🇰🇿 Load Kazakhstan courses (grades = 5.0)
         </button>
       </form>
 

@@ -60,9 +60,10 @@ export default async function GradesPage() {
         <h2>🇰🇿 Kazakhstan quick-fill</h2>
         <p className="muted" style={{ marginTop: 0 }}>
           Populate all four grades (9–12) with the standard Kazakhstan course
-          list on a <strong>Quarters</strong> schedule, every grade preset to
-          <strong> 5</strong> and credits marked <strong>N/A</strong>. Then just
-          adjust any grades that aren’t 5. (Replaces existing courses in each grade.)
+          list — <strong>Quarters</strong> schedule, <strong>0.0–5.0</strong>
+          grading scale, every term preset to <strong>5.0</strong>, credits
+          <strong>N/A</strong>. Then just adjust any grades that aren’t 5.
+          (Replaces existing courses in each grade.)
         </p>
         <form action={loadKazakhstanCoursesAction}>
           <input type="hidden" name="grade" value="all" />

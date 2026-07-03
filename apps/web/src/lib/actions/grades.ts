@@ -69,16 +69,18 @@ export async function loadKazakhstanCoursesAction(formData: FormData) {
   for (const grade of grades) {
     const report = await getOrCreateReport(applicant.id, grade);
     if (!report) continue;
+    // KZ 2–5 grades sit on Common App's 0.0–5.0 scale; grade cells use decimals
+    // (5.0, 4.9, …), so preset every term to "5.0".
     await db.gradeReport.update({
       where: { id: report.id },
-      data: { schedule: "Quarters", gradingScale: report.gradingScale ?? "Other", reportedAll: true },
+      data: { schedule: "Quarters", gradingScale: "0.0-5.0", reportedAll: true },
     });
     await db.gradeCourse.deleteMany({ where: { gradeReportId: report.id } });
     await db.gradeCourse.createMany({
       data: KAZAKHSTAN_COURSES.map((c, i) => ({
         gradeReportId: report.id, order: i,
         subject: c.subject, courseName: c.courseName, courseLevel: c.courseLevel,
-        grade1: "5", grade2: "5", grade3: "5", grade4: "5", gradeFinal: "5",
+        grade1: "5.0", grade2: "5.0", grade3: "5.0", grade4: "5.0", gradeFinal: "5.0",
         creditNA: true,
       })),
     });
