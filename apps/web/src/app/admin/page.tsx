@@ -55,6 +55,39 @@ export default async function AdminPage() {
   const revenue = revenueAgg._sum.amountCents ?? 0;
   const appUrl = process.env.APP_URL ?? "http://localhost:3000";
 
+  // ---- Autofill health / drift detection (last 30 days) ----
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  const fillGrouped = await db.fillEvent.groupBy({
+    by: ["source", "pageName", "status"],
+    _count: { _all: true },
+    where: { createdAt: { gte: since } },
+  });
+  type FieldStat = { source: string; page: string | null; total: number; ok: number; statuses: Record<string, number> };
+  const bySource = new Map<string, FieldStat>();
+  let fillTotal = 0;
+  let fillOk = 0;
+  for (const g of fillGrouped) {
+    const key = `${g.source}||${g.pageName ?? ""}`;
+    const e = bySource.get(key) ?? { source: g.source, page: g.pageName, total: 0, ok: 0, statuses: {} };
+    const n = g._count._all;
+    const isOk = /^filled/.test(g.status);
+    e.total += n;
+    if (isOk) e.ok += n;
+    e.statuses[g.status] = (e.statuses[g.status] ?? 0) + n;
+    bySource.set(key, e);
+    fillTotal += n;
+    if (isOk) fillOk += n;
+  }
+  const topFail = (s: FieldStat) =>
+    Object.entries(s.statuses)
+      .filter(([st]) => !/^filled/.test(st))
+      .sort((a, b) => b[1] - a[1])[0]?.[0] ?? "—";
+  // A field is "drifting" if attempted enough and failing ≥20% of the time.
+  const drift = [...bySource.values()]
+    .filter((s) => s.total >= 3 && s.ok / s.total < 0.8)
+    .sort((a, b) => a.ok / a.total - b.ok / b.total);
+  const fillRate = fillTotal ? Math.round((fillOk / fillTotal) * 100) : null;
+
   return (
     <main>
       <h1>Admin dashboard</h1>
@@ -84,6 +117,53 @@ export default async function AdminPage() {
           <div className="muted">Agencies / orgs</div>
           <div className="kpi">{orgCount}</div>
         </div>
+        <div className="card">
+          <div className="muted">Autofill fill-rate (30d)</div>
+          <div className="kpi" style={{ color: fillRate === null ? undefined : fillRate >= 90 ? "#5ee6a8" : fillRate >= 75 ? "#ffcf6b" : "#ff8a9b" }}>
+            {fillRate === null ? "—" : `${fillRate}%`}
+          </div>
+          <span className="muted" style={{ fontSize: 12 }}>{fillTotal} field attempts</span>
+        </div>
+      </div>
+
+      <div className="card">
+        <h2>Autofill health — drift detection (last 30 days)</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Fields whose success rate dropped below 80% across real autofill runs —
+          the earliest signal that Common App changed its DOM and a selector needs
+          re-harvesting. Only fields attempted ≥3 times are shown.
+        </p>
+        {fillTotal === 0 ? (
+          <p className="muted">No autofill telemetry yet. Run the extension on a Common App page to populate this.</p>
+        ) : drift.length === 0 ? (
+          <p className="badge paid" style={{ display: "inline-block" }}>✓ All mapped fields healthy (≥80% fill rate)</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Field (source)</th>
+                <th>Page</th>
+                <th>Fill rate</th>
+                <th>Attempts</th>
+                <th>Top failure</th>
+              </tr>
+            </thead>
+            <tbody>
+              {drift.map((s) => {
+                const rate = Math.round((s.ok / s.total) * 100);
+                return (
+                  <tr key={`${s.source}||${s.page ?? ""}`}>
+                    <td><code className="token" style={{ maxWidth: 260 }}>{s.source}</code></td>
+                    <td className="muted">{s.page ?? "—"}</td>
+                    <td style={{ color: rate >= 50 ? "#ffcf6b" : "#ff8a9b", fontWeight: 700 }}>{rate}%</td>
+                    <td className="muted">{s.total}</td>
+                    <td className="muted">{topFail(s)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
       </div>
 
       <div className="card">

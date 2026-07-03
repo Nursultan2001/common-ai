@@ -734,3 +734,26 @@ model WaitlistEntry {
 
   @@index([createdAt])
 }
+
+// ----------------------------------------------------------------------------
+// Autofill telemetry — one row per mapped field the extension attempted to fill
+// on a Common App page. Powers drift detection: when Common App changes its DOM,
+// a field's success rate drops and the admin "Autofill health" view flags it.
+// ----------------------------------------------------------------------------
+
+model FillEvent {
+  id            String   @id @default(cuid())
+  fieldMapKey   String   // e.g. "commonapp"
+  pageName      String?
+  pageUrl       String?
+  source        String   // field source path, e.g. "profile.legalFirstName"
+  kind          String?  // fill kind (text, combo-pick, radio-map, …)
+  status        String   // filled | filled-confirm | field-not-found | no-matching-option | …
+  ok            Boolean  @default(false) // status starts with "filled"
+  userId        String?
+  applicationId String?
+  createdAt     DateTime @default(now())
+
+  @@index([fieldMapKey, source])
+  @@index([createdAt])
+}

@@ -1447,6 +1447,21 @@
     const report = await applyPage(page, payload);
     showBanner(report, page.name);
     const filled = report.filter((r) => String(r.status).startsWith("filled")).length;
+
+    // Fire-and-forget fill telemetry (drift detection). The background worker
+    // holds the token and posts it; never blocks or errors the fill.
+    try {
+      chrome.runtime.sendMessage({
+        type: "REPORT_TELEMETRY",
+        data: {
+          fieldMapKey: payload.fieldMapKey,
+          pageName: page.name,
+          pageUrl: location.href,
+          fields: report.map((r) => ({ source: r.source, status: r.status })),
+        },
+      });
+    } catch (_e) {}
+
     return { ok: true, matched: true, filled, pageName: page.name, report };
   }
 })();

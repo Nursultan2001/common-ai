@@ -126,6 +126,24 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         return sendResponse(await buildBundle());
       }
 
+      // Fire-and-forget fill telemetry from the content script (drift detection).
+      // The content script never holds the token; we attach it here and post.
+      if (msg.type === "REPORT_TELEMETRY") {
+        const { applicationId } = await getConfig();
+        const d = msg.data || {};
+        api("/api/extension/fill-telemetry", {
+          method: "POST",
+          body: {
+            applicationId,
+            fieldMapKey: d.fieldMapKey,
+            pageName: d.pageName,
+            pageUrl: d.pageUrl,
+            fields: Array.isArray(d.fields) ? d.fields : [],
+          },
+        }).catch(() => {});
+        return sendResponse({ ok: true });
+      }
+
       // Drive autofill across EVERY mapped page: navigate the tab to each page in
       // the field map, wait for it to render, and fill it. Never submits.
       if (msg.type === "RUN_ALL_PAGES") {
