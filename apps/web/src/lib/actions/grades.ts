@@ -32,6 +32,60 @@ async function getOrCreateReport(applicantId: string, grade: string) {
   return existing ?? db.gradeReport.create({ data: { applicantId, grade } });
 }
 
+// The standard Kazakhstan secondary course list (national curriculum / SpanTran
+// evaluation), mapped to Common App subject + level. Same set for every grade so
+// a KZ student only enters grades.
+const KAZAKHSTAN_COURSES: { subject: string; courseName: string; courseLevel: string }[] = [
+  { subject: "Foreign/World Language", courseName: "Kazakh Language", courseLevel: "Regular/Standard" },
+  { subject: "Foreign/World Language", courseName: "Kazakh Literature", courseLevel: "Regular/Standard" },
+  { subject: "Foreign/World Language", courseName: "Russian Language", courseLevel: "Regular/Standard" },
+  { subject: "Foreign/World Language", courseName: "Russian Literature", courseLevel: "Regular/Standard" },
+  { subject: "English", courseName: "Foreign Language (English)", courseLevel: "Regular/Standard" },
+  { subject: "Algebra", courseName: "Algebra and Basics of Analysis", courseLevel: "Regular/Standard" },
+  { subject: "Geometry", courseName: "Geometry", courseLevel: "Regular/Standard" },
+  { subject: "Computer Science", courseName: "Computer Science", courseLevel: "Regular/Standard" },
+  { subject: "Earth/Environmental Science", courseName: "Geography", courseLevel: "Regular/Standard" },
+  { subject: "Biology", courseName: "Biology", courseLevel: "Regular/Standard" },
+  { subject: "Physics", courseName: "Physics", courseLevel: "Regular/Standard" },
+  { subject: "Chemistry", courseName: "Chemistry", courseLevel: "Regular/Standard" },
+  { subject: "History/Social Science", courseName: "World History", courseLevel: "Regular/Standard" },
+  { subject: "History/Social Science", courseName: "History of Kazakhstan", courseLevel: "Regular/Standard" },
+  { subject: "History/Social Science", courseName: "Basics of Law", courseLevel: "Regular/Standard" },
+  { subject: "Art (Visual or Performing)", courseName: "Artistic Work", courseLevel: "Regular/Standard" },
+  { subject: "Physical Education/Health", courseName: "Physical Training", courseLevel: "Regular/Standard" },
+  { subject: "Other/Elective", courseName: "Basic Military and Technological Training", courseLevel: "Regular/Standard" },
+];
+
+// Populate a grade (or all grades) with the Kazakhstan course list. KZ uses
+// quarters and a 2–5 scale (5 = best); default every term's grade to "5" and
+// mark credits N/A. Replaces the grade's existing courses. `grade` is "9".."12"
+// or "all".
+export async function loadKazakhstanCoursesAction(formData: FormData) {
+  const applicant = await getActiveApplicant();
+  const which = String(formData.get("grade") ?? "");
+  const grades = which === "all" ? GRADES : GRADES.filter((g) => g === which);
+  if (grades.length === 0) return;
+
+  for (const grade of grades) {
+    const report = await getOrCreateReport(applicant.id, grade);
+    if (!report) continue;
+    await db.gradeReport.update({
+      where: { id: report.id },
+      data: { schedule: "Quarters", gradingScale: report.gradingScale ?? "Other", reportedAll: true },
+    });
+    await db.gradeCourse.deleteMany({ where: { gradeReportId: report.id } });
+    await db.gradeCourse.createMany({
+      data: KAZAKHSTAN_COURSES.map((c, i) => ({
+        gradeReportId: report.id, order: i,
+        subject: c.subject, courseName: c.courseName, courseLevel: c.courseLevel,
+        grade1: "5", grade2: "5", grade3: "5", grade4: "5", gradeFinal: "5",
+        creditNA: true,
+      })),
+    });
+  }
+  revalidatePath("/dashboard/grades");
+}
+
 // Save a grade's transcript header (school/year/scale/schedule) + reportedAll.
 export async function saveGradeReportAction(formData: FormData) {
   const user = await requireUser();

@@ -6,6 +6,7 @@ import {
   addGradeCourseAction,
   updateGradeCourseAction,
   deleteGradeCourseAction,
+  loadKazakhstanCoursesAction,
 } from "@/lib/actions/grades";
 
 const SUBJECTS = [
@@ -113,7 +114,15 @@ export function GradeCard({ grade, report }: { grade: string; report?: ReportT }
           <input type="checkbox" name="reportedAll" defaultChecked={report?.reportedAll} style={{ width: "auto" }} />
           I have reported all of my courses for this grade
         </label>
-        <button className="primary" type="submit">Save {grade}th-grade transcript</button>
+        <div className="row" style={{ gap: 8 }}>
+          <button className="primary" type="submit">Save {grade}th-grade transcript</button>
+        </div>
+      </form>
+      <form action={loadKazakhstanCoursesAction} style={{ marginTop: 6 }}>
+        <input type="hidden" name="grade" value={grade} />
+        <button type="submit" title="Replaces this grade's courses with the Kazakhstan list, all grades preset to 5">
+          🇰🇿 Load Kazakhstan courses (grades = 5)
+        </button>
       </form>
 
       {cols.length === 0 && (

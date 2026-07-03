@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { requireUser, getActiveApplicant } from "@/lib/server-auth";
-import { saveTranscriptAccessAction } from "@/lib/actions/grades";
+import { saveTranscriptAccessAction, loadKazakhstanCoursesAction } from "@/lib/actions/grades";
 import { GradeCard, type ReportT } from "./GradeCard";
 
 export const dynamic = "force-dynamic";
@@ -53,6 +53,20 @@ export default async function GradesPage() {
               options={["Yes", "No"]} flex="1 1 320px" />
           </div>
           <button className="primary" type="submit">Save</button>
+        </form>
+      </div>
+
+      <div className="card" style={{ borderColor: "rgba(91,140,255,.35)" }}>
+        <h2>🇰🇿 Kazakhstan quick-fill</h2>
+        <p className="muted" style={{ marginTop: 0 }}>
+          Populate all four grades (9–12) with the standard Kazakhstan course
+          list on a <strong>Quarters</strong> schedule, every grade preset to
+          <strong> 5</strong> and credits marked <strong>N/A</strong>. Then just
+          adjust any grades that aren’t 5. (Replaces existing courses in each grade.)
+        </p>
+        <form action={loadKazakhstanCoursesAction}>
+          <input type="hidden" name="grade" value="all" />
+          <button className="primary" type="submit">Load Kazakhstan courses for grades 9–12</button>
         </form>
       </div>
 
