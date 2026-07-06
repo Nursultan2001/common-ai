@@ -713,7 +713,35 @@
     };
 
     // 2. transcript header.
+    // School Name is a REQUIRED mat-select limited to the schools from the
+    // Common App Education section — it won't match our stored free-text name.
+    // If matching leaves it blank, pick the only/first real option, else the
+    // modal's Continue is blocked and the ENTIRE transcript is discarded.
     await matById("schoolNameControl1", data.schoolName);
+    const snEl = document.getElementById("schoolNameControl1");
+    const snEmpty = () => {
+      const cur = (snEl && snEl.textContent || "").replace(/\s+/g, " ").trim();
+      return !cur || /^(select|-?\s*choose an option\s*-?)$/i.test(cur);
+    };
+    if (snEl && snEmpty()) {
+      (snEl.closest("mat-select") || snEl).click();
+      const panel = await waitFor(
+        () => document.querySelector(".mat-mdc-select-panel, .cdk-overlay-pane [role='listbox']"),
+        1500
+      );
+      if (panel) {
+        const first = [...panel.querySelectorAll(".mat-mdc-option, mat-option, [role='option']")].find(
+          (o) => o.textContent && !/clear selection/i.test(o.textContent) && o.textContent.trim()
+        );
+        if (first) {
+          ["mousedown", "mouseup", "click"].forEach((t) =>
+            first.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+          );
+          sub.push({ source: "schoolNameControl1", status: "filled-fallback-first-school" });
+          await sleep(200);
+        }
+      }
+    }
     await matById("schoolYearControl1", data.schoolYear);
     await matById("gradingScaleControl1", data.gradingScale);
     await matById("scheduleControl1", data.schedule);
