@@ -17,7 +17,11 @@ export const dynamic = "force-dynamic";
 const wordCount = (s?: string | null) =>
   (s ?? "").trim() ? (s ?? "").trim().split(/\s+/).length : 0;
 
-export default async function WritingPage() {
+export default async function WritingPage({
+  searchParams,
+}: {
+  searchParams: { aiError?: string };
+}) {
   const user = await requireUser();
   const applicant = await getActiveApplicant();
   const [essay, profile] = await Promise.all([
@@ -41,6 +45,17 @@ export default async function WritingPage() {
         reflection, your own voice). <strong>You</strong> edit and approve it. It
         must remain your own work.
       </p>
+
+      {searchParams.aiError && (
+        <div className="card" style={{ borderColor: "rgba(255,107,122,.5)", background: "rgba(255,77,99,.08)" }}>
+          <strong>AI is temporarily unavailable.</strong>{" "}
+          <span className="muted">
+            Your text was saved — nothing was lost. This usually means the
+            server’s AI API key isn’t set (or is invalid). Try again in a moment;
+            if it persists, an admin needs to set a valid <code>ANTHROPIC_API_KEY</code>.
+          </span>
+        </div>
+      )}
 
       <form action={saveEssayAction}>
         <div className="card">

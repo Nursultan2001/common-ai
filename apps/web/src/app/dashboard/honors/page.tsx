@@ -28,7 +28,7 @@ function CheckRow({ label, name, options }: { label: string; name: string; optio
   );
 }
 
-export default async function HonorsPage() {
+export default async function HonorsPage({ searchParams }: { searchParams: { aiError?: string } }) {
   const user = await requireUser();
   const applicant = await getActiveApplicant();
   const honors = await db.honor.findMany({
@@ -39,6 +39,12 @@ export default async function HonorsPage() {
   return (
     <main>
       <h1>Honors &amp; awards</h1>
+      {searchParams.aiError && (
+        <div className="card" style={{ borderColor: "rgba(255,107,122,.5)", background: "rgba(255,77,99,.08)" }}>
+          <strong>AI is temporarily unavailable.</strong>{" "}
+          <span className="muted">Your honor was saved. Try “Polish with AI” again shortly; if it persists, an admin needs a valid <code>ANTHROPIC_API_KEY</code>.</span>
+        </div>
+      )}
       <p className="muted">
         Add each honor (Common App allows up to 5), with the grade level(s) and
         level(s) of recognition. The extension reports honors = Yes, clicks “Add

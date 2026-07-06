@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { requireUser, getOrCreateApplicantForStudent, getActiveApplicant } from "@/lib/server-auth";
 import { canAccessApplicant } from "@/lib/auth";
@@ -61,12 +62,17 @@ export async function polishActivityAction(formData: FormData) {
   const activity = await db.activity.findUnique({ where: { id } });
   if (!activity || !(await canAccessApplicant(user, activity.applicantId))) return;
 
-  const result = await polishActivity({
-    category: activity.category,
-    position: activity.position,
-    organization: activity.organization,
-    rawDescription: activity.rawDescription,
-  });
+  let result: Awaited<ReturnType<typeof polishActivity>> | null = null;
+  try {
+    result = await polishActivity({
+      category: activity.category,
+      position: activity.position,
+      organization: activity.organization,
+      rawDescription: activity.rawDescription,
+    });
+  } catch {
+    redirect("/dashboard/activities?aiError=1");
+  }
 
   await db.activity.update({
     where: { id },
@@ -137,11 +143,16 @@ export async function polishHonorAction(formData: FormData) {
   const honor = await db.honor.findUnique({ where: { id } });
   if (!honor || !(await canAccessApplicant(user, honor.applicantId))) return;
 
-  const result = await polishHonor({
-    title: honor.title,
-    level: honor.level,
-    rawDescription: honor.rawDescription,
-  });
+  let result: Awaited<ReturnType<typeof polishHonor>> | null = null;
+  try {
+    result = await polishHonor({
+      title: honor.title,
+      level: honor.level,
+      rawDescription: honor.rawDescription,
+    });
+  } catch {
+    redirect("/dashboard/honors?aiError=1");
+  }
   await db.honor.update({
     where: { id },
     data: { polishedTitle: result.text, status: "DRAFTED" },
@@ -227,11 +238,14 @@ export async function generateEssayAction(formData: FormData) {
   const studentNotes = String(formData.get("studentNotes") ?? "").trim();
   if (!prompt || !studentNotes) return;
 
-  const r = await draftEssayScaffold({
-    prompt,
-    wordLimit: essay.wordLimit,
-    studentNotes,
-  });
+  let r: Awaited<ReturnType<typeof draftEssayScaffold>> | null = null;
+  try {
+    r = await draftEssayScaffold({ prompt, wordLimit: essay.wordLimit, studentNotes });
+  } catch {
+    // Save what the student typed so it isn't lost, then show a friendly error.
+    await db.essay.update({ where: { id: essay.id }, data: { prompt, studentNotes } });
+    redirect("/dashboard/writing?aiError=1");
+  }
   await db.essay.update({
     where: { id: essay.id },
     data: { prompt, studentNotes, outline: r.outline || null, draft: r.draft || null, status: "DRAFTED" },
@@ -248,7 +262,14 @@ export async function refineEssayAction(formData: FormData) {
   const studentDraft = String(formData.get("draft") ?? "").trim();
   if (!prompt || !studentDraft) return;
 
-  const r = await refineEssay({ prompt, wordLimit: essay.wordLimit, studentDraft });
+  let r: Awaited<ReturnType<typeof refineEssay>> | null = null;
+  try {
+    r = await refineEssay({ prompt, wordLimit: essay.wordLimit, studentDraft });
+  } catch {
+    // Preserve the student's own draft, then show a friendly error.
+    await db.essay.update({ where: { id: essay.id }, data: { prompt, draft: studentDraft } });
+    redirect("/dashboard/writing?aiError=1");
+  }
   await db.essay.update({
     where: { id: essay.id },
     data: {

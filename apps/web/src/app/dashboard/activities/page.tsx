@@ -42,7 +42,7 @@ const CIRCUMSTANCES = [
   "None of these",
 ];
 
-export default async function ActivitiesPage() {
+export default async function ActivitiesPage({ searchParams }: { searchParams: { aiError?: string } }) {
   const user = await requireUser();
   const applicant = await getActiveApplicant();
   const [activities, profile] = await Promise.all([
@@ -58,6 +58,12 @@ export default async function ActivitiesPage() {
   return (
     <main>
       <h1>Activities</h1>
+      {searchParams.aiError && (
+        <div className="card" style={{ borderColor: "rgba(255,107,122,.5)", background: "rgba(255,77,99,.08)" }}>
+          <strong>AI is temporarily unavailable.</strong>{" "}
+          <span className="muted">Your activity was saved. Try “Polish with AI” again shortly; if it persists, an admin needs a valid <code>ANTHROPIC_API_KEY</code>.</span>
+        </div>
+      )}
       <p className="muted">
         Describe each activity in your own words. AI tightens it to the Common App
         150-character limit using only your facts. You review and approve.
