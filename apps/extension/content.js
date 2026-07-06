@@ -163,16 +163,35 @@
       ".mat-mdc-option, mat-option, .cdk-overlay-pane [role='option'], [role='option']"
     );
   }
-  function pickOption(options, want) {
-    const w = String(want).trim().toLowerCase();
-    let partial = null;
-    for (const o of options) {
-      const txt = (o.textContent || "").trim().toLowerCase();
-      if (!txt) continue;
-      if (txt === w) return o;
-      if (!partial && (txt.includes(w) || w.includes(txt))) partial = o;
+  // Collapse runs of whitespace so "F-1  Student" (Common App uses double spaces)
+  // matches the stored "F-1 Student".
+  const normText = (s) => String(s == null ? "" : s).replace(/\s+/g, " ").trim().toLowerCase();
+
+  // Pick the best option for `want`, whitespace-insensitive. Priority:
+  //   1. exact  2. option starts with want  3. SHORTEST option that contains want
+  //   4. longest option that IS contained in want.
+  // The "shortest contains" rule stops "F-1 Student" resolving to the longer
+  // "F-2  Dependent of F-1 Student" (which also contains the phrase).
+  function bestOption(nodes, want) {
+    const w = normText(want);
+    if (!w) return null;
+    let prefix = null, contains = null, contained = null;
+    for (const o of nodes) {
+      const t = normText(o.textContent);
+      if (!t) continue;
+      if (t === w) return o;
+      if (!prefix && t.startsWith(w)) prefix = o;
+      if (t.includes(w)) {
+        if (!contains || normText(contains.textContent).length > t.length) contains = o;
+      } else if (w.includes(t) && t.length > 1) {
+        if (!contained || normText(contained.textContent).length < t.length) contained = o;
+      }
     }
-    return partial;
+    return prefix || contains || contained;
+  }
+
+  function pickOption(options, want) {
+    return bestOption([...options], want);
   }
 
   async function fillMatSelect(el, value) {
@@ -441,13 +460,8 @@
         const missed = [];
         if (lb) {
           for (const w of wants) {
-            const wl = w.toLowerCase();
             const nodes = [...lb.querySelectorAll("[role='option'], li, mat-option")];
-            const txt = (n) => (n.textContent || "").trim().toLowerCase();
-            const opt =
-              nodes.find((n) => txt(n) === wl) ||
-              nodes.find((n) => txt(n).includes(wl)) ||
-              nodes.find((n) => wl.includes(txt(n)) && txt(n).length > 1);
+            const opt = bestOption(nodes, w);
             if (opt) {
               ["mousedown", "mouseup", "click"].forEach((t) =>
                 opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
@@ -496,13 +510,8 @@
           1500
         );
         if (!lb) return { source: mapping.source, status: "dropdown-did-not-open" };
-        const want = String(v).trim().toLowerCase();
         const nodes = [...lb.querySelectorAll("[role='option'], li, mat-option")];
-        const txt = (n) => (n.textContent || "").trim().toLowerCase();
-        const opt =
-          nodes.find((n) => txt(n) === want) ||
-          nodes.find((n) => txt(n).includes(want)) ||
-          nodes.find((n) => want.includes(txt(n)) && txt(n).length > 1);
+        const opt = bestOption(nodes, v);
         if (!opt) {
           document.body.click();
           return { source: mapping.source, status: "no-matching-option", value: v };
