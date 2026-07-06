@@ -1,7 +1,7 @@
 {
   "key": "common-app-core",
   "portal": "COMMON_APP",
-  "version": 40,
+  "version": 41,
   "_note": "v11: radios verified LIVE against logged-in apply.commonapp.org. Legal sex (3/14) and citizenship status (3/17) now use exact stable #option_ques_* ids via radio-map (previous #radioGroup* selectors were invented and never resolved). Self-report (2/2) upgraded to exact ids. Text fields use #text_ques_* ids; activity checkbox groups use within:#text_ques anchors matched by label. Built from real captures of apply.commonapp.org. Stable selectors only: #text_ques_NNN ids, label:, and structural strategies (nth:, within:) — never Angular auto-indexed names (mat-radio-group-N / ca-checkboxList-N change every render). Activity checkbox groups are anchored to the stable hours input of each activity card (#text_ques_{936+9i}) via within:. Text-like fields that are really combobox widgets are committed by the engine via overlay option click (smartFillText).",
   "pages": [
     {
@@ -796,8 +796,8 @@
           "selectors": [],
           "requiresConfirm": true,
           "valueMap": {
-            "Yes": "#option_ques_1491_2371-input",
-            "No": "#option_ques_1491_2372-input"
+            "Yes": "#option_ques_1834_2371-input",
+            "No": "#option_ques_1834_2372-input"
           }
         },
         {
@@ -1543,7 +1543,7 @@
             "#text_ques_305",
             "label:GPA Scale"
           ],
-          "kind": "text",
+          "kind": "combo-pick",
           "requiresConfirm": true
         },
         {
@@ -1702,6 +1702,41 @@
             "#text_ques_657"
           ],
           "kind": "text"
+        },
+        {
+          "source": "siblings.0.ageOrGrade",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_618"
+          ]
+        },
+        {
+          "source": "siblings.1.ageOrGrade",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_628"
+          ]
+        },
+        {
+          "source": "siblings.2.ageOrGrade",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_638"
+          ]
+        },
+        {
+          "source": "siblings.3.ageOrGrade",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_648"
+          ]
+        },
+        {
+          "source": "siblings.4.ageOrGrade",
+          "kind": "text",
+          "selectors": [
+            "#text_ques_658"
+          ]
         }
       ]
     },
