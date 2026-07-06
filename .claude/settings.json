@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | grep -q '/apps/extension/' && (cd \"$CLAUDE_PROJECT_DIR\" && node apps/web/scripts/zip-extension.cjs >/dev/null 2>&1); true"
+          }
+        ]
+      }
+    ]
+  }
+}
