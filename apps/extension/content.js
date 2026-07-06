@@ -194,19 +194,34 @@
     return bestOption([...options], want);
   }
 
+  // Some Common App mat-selects (notably inside the Courses & Grades modal) do
+  // NOT auto-close on selection. Left open, they stack and — worse — a global
+  // option lookup would then read options from EVERY open panel, so a later
+  // field resolves to the wrong option. So: scope to the NEWEST open panel, and
+  // hide each panel after use so it neither stacks nor pollutes later lookups.
+  function newestPanel() {
+    const panels = [...document.querySelectorAll(".mat-mdc-select-panel, .mat-select-panel, .cdk-overlay-pane [role='listbox']")]
+      .filter((p) => p.offsetParent !== null);
+    return panels[panels.length - 1] || null;
+  }
+  function hidePanel(panel) {
+    try { (panel.closest(".cdk-overlay-pane") || panel).style.display = "none"; } catch (_e) {}
+  }
   async function fillMatSelect(el, value) {
     const trigger = el.closest("mat-select") || el.querySelector("mat-select, [role='combobox']") || el;
     trigger.click();
-    const panel = await waitFor(() =>
-      document.querySelector(".mat-mdc-select-panel, .mat-select-panel, .cdk-overlay-pane [role='listbox']")
-    );
+    const panel = await waitFor(() => newestPanel());
     if (!panel) return "dropdown-did-not-open";
-    const opt = await waitFor(() => pickOption(overlayOptions(), value), 1500);
+    const opt = await waitFor(
+      () => pickOption(panel.querySelectorAll(".mat-mdc-option, mat-option, [role='option']"), value),
+      1500
+    );
     if (!opt) {
-      document.body.click();
+      hidePanel(panel);
       return "no-matching-option";
     }
     opt.click();
+    hidePanel(panel);
     return "filled";
   }
 
@@ -725,22 +740,18 @@
     };
     if (snEl && snEmpty()) {
       (snEl.closest("mat-select") || snEl).click();
-      const panel = await waitFor(
-        () => document.querySelector(".mat-mdc-select-panel, .cdk-overlay-pane [role='listbox']"),
-        1500
+      // Wait for the OPTION to render (not just the panel) before clicking; a
+      // premature query skipped the click and left School Name blank.
+      const panel = await waitFor(() => newestPanel(), 2500);
+      const first = panel && [...panel.querySelectorAll(".mat-mdc-option, mat-option, [role='option']")].find(
+        (o) => o.textContent && !/clear selection/i.test(o.textContent) && o.textContent.trim()
       );
-      if (panel) {
-        const first = [...panel.querySelectorAll(".mat-mdc-option, mat-option, [role='option']")].find(
-          (o) => o.textContent && !/clear selection/i.test(o.textContent) && o.textContent.trim()
-        );
-        if (first) {
-          ["mousedown", "mouseup", "click"].forEach((t) =>
-            first.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-          );
-          sub.push({ source: "schoolNameControl1", status: "filled-fallback-first-school" });
-          await sleep(200);
-        }
+      if (first) {
+        first.click();
+        sub.push({ source: "schoolNameControl1", status: "filled-fallback-first-school" });
       }
+      if (panel) hidePanel(panel);
+      await sleep(250);
     }
     await matById("schoolYearControl1", data.schoolYear);
     await matById("gradingScaleControl1", data.gradingScale);
