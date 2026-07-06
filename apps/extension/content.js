@@ -441,35 +441,44 @@
       }
       case "multi-combobox": {
         // A combobox that accepts several selections (Common App "Tests Taken"
-        // → "Indicate all tests"; per-course "schedule"). CLICK to open and use
-        // THIS field's own listbox (via aria-controls) — a global overlay lookup
-        // mis-resolves across repeated fields, so only the first one filled.
+        // → "Indicate all tests"; per-course "schedule"). RE-OPEN and type-filter
+        // per item: this list can close or virtualize after a pick, which dropped
+        // later options (e.g. IELTS, the 9th test). Typing narrows the list so the
+        // wanted option is always rendered; clicking a chip never blocks the next.
         const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
-        if (el.focus) el.focus();
-        el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-        el.click();
-        el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
-        const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
-        const lb = await waitFor(
-          () =>
+        const findLb = () => {
+          const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
+          return (
             (owns && document.getElementById(owns)) ||
-            [...document.querySelectorAll("[role='listbox']")].filter((x) => x.offsetParent !== null).pop(),
-          1500
-        );
+            [...document.querySelectorAll("[role='listbox']")].filter((x) => x.offsetParent !== null).pop()
+          );
+        };
+        const pickOne = async (w) => {
+          if (el.focus) el.focus();
+          el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+          el.click();
+          el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
+          try { setNativeValue(el, w); el.dispatchEvent(new Event("input", { bubbles: true })); } catch (_e) {}
+          const opt = await waitFor(() => {
+            const lb = findLb();
+            return lb ? bestOption([...lb.querySelectorAll("[role='option'], li, mat-option")], w) : null;
+          }, 1500);
+          if (opt) {
+            try { opt.scrollIntoView({ block: "nearest" }); } catch (_e) {}
+            ["mousedown", "mouseup", "click"].forEach((t) =>
+              opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+            );
+          }
+          // Clear the typed filter so the next item sees the full list again.
+          try { setNativeValue(el, ""); el.dispatchEvent(new Event("input", { bubbles: true })); } catch (_e) {}
+          await sleep(250);
+          return !!opt;
+        };
         let any = false;
         const missed = [];
-        if (lb) {
-          for (const w of wants) {
-            const nodes = [...lb.querySelectorAll("[role='option'], li, mat-option")];
-            const opt = bestOption(nodes, w);
-            if (opt) {
-              ["mousedown", "mouseup", "click"].forEach((t) =>
-                opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-              );
-              any = true;
-              await sleep(200);
-            } else missed.push(w);
-          }
+        for (const w of wants) {
+          const ok = await pickOne(w);
+          if (ok) any = true; else missed.push(w);
         }
         document.body.click();
         await sleep(150);
