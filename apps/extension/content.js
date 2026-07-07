@@ -207,21 +207,51 @@
   function hidePanel(panel) {
     try { (panel.closest(".cdk-overlay-pane") || panel).style.display = "none"; } catch (_e) {}
   }
+  // CRITICAL for the Courses & Grades modal (and any mat-select rendered inside a
+  // mat-dialog): these selects do NOT auto-close on selection. Each one leaves a
+  // full-screen `.cdk-overlay-transparent-backdrop` (pointer-events:auto) stacked
+  // ABOVE the dialog. After the first select or two those backdrops swallow every
+  // subsequent click — schedule won't change, "Add another course" does nothing,
+  // and "Continue" never fires, so the whole transcript is discarded (nothing
+  // saves). Neutralize them (and any orphaned select pane) so the modal surface
+  // stays clickable. The dialog's own dark backdrop is left untouched.
+  function purgeSelectOverlays() {
+    try {
+      document.querySelectorAll(".cdk-overlay-pane").forEach((p) => {
+        if (!p.querySelector("mat-dialog-container") &&
+            p.querySelector(".mat-mdc-select-panel, .mat-select-panel, [role='listbox']")) {
+          p.style.display = "none";
+        }
+      });
+      document.querySelectorAll(".cdk-overlay-transparent-backdrop").forEach((b) => {
+        b.style.display = "none";
+        b.style.pointerEvents = "none";
+      });
+    } catch (_e) {}
+  }
   async function fillMatSelect(el, value) {
     const trigger = el.closest("mat-select") || el.querySelector("mat-select, [role='combobox']") || el;
+    // Clear any leftover select overlay first so this trigger.click() actually
+    // reaches the trigger instead of a stray backdrop.
+    purgeSelectOverlays();
     trigger.click();
-    const panel = await waitFor(() => newestPanel());
-    if (!panel) return "dropdown-did-not-open";
+    let panel = await waitFor(() => newestPanel(), 1200);
+    // A select left "open" in Angular's state (its panel was hidden, not closed)
+    // toggles CLOSED on the next click. If nothing opened, click once more.
+    if (!panel) { trigger.click(); panel = await waitFor(() => newestPanel(), 1200); }
+    if (!panel) { purgeSelectOverlays(); return "dropdown-did-not-open"; }
     const opt = await waitFor(
       () => pickOption(panel.querySelectorAll(".mat-mdc-option, mat-option, [role='option']"), value),
       1500
     );
     if (!opt) {
       hidePanel(panel);
+      purgeSelectOverlays();
       return "no-matching-option";
     }
     opt.click();
     hidePanel(panel);
+    purgeSelectOverlays();
     return "filled";
   }
 
@@ -738,8 +768,10 @@
     {
       const snEl = document.getElementById("schoolNameControl1");
       if (snEl) {
+        purgeSelectOverlays();
         (snEl.closest("mat-select") || snEl).click();
-        const panel = await waitFor(() => newestPanel(), 2500);
+        let panel = await waitFor(() => newestPanel(), 2500);
+        if (!panel) { (snEl.closest("mat-select") || snEl).click(); panel = await waitFor(() => newestPanel(), 2000); }
         const opts = panel
           ? [...panel.querySelectorAll(".mat-mdc-option, mat-option, [role='option']")].filter(
               (o) => o.textContent && !/clear selection/i.test(o.textContent) && o.textContent.trim()
@@ -753,6 +785,7 @@
         if (pick) { pick.click(); sub.push({ source: "schoolNameControl1", status: "filled-school" }); }
         else sub.push({ source: "schoolNameControl1", status: "no-school-option" });
         if (panel) hidePanel(panel);
+        purgeSelectOverlays();
         await sleep(250);
       }
     }
@@ -765,6 +798,10 @@
       const n = i + 1;
       let subjEl = document.getElementById(`subjectControl_T1C${n}`);
       if (!subjEl) {
+        // A stray transparent backdrop from the previous course's mat-selects
+        // would swallow this click and stop new rows from ever being added
+        // (the "only one course saved" bug). Clear it first.
+        purgeSelectOverlays();
         const add = dlgBtn(/add another course/i);
         if (add) fullClick(add);
         subjEl = await waitFor(() => document.getElementById(`subjectControl_T1C${n}`), 2500);
@@ -788,6 +825,7 @@
       const keys = TERM_KEYS[data.schedule] || ["Final"];
       // "N/A" (course carries no credit) — tick it before touching credit inputs.
       if (c.creditNA) {
+        purgeSelectOverlays();
         const na = document.getElementById(`creditNA_T1C${n}-input`);
         if (na && !na.checked) fullClick(na.closest("label") || na);
         await sleep(120);
@@ -808,6 +846,7 @@
     }
 
     // 4. remove leftover empty rows (fresh grid starts with 2; confirm dialog).
+    purgeSelectOverlays();
     for (let guard = 0; guard < 6; guard++) {
       const rows = document.querySelectorAll('[id^="subjectControl_T1C"]').length;
       if (rows <= courses.length) break;
@@ -824,7 +863,9 @@
       if (confirm) { fullClick(confirm); await sleep(400); }
     }
 
-    // 5. Continue saves the grid and closes the modal.
+    // 5. Continue saves the grid and closes the modal. Purge first — a leftover
+    // backdrop here silently eats the click and nothing is ever saved.
+    purgeSelectOverlays();
     const cont = dlgBtn(/continue/i);
     if (cont) { fullClick(cont); await sleep(500); }
 
