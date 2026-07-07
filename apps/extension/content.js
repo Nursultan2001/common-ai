@@ -729,29 +729,32 @@
 
     // 2. transcript header.
     // School Name is a REQUIRED mat-select limited to the schools from the
-    // Common App Education section — it won't match our stored free-text name.
-    // If matching leaves it blank, pick the only/first real option, else the
-    // modal's Continue is blocked and the ENTIRE transcript is discarded.
-    await matById("schoolNameControl1", data.schoolName);
-    const snEl = document.getElementById("schoolNameControl1");
-    const snEmpty = () => {
-      const cur = (snEl && snEl.textContent || "").replace(/\s+/g, " ").trim();
-      return !cur || /^(select|-?\s*choose an option\s*-?)$/i.test(cur);
-    };
-    if (snEl && snEmpty()) {
-      (snEl.closest("mat-select") || snEl).click();
-      // Wait for the OPTION to render (not just the panel) before clicking; a
-      // premature query skipped the click and left School Name blank.
-      const panel = await waitFor(() => newestPanel(), 2500);
-      const first = panel && [...panel.querySelectorAll(".mat-mdc-option, mat-option, [role='option']")].find(
-        (o) => o.textContent && !/clear selection/i.test(o.textContent) && o.textContent.trim()
-      );
-      if (first) {
-        first.click();
-        sub.push({ source: "schoolNameControl1", status: "filled-fallback-first-school" });
+    // Common App Education section, so our stored free-text name usually won't
+    // match. Open the dropdown ONCE and pick the stored name if present, else the
+    // first real option. (Do NOT call fillMatSelect first: on a no-match it hides
+    // the panel and desyncs the mat-select, so a later re-open just toggles it
+    // shut — leaving School Name blank, which blocks Continue and discards the
+    // whole transcript.)
+    {
+      const snEl = document.getElementById("schoolNameControl1");
+      if (snEl) {
+        (snEl.closest("mat-select") || snEl).click();
+        const panel = await waitFor(() => newestPanel(), 2500);
+        const opts = panel
+          ? [...panel.querySelectorAll(".mat-mdc-option, mat-option, [role='option']")].filter(
+              (o) => o.textContent && !/clear selection/i.test(o.textContent) && o.textContent.trim()
+            )
+          : [];
+        const want = normText(data.schoolName);
+        const pick =
+          (want && opts.find((o) => normText(o.textContent) === want)) ||
+          (want && opts.find((o) => normText(o.textContent).includes(want))) ||
+          opts[0];
+        if (pick) { pick.click(); sub.push({ source: "schoolNameControl1", status: "filled-school" }); }
+        else sub.push({ source: "schoolNameControl1", status: "no-school-option" });
+        if (panel) hidePanel(panel);
+        await sleep(250);
       }
-      if (panel) hidePanel(panel);
-      await sleep(250);
     }
     await matById("schoolYearControl1", data.schoolYear);
     await matById("gradingScaleControl1", data.gradingScale);
