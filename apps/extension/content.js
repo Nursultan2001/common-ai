@@ -217,15 +217,18 @@
   // stays clickable. The dialog's own dark backdrop is left untouched.
   function purgeSelectOverlays() {
     try {
+      // Fully REMOVE the zombie overlays rather than just hiding them. Over an
+      // 18-course grade (18 × ~7 selects) hidden nodes would otherwise pile up
+      // into ~120+ detached-but-present backdrops/panes, bloating the DOM and
+      // slowing every later course to a crawl. Removal is safe: CDK's own
+      // disposal calls `.remove()` too, which is a no-op on an already-detached
+      // node, and the dialog's own pane/backdrop are never matched here.
+      document.querySelectorAll(".cdk-overlay-transparent-backdrop").forEach((b) => b.remove());
       document.querySelectorAll(".cdk-overlay-pane").forEach((p) => {
         if (!p.querySelector("mat-dialog-container") &&
             p.querySelector(".mat-mdc-select-panel, .mat-select-panel, [role='listbox']")) {
-          p.style.display = "none";
+          p.remove();
         }
-      });
-      document.querySelectorAll(".cdk-overlay-transparent-backdrop").forEach((b) => {
-        b.style.display = "none";
-        b.style.pointerEvents = "none";
       });
     } catch (_e) {}
   }
