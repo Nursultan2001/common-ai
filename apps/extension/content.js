@@ -489,47 +489,87 @@
       }
       case "multi-combobox": {
         // A combobox that accepts several selections (Common App "Tests Taken"
-        // → "Indicate all tests"; per-course "schedule"). RE-OPEN and type-filter
-        // per item: this list can close or virtualize after a pick, which dropped
-        // later options (e.g. IELTS, the 9th test). Typing narrows the list so the
-        // wanted option is always rendered; clicking a chip never blocks the next.
+        // → "Indicate all tests"; per-course "schedule"). Common App uses ng-select,
+        // which closes on each pick AND desyncs its open-state if the trigger is
+        // clicked while it thinks it's still open — so the 3rd/4th picks were
+        // silently no-ops (IELTS + SAT Subject Tests dropped). Fix:
+        //   1. Read already-selected chips and skip them (idempotent + no toggle-off).
+        //   2. Between picks: dispatch Escape, click body, wait for panel gone.
+        //   3. Reopen by clicking the ng-select WRAPPER, not the hidden input.
+        //   4. Retry once if the panel doesn't appear (recovers desynced state).
         const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
+        const wrap = el.closest(".ng-select, ng-select") || el.parentElement;
         const findLb = () => {
           const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
-          return (
-            (owns && document.getElementById(owns)) ||
-            [...document.querySelectorAll("[role='listbox']")].filter((x) => x.offsetParent !== null).pop()
+          const byId = owns && document.getElementById(owns);
+          if (byId && byId.offsetParent !== null) return byId;
+          return [...document.querySelectorAll("[role='listbox'], .ng-dropdown-panel")]
+            .filter((x) => x.offsetParent !== null).pop() || null;
+        };
+        const currentChips = () => {
+          const scope = wrap || el.parentElement || document;
+          return [...scope.querySelectorAll(".ng-value-label, .mat-mdc-chip__primary-focus-indicator, .mat-mdc-chip [class*='label'], [class*='chip'] [class*='label']")]
+            .map((c) => normText(c.textContent || ""));
+        };
+        const closeDropdown = async () => {
+          try { el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "Escape", code: "Escape" })); } catch (_e) {}
+          try { document.body.click(); } catch (_e) {}
+          try { if (el.blur) el.blur(); } catch (_e) {}
+          await waitFor(() => !findLb(), 800);
+          await sleep(60);
+        };
+        const openDropdown = async () => {
+          const trigger = wrap && wrap !== el ? wrap : el;
+          ["mousedown", "mouseup", "click"].forEach((t) =>
+            trigger.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
           );
+          try { if (el.focus) el.focus(); } catch (_e) {}
+          el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown", code: "ArrowDown" }));
+          let lb = await waitFor(() => findLb(), 1000);
+          if (!lb) {
+            // Desynced open state — force-close and try once more.
+            await closeDropdown();
+            ["mousedown", "mouseup", "click"].forEach((t) =>
+              trigger.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+            );
+            lb = await waitFor(() => findLb(), 1000);
+          }
+          return lb;
         };
         const pickOne = async (w) => {
-          if (el.focus) el.focus();
-          el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-          el.click();
-          el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
+          const wantNorm = normText(w);
+          // Skip if already selected — avoids the ng-select "click == toggle off" trap.
+          if (currentChips().some((c) => c === wantNorm)) return "already";
+          await closeDropdown();
+          const lb = await openDropdown();
+          if (!lb) return false;
+          // Type to filter the visible list (helps virtualized lists surface the option).
           try { setNativeValue(el, w); el.dispatchEvent(new Event("input", { bubbles: true })); } catch (_e) {}
           const opt = await waitFor(() => {
-            const lb = findLb();
-            return lb ? bestOption([...lb.querySelectorAll("[role='option'], li, mat-option")], w) : null;
+            const cur = findLb();
+            return cur ? bestOption([...cur.querySelectorAll("[role='option'], li, mat-option, .ng-option")], w) : null;
           }, 1500);
           if (opt) {
             try { opt.scrollIntoView({ block: "nearest" }); } catch (_e) {}
             ["mousedown", "mouseup", "click"].forEach((t) =>
               opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
             );
+            await sleep(120);
           }
-          // Clear the typed filter so the next item sees the full list again.
+          // Clear the typed filter and force-close so next iteration starts clean.
           try { setNativeValue(el, ""); el.dispatchEvent(new Event("input", { bubbles: true })); } catch (_e) {}
-          await sleep(250);
-          return !!opt;
+          await closeDropdown();
+          // Confirm the chip actually landed (dispatches sometimes look successful but don't stick).
+          return currentChips().some((c) => c === wantNorm);
         };
         let any = false;
         const missed = [];
         for (const w of wants) {
-          const ok = await pickOne(w);
+          let ok = await pickOne(w);
+          if (!ok) ok = await pickOne(w); // one retry — recovers from a stray desync
           if (ok) any = true; else missed.push(w);
         }
-        document.body.click();
-        await sleep(150);
+        await closeDropdown();
         markFilled(el, mapping.requiresConfirm);
         if (!any) return { source: mapping.source, status: "no-matching-option", value };
         return {
