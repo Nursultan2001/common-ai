@@ -6,6 +6,8 @@ const status = (t) => {
 };
 
 async function load() {
+  // Show the installed build so you can confirm a reinstall actually took.
+  try { $("verTag").textContent = "v" + chrome.runtime.getManifest().version; } catch (_e) {}
   const cfg = await chrome.storage.local.get(["backendUrl", "token", "applicationId"]);
   $("backendUrl").value = cfg.backendUrl || "http://localhost:3000";
   $("token").value = cfg.token || "";
