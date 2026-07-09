@@ -743,14 +743,34 @@
       el.dispatchEvent(new Event("blur", { bubbles: true }));
     };
 
+    const sub = [];
+
+    // 0. gating question. The 12th-grade page (and any grade the app treats as
+    // "in progress") hides the transcript behind a REQUIRED "Do you have Nth
+    // grade courses on your transcript with official grades?" Yes/No. If it's
+    // left unanswered, Common App silently DISCARDS the whole transcript on save
+    // (the grid opens and fills, Continue closes it, but nothing persists). We
+    // only reach here when there ARE courses to report, so answer Yes first.
+    try {
+      if (/do you have[\s\S]*?courses[\s\S]*?official grades/i.test(document.body.innerText)) {
+        const g = document.querySelector("mat-radio-group, [role='radiogroup']");
+        const yes = g && Array.from(g.querySelectorAll("mat-radio-button, [role='radio'], label"))
+          .find((r) => /^\s*yes\s*$/i.test((r.textContent || "").trim()));
+        const inp = yes && (yes.querySelector("input") || yes);
+        if (inp && !inp.checked) {
+          inp.click();
+          sub.push({ source: "gating-has-official-grades", status: "answered-yes" });
+          await sleep(400);
+        }
+      }
+    } catch (_e) {}
+
     // 1. open the modal.
     const trigger = findEl([mapping.trigger || "#addCG"]);
     if (!trigger) return { source: mapping.source, status: "add-grade-button-not-found" };
     trigger.click();
     const ready = await waitFor(() => document.getElementById("schoolNameControl1"), 3500);
     if (!ready) return { source: mapping.source, status: "grid-modal-not-open" };
-
-    const sub = [];
     const matById = async (id, val) => {
       if (!val) return;
       const el = document.getElementById(id);
