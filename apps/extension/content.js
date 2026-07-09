@@ -1466,6 +1466,23 @@
         }
       }
     }
+    // Fallback: the LAST page of a section has no "Continue" — its save+advance
+    // control is a "Go to <next section> tab" link (e.g. "Go to My Colleges tab"
+    // on the Courses & Grades "Other Courses" page 13/59). It's a plain <a>, so
+    // the query above misses it. Clicking it persists the page and navigates,
+    // exactly like Continue. Verified live: it saves the Other-Courses answer.
+    if (!btn) {
+      for (const a of document.querySelectorAll("a, button, [role='button']")) {
+        const t = (a.textContent || "").trim().toLowerCase();
+        if (/^go to .+\btab\b/.test(t) && !/submit|pay|confirm/.test(t)) {
+          const r = a.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0 && !a.disabled) {
+            btn = a;
+            break;
+          }
+        }
+      }
+    }
     if (!btn) return { ok: true, clicked: false, saved: false, reason: "no-continue-button" };
     btn.click();
     // Saved+advanced => the SPA route (URL) changes. Blocked => stays + shows errors.

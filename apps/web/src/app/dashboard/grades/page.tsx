@@ -45,13 +45,22 @@ export default async function GradesPage() {
       </p>
 
       <div className="card">
-        <h2>Transcript access</h2>
+        <h2>Transcript access &amp; other courses</h2>
         <form action={saveTranscriptAccessAction}>
           <div className="row">
             <Sel label="I can access a copy of my transcript(s) or official grades"
               name="transcriptAccess" value={profile?.transcriptAccess}
               options={["Yes", "No"]} flex="1 1 320px" />
+            <Sel label="Any OTHER courses on your transcript with grades? (middle school, post-12th, or summer)"
+              name="otherCoursesOnTranscript" value={profile?.otherCoursesOnTranscript ?? "No"}
+              options={["Yes", "No"]} flex="1 1 320px" />
           </div>
+          <p className="muted" style={{ marginTop: 0 }}>
+            The second answer fills the <strong>“Other Courses”</strong> page
+            (13/59). Most Kazakhstan students answer <strong>No</strong> — leave
+            it as No unless you have middle-school, summer, or post-12th courses
+            printed on your official transcript.
+          </p>
           <button className="primary" type="submit">Save</button>
         </form>
       </div>

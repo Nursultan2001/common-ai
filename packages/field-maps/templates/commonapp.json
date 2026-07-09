@@ -3424,6 +3424,22 @@
       ]
     },
     {
+      "urlPattern": "https://apply.commonapp.org/common/13/59*",
+      "name": "Courses & Grades — other courses",
+      "fields": [
+        {
+          "source": "otherCoursesOnTranscript",
+          "kind": "radio-map",
+          "selectors": [],
+          "requiresConfirm": true,
+          "valueMap": {
+            "Yes": "#option_ques_1933_2371-input",
+            "No": "#option_ques_1933_2372-input"
+          }
+        }
+      ]
+    },
+    {
       "urlPattern": "https://apply.commonapp.org/mycolleges/*",
       "name": "My Colleges — supplement (general, label-matched)",
       "fields": [

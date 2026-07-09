@@ -124,6 +124,10 @@ export async function GET(req: Request) {
       })),
       // Courses & Grades transcript (13/54–13/58): intro access + per-grade data.
       transcriptAccess: applicant.profile?.transcriptAccess ?? null,
+      // "Other Courses" (13/59). Required Yes/No. Default "No" (most students
+      // report only their 9–12 courses) so the section still completes when the
+      // user never set it explicitly.
+      otherCoursesOnTranscript: applicant.profile?.otherCoursesOnTranscript ?? "No",
       gradeData: Object.fromEntries(
         applicant.gradeReports.map((r) => [
           r.grade,

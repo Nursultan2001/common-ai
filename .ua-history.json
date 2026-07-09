@@ -333,5 +333,14 @@
     "file": "apps/web/src/app/api/extension/profile/route.ts",
     "files_in_map": 0,
     "result": "complete"
+  },
+  {
+    "timestamp": "2026-07-09T02:47:53.931Z",
+    "event": "task_complete",
+    "project_hash": "9e6913164d85e7d9",
+    "file": "packages/field-maps/templates/commonapp.json",
+    "task": "Add support for the Courses & Grades \"Other Courses\" page (13/59): a required Yes/No question \"Do you have any other courses on your transcript with grades?\" — store the answer in the profile, expose via extension profile API, and answer it via the field map radio-map.",
+    "files_in_map": 0,
+    "result": "complete"
   }
 ]

@@ -218,6 +218,9 @@ model MasterProfile {
 
   // Courses & Grades transcript section (13/54): can access transcript/grades?
   transcriptAccess String? // "Yes" | "No"
+  // Courses & Grades "Other Courses" page (13/59): any other courses on the
+  // transcript with grades (middle school, post-12th, or summer)?
+  otherCoursesOnTranscript String? // "Yes" | "No"
 
   // My Colleges supplement answers — general, reused across every college.
   // Filled by label (page IDs differ per college), best-effort.

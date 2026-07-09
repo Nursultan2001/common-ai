@@ -118,14 +118,16 @@ export async function saveGradeReportAction(formData: FormData) {
 }
 
 // Intro page (13/54): "I can access a copy of my transcript(s)".
+// Also captures the "Other Courses" (13/59) Yes/No in the same form.
 export async function saveTranscriptAccessAction(formData: FormData) {
   const user = await requireUser();
   const applicant = await getActiveApplicant();
   const v = s(formData, "transcriptAccess");
+  const other = s(formData, "otherCoursesOnTranscript");
   await db.masterProfile.upsert({
     where: { applicantId: applicant.id },
-    update: { transcriptAccess: v },
-    create: { applicantId: applicant.id, transcriptAccess: v },
+    update: { transcriptAccess: v, otherCoursesOnTranscript: other },
+    create: { applicantId: applicant.id, transcriptAccess: v, otherCoursesOnTranscript: other },
   });
   revalidatePath("/dashboard/grades");
 }
