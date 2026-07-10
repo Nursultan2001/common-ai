@@ -215,6 +215,83 @@
   const trustedType = (text) => trustedSend({ type: "TRUSTED_TYPE", text });
   const trustedRelease = () => trustedSend({ type: "TRUSTED_RELEASE" });
 
+  // Common App shows a full-screen ".backdrop.full-screen" loading overlay while
+  // a section loads. In automated/slow-network conditions it can get STUCK, and
+  // because it sits above everything it swallows real (coordinate) clicks and can
+  // steal keyboard focus. Remove any that are covering the page before we drive a
+  // control. (Harmless when none is present.)
+  function removeLoadingBackdrops() {
+    try {
+      document.querySelectorAll(".backdrop.full-screen, .backdrop").forEach((b) => {
+        const r = b.getBoundingClientRect();
+        if (r.width > 400 && r.height > 400) b.remove();
+      });
+    } catch (_e) {}
+  }
+
+  // Drive an ng-select (Common App "Testing" fields: the tests multi-select AND
+  // every SAT/ACT/IELTS score dropdown) the way a REAL user does, over the
+  // chrome.debugger bridge. This is required because Common App's ng-select only
+  // PERSISTS a change that comes from a genuine trusted gesture — synthetic
+  // events update the on-screen chip but never fire the /answer save, so the
+  // value silently vanishes on the next load. Recipe, all coordinate-free:
+  //   focus → type to filter → confirm the highlighted match → Enter → …repeat…
+  //   → Tab (blur is what commits the save to the server).
+  // Returns { ok, picked, missed }. ok=false (e.g. debugger attach refused) lets
+  // the caller fall back to a synthetic pick so the value at least shows.
+  async function fillNgSelectTrusted(el, values) {
+    const ng = el.closest(".ng-select, ng-select");
+    if (!ng) return { ok: false, error: "not-ng-select", picked: [] };
+    const input = ng.querySelector("input") || el;
+    const isVis = (x) => { try { return getComputedStyle(x).display !== "none"; } catch (_e) { return false; } };
+    const openPanel = () =>
+      [...document.querySelectorAll(".ng-dropdown-panel, [role='listbox']")].filter(isVis).pop() || null;
+    const chipText = () => [...ng.querySelectorAll(".ng-value-label")].map((c) => normText(c.textContent));
+    const setFilter = (t) => { try { setNativeValue(input, t); input.dispatchEvent(new Event("input", { bubbles: true })); } catch (_e) {} };
+
+    removeLoadingBackdrops();
+    try { input.focus(); } catch (_e) {}
+    // A trusted ArrowDown both attaches the debugger and opens the panel. If the
+    // bridge is unavailable, bail so the caller can try a synthetic pick.
+    const attach = await trustedKey("ArrowDown");
+    if (!(attach && attach.ok)) return { ok: false, error: attach && attach.error, picked: [] };
+    await sleep(220);
+
+    const picked = [];
+    for (const raw of values) {
+      const want = String(raw).trim();
+      if (!want) continue;
+      if (chipText().includes(normText(want))) { picked.push(want); continue; } // already selected
+      removeLoadingBackdrops();
+      try { input.focus(); } catch (_e) {}
+      setFilter("");
+      await sleep(80);
+      await trustedType(want); // trusted keystrokes → ng-select filters the list
+      // Wait for our option to actually be present in the (filtered) list.
+      const opt = await waitFor(() => {
+        const p = openPanel();
+        if (!p) return null;
+        return bestOption([...p.querySelectorAll(".ng-option:not(.ng-option-disabled)")], want);
+      }, 1800);
+      // Only press Enter if the option ng-select will select (the highlighted
+      // one) is actually OUR target — otherwise we'd persist the WRONG value.
+      const panel = openPanel();
+      const marked = panel && panel.querySelector(".ng-option-marked");
+      const matches = (a, b) => { a = normText(a); b = normText(b); return a === b || a.includes(b) || b.includes(a); };
+      if (opt && marked && matches(marked.textContent, want)) {
+        await trustedKey("Enter");
+        await sleep(320);
+        if (chipText().includes(normText(want))) picked.push(want);
+      }
+      setFilter("");
+      await sleep(100);
+    }
+    // Blur the control — this is the gesture that commits the save.
+    await trustedKey("Tab");
+    await sleep(500);
+    return { ok: picked.length > 0, picked, missed: values.map((v) => String(v).trim()).filter((v) => v && !picked.includes(v)) };
+  }
+
   // Pick the best option for `want`, whitespace-insensitive. Priority:
   //   1. exact  2. option starts with want  3. SHORTEST option that contains want
   //   4. longest option that IS contained in want.
@@ -536,122 +613,39 @@
         break;
       }
       case "multi-combobox": {
-        // A combobox that accepts several selections (Common App "Tests Taken"
-        // → "Indicate all tests"; per-course "schedule"). Common App wraps ng-select
-        // in its own CA-CONTROL-WRAPPER, whose auto-save subscribes to real (trusted)
-        // user events. Synthetic mouse dispatches make the chip appear on screen but
-        // never update the FormControl — Continue silently discards them.
-        //
-        // Fix: fire REAL clicks via chrome.debugger / CDP (trustedClickEl). Falls
-        // back to a synthetic click if the debugger attach fails (e.g. user hit
-        // Cancel on the debugger banner), so we still fill correctly on pages where
-        // CA-CONTROL-WRAPPER doesn't filter events.
-        //
-        // Extra defensive logic still applies:
-        //   1. Read already-selected chips and skip them (idempotent + no toggle-off).
-        //   2. Between picks: Escape + wait for panel gone (a leftover panel
-        //      swallows the next open).
-        //   3. Retry once if the panel doesn't appear (recovers desynced state).
+        // A combobox accepting several selections — Common App "Tests Taken" →
+        // "Indicate all tests". This is an ng-select, which only PERSISTS a change
+        // that comes from a genuine trusted gesture (see fillNgSelectTrusted).
+        // Drive it over the chrome.debugger keyboard bridge, coordinate-free.
         const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
-        const wrap = el.closest(".ng-select, ng-select") || el.parentElement;
-        // ng-dropdown-panel is absolutely positioned OUTSIDE normal DOM flow, so
-        // .offsetParent is null even when the panel is clearly open on screen.
-        // Detect open via computed display instead.
-        const isOpen = (x) => { try { return getComputedStyle(x).display !== "none"; } catch (_e) { return false; } };
-        const findLb = () => {
-          const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
-          const byId = owns && document.getElementById(owns);
-          if (byId && isOpen(byId)) return byId;
-          return [...document.querySelectorAll("[role='listbox'], .ng-dropdown-panel")]
-            .filter(isOpen).pop() || null;
-        };
-        const currentChips = () => {
-          const scope = wrap || el.parentElement || document;
-          return [...scope.querySelectorAll(".ng-value-label, .mat-mdc-chip__primary-focus-indicator, .mat-mdc-chip [class*='label'], [class*='chip'] [class*='label']")]
-            .map((c) => normText(c.textContent || ""));
-        };
-        const closeDropdown = async () => {
-          try { el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "Escape", code: "Escape" })); } catch (_e) {}
-          try { document.body.click(); } catch (_e) {}
-          try { if (el.blur) el.blur(); } catch (_e) {}
-          await waitFor(() => !findLb(), 800);
-          await sleep(60);
-        };
-        // Real click on the ng-select trigger. The ng-select-container element is
-        // the DOM node ng-select listens to for open — it's where a mouse actually
-        // lands when you click the widget.
-        const openDropdown = async () => {
-          const trigger = (wrap && wrap.querySelector && wrap.querySelector(".ng-select-container")) || wrap || el;
-          let usedTrusted = false;
-          const r = await trustedClickEl(trigger);
-          if (r && r.ok) { usedTrusted = true; }
-          else {
-            // Fallback: synthetic mousedown+click. Common App's CA-CONTROL-WRAPPER
-            // will refuse to save changes made this way, but the chip still lands
-            // visually — and pages without that wrapper will save normally.
-            ["mousedown", "mouseup", "click"].forEach((t) =>
-              trigger.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-            );
-            try { if (el.focus) el.focus(); } catch (_e) {}
-            el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown", code: "ArrowDown" }));
-          }
-          let lb = await waitFor(() => findLb(), 1200);
-          if (!lb) {
-            // Desynced open state — force-close and try once more.
-            await closeDropdown();
-            const r2 = await trustedClickEl(trigger);
-            if (!(r2 && r2.ok)) {
-              ["mousedown", "mouseup", "click"].forEach((t) =>
-                trigger.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-              );
-            }
-            lb = await waitFor(() => findLb(), 1200);
-          }
-          return { lb, usedTrusted };
-        };
-        const pickOne = async (w) => {
-          const wantNorm = normText(w);
-          // Skip if already selected — avoids the ng-select "click == toggle off" trap.
-          if (currentChips().some((c) => c === wantNorm)) return "already";
-          await closeDropdown();
-          const opened = await openDropdown();
-          if (!opened.lb) return false;
-          const opt = await waitFor(() => {
-            const cur = findLb();
-            return cur ? bestOption([...cur.querySelectorAll("[role='option'], li, mat-option, .ng-option")], w) : null;
-          }, 1500);
-          if (opt) {
-            // Trusted click on the option element — this is what makes ng-select's
-            // CVA emit onChange with isTrusted=true so CA-CONTROL-WRAPPER persists.
-            const tr = await trustedClickEl(opt);
-            if (!(tr && tr.ok)) {
-              // Fallback: synthetic (persistence unlikely on Common App Tests page,
-              // but harmless on other pages that don't filter events).
-              try { opt.scrollIntoView({ block: "nearest" }); } catch (_e) {}
-              ["mousedown", "mouseup", "click"].forEach((t) =>
-                opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-              );
-            }
-            await sleep(200);
-          }
-          await closeDropdown();
-          // Confirm the chip actually landed.
-          return currentChips().some((c) => c === wantNorm);
-        };
-        let any = false;
-        const missed = [];
-        for (const w of wants) {
-          let ok = await pickOne(w);
-          if (!ok) ok = await pickOne(w); // one retry — recovers from a stray desync
-          if (ok) any = true; else missed.push(w);
-        }
-        await closeDropdown();
+        const r = await fillNgSelectTrusted(el, wants);
         markFilled(el, mapping.requiresConfirm);
-        if (!any) return { source: mapping.source, status: "no-matching-option", value };
+        if (!r.ok) {
+          // Debugger unavailable (attach refused / DevTools open). Fall back to a
+          // synthetic pick so the chips at least show — they won't persist, but
+          // nothing is worse off, and pages without the wrapper still save.
+          const wrap = el.closest(".ng-select, ng-select") || el.parentElement;
+          const input = (wrap && wrap.querySelector("input")) || el;
+          const isVis = (x) => { try { return getComputedStyle(x).display !== "none"; } catch (_e) { return false; } };
+          const panel = () => [...document.querySelectorAll(".ng-dropdown-panel, [role='listbox']")].filter(isVis).pop() || null;
+          const chips = () => [...wrap.querySelectorAll(".ng-value-label")].map((c) => normText(c.textContent));
+          for (const w of wants) {
+            if (chips().includes(normText(w))) continue;
+            (wrap.querySelector(".ng-select-container") || input).dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+            input.focus();
+            setNativeValue(input, w); input.dispatchEvent(new Event("input", { bubbles: true }));
+            const opt = await waitFor(() => { const p = panel(); return p ? bestOption([...p.querySelectorAll(".ng-option")], w) : null; }, 1200);
+            if (opt) ["mousedown", "mouseup", "click"].forEach((t) => opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window })));
+            setNativeValue(input, ""); input.dispatchEvent(new Event("input", { bubbles: true }));
+            await sleep(150);
+          }
+          document.body.click();
+          return { source: mapping.source, status: "filled-synthetic-unverified", note: r.error };
+        }
         return {
           source: mapping.source,
           status: mapping.requiresConfirm ? "filled-confirm" : "filled",
-          missed: missed.length ? missed : undefined,
+          missed: r.missed && r.missed.length ? r.missed : undefined,
         };
       }
       case "click-times": {
@@ -669,32 +663,39 @@
       case "combo-pick": {
         // Open a combobox and CLICK the matching option — no typing. Some Common
         // App comboboxes (e.g. phone country code) don't filter on synthetic
-        // input, so type-then-pick leaves the default. Options live in a listbox
-        // referenced by aria-controls (fallback: any open listbox or ng-dropdown).
+        // input, so type-then-pick leaves the default.
         //
-        // For ng-select comboboxes wrapped in CA-CONTROL-WRAPPER (IELTS score
-        // dropdowns), we open AND select via trusted CDP clicks so the model
-        // update actually persists on Continue. Non-ng-select comboboxes fall
-        // through to the synthetic path (still works).
-        const ngWrap = el.closest(".ng-select, ng-select");
-        const openTarget =
-          (ngWrap && ngWrap.querySelector(".ng-select-container")) || el;
-        let usedTrusted = false;
-        const openR = await trustedClickEl(openTarget);
-        if (openR && openR.ok) usedTrusted = true;
-        else {
-          el.focus();
-          el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-          el.click();
-          el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
-        }
-        // ng-dropdown-panel (used by Common App's IELTS score selects) is absolutely
-        // positioned outside normal flow, so offsetParent is null even when open.
-        // Detect "open" via computed display instead, and include ng-dropdown-panel
-        // in the candidate list.
+        // Two flavours coexist on Common App:
+        //   A) mat-select — synthetic mousedown+click works, model updates via
+        //      Angular Material's own change handling. This is the ORIGINAL v0.2.4
+        //      behavior — DO NOT engage chrome.debugger here (attaching for every
+        //      field would spam the banner and break if the user has DevTools open).
+        //   B) ng-select wrapped in CA-CONTROL-WRAPPER — the wrapper filters
+        //      synthetic events, so the picked value visually appears but never
+        //      persists on Continue. Use a trusted CDP click just for this case.
+        const inNgSelect = !!el.closest(".ng-select, ng-select");
         const isOpen = (x) => {
           try { return getComputedStyle(x).display !== "none"; } catch (_e) { return false; }
         };
+
+        // ng-select (Common App Testing score dropdowns): only a trusted gesture
+        // persists. Use the coordinate-free keyboard helper; fall through to the
+        // synthetic path only if the debugger bridge is unavailable.
+        if (inNgSelect) {
+          const r = await fillNgSelectTrusted(el, [v]);
+          if (r.ok) {
+            markFilled(el, mapping.requiresConfirm);
+            return { source: mapping.source, status: mapping.requiresConfirm ? "filled-confirm" : "filled" };
+          }
+          // else: fall through to synthetic (visual-only) below.
+        }
+
+        // -- Open the dropdown (synthetic; works for mat-select, and the
+        //    visual-only fallback for ng-select when the debugger is unavailable).
+        el.focus();
+        el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+        el.click();
+        el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
         const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
         const lb = await waitFor(
           () => {
@@ -712,15 +713,15 @@
           document.body.click();
           return { source: mapping.source, status: "no-matching-option", value: v };
         }
-        const clickR = await trustedClickEl(opt);
-        if (!(clickR && clickR.ok)) {
-          ["mousedown", "mouseup", "click"].forEach((t) =>
-            opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-          );
-        }
+        ["mousedown", "mouseup", "click"].forEach((t) =>
+          opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+        );
         markFilled(el, mapping.requiresConfirm);
-        await sleep(200);
-        return { source: mapping.source, status: mapping.requiresConfirm ? "filled-confirm" : "filled" };
+        await sleep(150);
+        return {
+          source: mapping.source,
+          status: inNgSelect ? "filled-synthetic-unverified" : (mapping.requiresConfirm ? "filled-confirm" : "filled"),
+        };
       }
       case "richtext": {
         // CKEditor 5 (Common App "why you left" box). Prefer the editor's own

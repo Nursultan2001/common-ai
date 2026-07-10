@@ -118,16 +118,36 @@ async function messageTabWithInject(tabId, message) {
 // Chrome shows a banner ("Common AI has started debugging this browser") while
 // attached, but only for the duration of the autofill run.
 const attachedTabs = new Set();
+// Remember tabs where attach recently failed so we don't spam retries when the
+// cause is stable (DevTools open, permission not granted, chrome:// URL, etc.).
+// Cleared after ATTACH_FAIL_TTL_MS so a page reload has a fresh chance.
+const failedAttach = new Map();
+const ATTACH_FAIL_TTL_MS = 60_000;
 
 async function attachDebugger(tabId) {
   if (attachedTabs.has(tabId)) return;
-  await new Promise((res, rej) => {
-    chrome.debugger.attach({ tabId }, "1.3", () => {
-      if (chrome.runtime.lastError) return rej(chrome.runtime.lastError);
-      attachedTabs.add(tabId);
-      res();
+  const failedAt = failedAttach.get(tabId);
+  if (failedAt && Date.now() - failedAt < ATTACH_FAIL_TTL_MS) {
+    throw new Error("debugger-attach-recently-failed");
+  }
+  try {
+    await new Promise((res, rej) => {
+      // Guard against a hung attach callback with an explicit timeout.
+      const to = setTimeout(() => rej(new Error("debugger-attach-timeout")), 3000);
+      chrome.debugger.attach({ tabId }, "1.3", () => {
+        clearTimeout(to);
+        if (chrome.runtime.lastError) return rej(chrome.runtime.lastError);
+        attachedTabs.add(tabId);
+        failedAttach.delete(tabId);
+        res();
+      });
     });
-  });
+  } catch (e) {
+    failedAttach.set(tabId, Date.now());
+    // Log so the user can see the real reason via chrome://extensions → SW inspect.
+    console.warn("[CommonAI] chrome.debugger.attach failed:", e.message || e);
+    throw e;
+  }
 }
 
 async function detachDebugger(tabId) {
