@@ -191,15 +191,25 @@
   async function trustedClickEl(el) {
     if (!el) return { ok: false, error: "no-el" };
     try { el.scrollIntoView({ block: "center", inline: "center" }); } catch (_e) {}
-    // Let the browser lay out after scrollIntoView.
-    await sleep(60);
+    // Let the browser lay out after scrollIntoView. Two RAF gives Angular time
+    // to reposition dropdown panels; the extra sleep guards against slow paint.
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    await sleep(80);
     const r = el.getBoundingClientRect();
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
     const x = Math.round(r.left + r.width / 2);
     const y = Math.round(r.top + r.height / 2);
     // If the element is off-screen or has zero size, this coordinate won't hit
     // anything — bail so the caller can fall back to a synthetic click.
-    if (r.width === 0 || r.height === 0 || x < 0 || y < 0) return { ok: false, error: "off-screen" };
-    return trustedSend({ type: "TRUSTED_CLICK", x, y });
+    if (r.width === 0 || r.height === 0 || x < 0 || y < 0 || x > vw || y > vh) {
+      return { ok: false, error: `off-screen (${x},${y} vs ${vw}x${vh})` };
+    }
+    const res = await trustedSend({ type: "TRUSTED_CLICK", x, y });
+    // Surface a one-line hint in the page console so the user (and we) can tell
+    // whether the trusted-event path is actually running. Silent on success.
+    if (!res.ok) console.warn("[CommonAI] trusted click failed:", res.error, "at", x, y);
+    return res;
   }
   const trustedKey = (key) => trustedSend({ type: "TRUSTED_KEY", key });
   const trustedType = (text) => trustedSend({ type: "TRUSTED_TYPE", text });
@@ -544,12 +554,16 @@
         //   3. Retry once if the panel doesn't appear (recovers desynced state).
         const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
         const wrap = el.closest(".ng-select, ng-select") || el.parentElement;
+        // ng-dropdown-panel is absolutely positioned OUTSIDE normal DOM flow, so
+        // .offsetParent is null even when the panel is clearly open on screen.
+        // Detect open via computed display instead.
+        const isOpen = (x) => { try { return getComputedStyle(x).display !== "none"; } catch (_e) { return false; } };
         const findLb = () => {
           const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
           const byId = owns && document.getElementById(owns);
-          if (byId && byId.offsetParent !== null) return byId;
+          if (byId && isOpen(byId)) return byId;
           return [...document.querySelectorAll("[role='listbox'], .ng-dropdown-panel")]
-            .filter((x) => x.offsetParent !== null).pop() || null;
+            .filter(isOpen).pop() || null;
         };
         const currentChips = () => {
           const scope = wrap || el.parentElement || document;

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Common AI — Application Assistant",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Autofills your college applications from your Common AI profile. You review and submit.",
   "permissions": ["storage", "activeTab", "scripting", "tabs", "debugger"],
   "host_permissions": [
