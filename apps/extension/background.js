@@ -111,6 +111,83 @@ async function messageTabWithInject(tabId, message) {
   }
 }
 
+// -- Trusted-event bridge (chrome.debugger / CDP) -----------------------------
+// Common App's Testing page uses ng-select wrapped in its own CA-CONTROL-WRAPPER
+// component that ignores synthetic mouse events (event.isTrusted === false).
+// The chrome.debugger API can dispatch REAL (trusted) input events via CDP —
+// Chrome shows a banner ("Common AI has started debugging this browser") while
+// attached, but only for the duration of the autofill run.
+const attachedTabs = new Set();
+
+async function attachDebugger(tabId) {
+  if (attachedTabs.has(tabId)) return;
+  await new Promise((res, rej) => {
+    chrome.debugger.attach({ tabId }, "1.3", () => {
+      if (chrome.runtime.lastError) return rej(chrome.runtime.lastError);
+      attachedTabs.add(tabId);
+      res();
+    });
+  });
+}
+
+async function detachDebugger(tabId) {
+  if (!attachedTabs.has(tabId)) return;
+  await new Promise((res) => {
+    chrome.debugger.detach({ tabId }, () => {
+      attachedTabs.delete(tabId);
+      res();
+    });
+  });
+}
+
+function cdp(tabId, method, params) {
+  return new Promise((res, rej) => {
+    chrome.debugger.sendCommand({ tabId }, method, params, (result) => {
+      if (chrome.runtime.lastError) return rej(chrome.runtime.lastError);
+      res(result);
+    });
+  });
+}
+
+// Real "user click" at viewport-relative (x, y) — trusted by any Angular check.
+async function trustedClickAt(tabId, x, y) {
+  await attachDebugger(tabId);
+  const base = { x, y, button: "left", buttons: 1, clickCount: 1 };
+  // Move so hover-state components (like ng-option marked) register the pointer.
+  await cdp(tabId, "Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
+  await cdp(tabId, "Input.dispatchMouseEvent", { type: "mousePressed", ...base });
+  await cdp(tabId, "Input.dispatchMouseEvent", { type: "mouseReleased", ...base });
+}
+
+// Real keypress (Enter / ArrowDown / Escape / any single-char key).
+async function trustedKey(tabId, key) {
+  await attachDebugger(tabId);
+  const map = {
+    Enter: { key: "Enter", code: "Enter", windowsVirtualKeyCode: 13, nativeVirtualKeyCode: 13 },
+    ArrowDown: { key: "ArrowDown", code: "ArrowDown", windowsVirtualKeyCode: 40, nativeVirtualKeyCode: 40 },
+    ArrowUp: { key: "ArrowUp", code: "ArrowUp", windowsVirtualKeyCode: 38, nativeVirtualKeyCode: 38 },
+    Escape: { key: "Escape", code: "Escape", windowsVirtualKeyCode: 27, nativeVirtualKeyCode: 27 },
+    Tab: { key: "Tab", code: "Tab", windowsVirtualKeyCode: 9, nativeVirtualKeyCode: 9 },
+  };
+  const info = map[key] || { key, code: key.length === 1 ? "Key" + key.toUpperCase() : key };
+  await cdp(tabId, "Input.dispatchKeyEvent", { type: "keyDown", ...info });
+  await cdp(tabId, "Input.dispatchKeyEvent", { type: "keyUp", ...info });
+}
+
+// Real text insertion at the currently-focused element (works for ng-select's
+// internal search input). Uses Input.insertText for reliable Unicode support.
+async function trustedType(tabId, text) {
+  await attachDebugger(tabId);
+  await cdp(tabId, "Input.insertText", { text });
+}
+
+// Chrome auto-detaches on tab close / navigation-with-crash / user "Cancel"
+// on the debugger banner — keep our attached-set in sync so we don't retry a
+// stale attach.
+chrome.debugger.onDetach.addListener((source) => {
+  if (source && source.tabId != null) attachedTabs.delete(source.tabId);
+});
+
 // Message router for popup + content script.
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   (async () => {
@@ -124,6 +201,51 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 
       if (msg.type === "GET_AUTOFILL_BUNDLE") {
         return sendResponse(await buildBundle());
+      }
+
+      // Trusted-event bridge — content script asks the SW to fire a REAL click
+      // or key via chrome.debugger (CDP). Used only where synthetic events are
+      // rejected (Common App's ng-select CA-CONTROL-WRAPPER).
+      if (msg.type === "TRUSTED_CLICK") {
+        try {
+          const tabId = _sender.tab && _sender.tab.id;
+          if (!tabId) return sendResponse({ ok: false, error: "no-tab" });
+          await trustedClickAt(tabId, msg.x, msg.y);
+          return sendResponse({ ok: true });
+        } catch (e) {
+          return sendResponse({ ok: false, error: e.message || String(e) });
+        }
+      }
+      if (msg.type === "TRUSTED_KEY") {
+        try {
+          const tabId = _sender.tab && _sender.tab.id;
+          if (!tabId) return sendResponse({ ok: false, error: "no-tab" });
+          await trustedKey(tabId, msg.key);
+          return sendResponse({ ok: true });
+        } catch (e) {
+          return sendResponse({ ok: false, error: e.message || String(e) });
+        }
+      }
+      if (msg.type === "TRUSTED_TYPE") {
+        try {
+          const tabId = _sender.tab && _sender.tab.id;
+          if (!tabId) return sendResponse({ ok: false, error: "no-tab" });
+          await trustedType(tabId, msg.text);
+          return sendResponse({ ok: true });
+        } catch (e) {
+          return sendResponse({ ok: false, error: e.message || String(e) });
+        }
+      }
+      // Explicit detach — content script signals end of a fill run so we drop
+      // the debugger banner as soon as possible.
+      if (msg.type === "TRUSTED_RELEASE") {
+        try {
+          const tabId = _sender.tab && _sender.tab.id;
+          if (tabId) await detachDebugger(tabId);
+          return sendResponse({ ok: true });
+        } catch (e) {
+          return sendResponse({ ok: false, error: e.message || String(e) });
+        }
       }
 
       // Fire-and-forget fill telemetry from the content script (drift detection).
@@ -176,6 +298,9 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
             errors,
           });
         }
+        // Whether or not any trusted events were needed, tear down the debugger
+        // banner as soon as the run ends.
+        try { await detachDebugger(tabId); } catch (_e) {}
         return sendResponse({ ok: true, results });
       }
 

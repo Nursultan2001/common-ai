@@ -167,6 +167,44 @@
   // matches the stored "F-1 Student".
   const normText = (s) => String(s == null ? "" : s).replace(/\s+/g, " ").trim().toLowerCase();
 
+  // Trusted-event bridge to the service worker. Common App's ng-select CA-
+  // CONTROL-WRAPPER ignores synthetic (isTrusted=false) events for the model
+  // updates that Continue actually saves. These helpers ask the background SW
+  // to fire REAL events via chrome.debugger / CDP. Returns {ok:true} on
+  // success — content scripts can fall back to synthetic if !ok (e.g. user
+  // cancelled the debugger banner).
+  const trustedSend = (msg) =>
+    new Promise((resolve) => {
+      try {
+        chrome.runtime.sendMessage(msg, (r) => {
+          // Swallow lastError (background may be transitioning); treat as failure.
+          const _err = chrome.runtime.lastError;
+          resolve(r && r.ok ? r : { ok: false, error: (_err && _err.message) || (r && r.error) || "no-response" });
+        });
+      } catch (_e) {
+        resolve({ ok: false, error: "sendMessage-threw" });
+      }
+    });
+  // Click at the CENTER of a given element via a trusted CDP mouse event.
+  // Scrolls the element into view first so the coordinates are inside the
+  // viewport (CDP coords are viewport-relative).
+  async function trustedClickEl(el) {
+    if (!el) return { ok: false, error: "no-el" };
+    try { el.scrollIntoView({ block: "center", inline: "center" }); } catch (_e) {}
+    // Let the browser lay out after scrollIntoView.
+    await sleep(60);
+    const r = el.getBoundingClientRect();
+    const x = Math.round(r.left + r.width / 2);
+    const y = Math.round(r.top + r.height / 2);
+    // If the element is off-screen or has zero size, this coordinate won't hit
+    // anything — bail so the caller can fall back to a synthetic click.
+    if (r.width === 0 || r.height === 0 || x < 0 || y < 0) return { ok: false, error: "off-screen" };
+    return trustedSend({ type: "TRUSTED_CLICK", x, y });
+  }
+  const trustedKey = (key) => trustedSend({ type: "TRUSTED_KEY", key });
+  const trustedType = (text) => trustedSend({ type: "TRUSTED_TYPE", text });
+  const trustedRelease = () => trustedSend({ type: "TRUSTED_RELEASE" });
+
   // Pick the best option for `want`, whitespace-insensitive. Priority:
   //   1. exact  2. option starts with want  3. SHORTEST option that contains want
   //   4. longest option that IS contained in want.
@@ -489,14 +527,21 @@
       }
       case "multi-combobox": {
         // A combobox that accepts several selections (Common App "Tests Taken"
-        // → "Indicate all tests"; per-course "schedule"). Common App uses ng-select,
-        // which closes on each pick AND desyncs its open-state if the trigger is
-        // clicked while it thinks it's still open — so the 3rd/4th picks were
-        // silently no-ops (IELTS + SAT Subject Tests dropped). Fix:
+        // → "Indicate all tests"; per-course "schedule"). Common App wraps ng-select
+        // in its own CA-CONTROL-WRAPPER, whose auto-save subscribes to real (trusted)
+        // user events. Synthetic mouse dispatches make the chip appear on screen but
+        // never update the FormControl — Continue silently discards them.
+        //
+        // Fix: fire REAL clicks via chrome.debugger / CDP (trustedClickEl). Falls
+        // back to a synthetic click if the debugger attach fails (e.g. user hit
+        // Cancel on the debugger banner), so we still fill correctly on pages where
+        // CA-CONTROL-WRAPPER doesn't filter events.
+        //
+        // Extra defensive logic still applies:
         //   1. Read already-selected chips and skip them (idempotent + no toggle-off).
-        //   2. Between picks: dispatch Escape, click body, wait for panel gone.
-        //   3. Reopen by clicking the ng-select WRAPPER, not the hidden input.
-        //   4. Retry once if the panel doesn't appear (recovers desynced state).
+        //   2. Between picks: Escape + wait for panel gone (a leftover panel
+        //      swallows the next open).
+        //   3. Retry once if the panel doesn't appear (recovers desynced state).
         const wants = String(value).split(/[;,]/).map((s) => s.trim()).filter(Boolean);
         const wrap = el.closest(".ng-select, ng-select") || el.parentElement;
         const findLb = () => {
@@ -518,48 +563,65 @@
           await waitFor(() => !findLb(), 800);
           await sleep(60);
         };
+        // Real click on the ng-select trigger. The ng-select-container element is
+        // the DOM node ng-select listens to for open — it's where a mouse actually
+        // lands when you click the widget.
         const openDropdown = async () => {
-          const trigger = wrap && wrap !== el ? wrap : el;
-          ["mousedown", "mouseup", "click"].forEach((t) =>
-            trigger.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-          );
-          try { if (el.focus) el.focus(); } catch (_e) {}
-          el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown", code: "ArrowDown" }));
-          let lb = await waitFor(() => findLb(), 1000);
-          if (!lb) {
-            // Desynced open state — force-close and try once more.
-            await closeDropdown();
+          const trigger = (wrap && wrap.querySelector && wrap.querySelector(".ng-select-container")) || wrap || el;
+          let usedTrusted = false;
+          const r = await trustedClickEl(trigger);
+          if (r && r.ok) { usedTrusted = true; }
+          else {
+            // Fallback: synthetic mousedown+click. Common App's CA-CONTROL-WRAPPER
+            // will refuse to save changes made this way, but the chip still lands
+            // visually — and pages without that wrapper will save normally.
             ["mousedown", "mouseup", "click"].forEach((t) =>
               trigger.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
             );
-            lb = await waitFor(() => findLb(), 1000);
+            try { if (el.focus) el.focus(); } catch (_e) {}
+            el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown", code: "ArrowDown" }));
           }
-          return lb;
+          let lb = await waitFor(() => findLb(), 1200);
+          if (!lb) {
+            // Desynced open state — force-close and try once more.
+            await closeDropdown();
+            const r2 = await trustedClickEl(trigger);
+            if (!(r2 && r2.ok)) {
+              ["mousedown", "mouseup", "click"].forEach((t) =>
+                trigger.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+              );
+            }
+            lb = await waitFor(() => findLb(), 1200);
+          }
+          return { lb, usedTrusted };
         };
         const pickOne = async (w) => {
           const wantNorm = normText(w);
           // Skip if already selected — avoids the ng-select "click == toggle off" trap.
           if (currentChips().some((c) => c === wantNorm)) return "already";
           await closeDropdown();
-          const lb = await openDropdown();
-          if (!lb) return false;
-          // Type to filter the visible list (helps virtualized lists surface the option).
-          try { setNativeValue(el, w); el.dispatchEvent(new Event("input", { bubbles: true })); } catch (_e) {}
+          const opened = await openDropdown();
+          if (!opened.lb) return false;
           const opt = await waitFor(() => {
             const cur = findLb();
             return cur ? bestOption([...cur.querySelectorAll("[role='option'], li, mat-option, .ng-option")], w) : null;
           }, 1500);
           if (opt) {
-            try { opt.scrollIntoView({ block: "nearest" }); } catch (_e) {}
-            ["mousedown", "mouseup", "click"].forEach((t) =>
-              opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-            );
-            await sleep(120);
+            // Trusted click on the option element — this is what makes ng-select's
+            // CVA emit onChange with isTrusted=true so CA-CONTROL-WRAPPER persists.
+            const tr = await trustedClickEl(opt);
+            if (!(tr && tr.ok)) {
+              // Fallback: synthetic (persistence unlikely on Common App Tests page,
+              // but harmless on other pages that don't filter events).
+              try { opt.scrollIntoView({ block: "nearest" }); } catch (_e) {}
+              ["mousedown", "mouseup", "click"].forEach((t) =>
+                opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+              );
+            }
+            await sleep(200);
           }
-          // Clear the typed filter and force-close so next iteration starts clean.
-          try { setNativeValue(el, ""); el.dispatchEvent(new Event("input", { bubbles: true })); } catch (_e) {}
           await closeDropdown();
-          // Confirm the chip actually landed (dispatches sometimes look successful but don't stick).
+          // Confirm the chip actually landed.
           return currentChips().some((c) => c === wantNorm);
         };
         let any = false;
@@ -595,10 +657,23 @@
         // App comboboxes (e.g. phone country code) don't filter on synthetic
         // input, so type-then-pick leaves the default. Options live in a listbox
         // referenced by aria-controls (fallback: any open listbox or ng-dropdown).
-        el.focus();
-        el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-        el.click();
-        el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
+        //
+        // For ng-select comboboxes wrapped in CA-CONTROL-WRAPPER (IELTS score
+        // dropdowns), we open AND select via trusted CDP clicks so the model
+        // update actually persists on Continue. Non-ng-select comboboxes fall
+        // through to the synthetic path (still works).
+        const ngWrap = el.closest(".ng-select, ng-select");
+        const openTarget =
+          (ngWrap && ngWrap.querySelector(".ng-select-container")) || el;
+        let usedTrusted = false;
+        const openR = await trustedClickEl(openTarget);
+        if (openR && openR.ok) usedTrusted = true;
+        else {
+          el.focus();
+          el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+          el.click();
+          el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
+        }
         // ng-dropdown-panel (used by Common App's IELTS score selects) is absolutely
         // positioned outside normal flow, so offsetParent is null even when open.
         // Detect "open" via computed display instead, and include ng-dropdown-panel
@@ -617,17 +692,20 @@
           1500
         );
         if (!lb) return { source: mapping.source, status: "dropdown-did-not-open" };
-        const nodes = [...lb.querySelectorAll("[role='option'], li, mat-option")];
+        const nodes = [...lb.querySelectorAll("[role='option'], li, mat-option, .ng-option")];
         const opt = bestOption(nodes, v);
         if (!opt) {
           document.body.click();
           return { source: mapping.source, status: "no-matching-option", value: v };
         }
-        ["mousedown", "mouseup", "click"].forEach((t) =>
-          opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
-        );
+        const clickR = await trustedClickEl(opt);
+        if (!(clickR && clickR.ok)) {
+          ["mousedown", "mouseup", "click"].forEach((t) =>
+            opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+          );
+        }
         markFilled(el, mapping.requiresConfirm);
-        await sleep(150);
+        await sleep(200);
         return { source: mapping.source, status: mapping.requiresConfirm ? "filled-confirm" : "filled" };
       }
       case "richtext": {
@@ -1652,6 +1730,11 @@
         },
       });
     } catch (_e) {}
+
+    // Release the chrome.debugger attach (if any) so the "Common AI has started
+    // debugging this browser" banner disappears as soon as the fill completes.
+    // No-op if we never needed a trusted event on this page.
+    try { await trustedRelease(); } catch (_e) {}
 
     return { ok: true, matched: true, filled, pageName: page.name, report };
   }
