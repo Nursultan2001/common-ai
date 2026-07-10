@@ -594,16 +594,26 @@
         // Open a combobox and CLICK the matching option — no typing. Some Common
         // App comboboxes (e.g. phone country code) don't filter on synthetic
         // input, so type-then-pick leaves the default. Options live in a listbox
-        // referenced by aria-controls (fallback: any visible listbox).
+        // referenced by aria-controls (fallback: any open listbox or ng-dropdown).
         el.focus();
         el.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
         el.click();
         el.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "ArrowDown" }));
+        // ng-dropdown-panel (used by Common App's IELTS score selects) is absolutely
+        // positioned outside normal flow, so offsetParent is null even when open.
+        // Detect "open" via computed display instead, and include ng-dropdown-panel
+        // in the candidate list.
+        const isOpen = (x) => {
+          try { return getComputedStyle(x).display !== "none"; } catch (_e) { return false; }
+        };
         const owns = el.getAttribute("aria-controls") || el.getAttribute("aria-owns");
         const lb = await waitFor(
-          () =>
-            (owns && document.getElementById(owns)) ||
-            [...document.querySelectorAll("[role='listbox']")].filter((x) => x.offsetParent !== null).pop(),
+          () => {
+            const byId = owns && document.getElementById(owns);
+            if (byId && isOpen(byId)) return byId;
+            const c = [...document.querySelectorAll("[role='listbox'], .ng-dropdown-panel")].filter(isOpen);
+            return c[c.length - 1] || null;
+          },
           1500
         );
         if (!lb) return { source: mapping.source, status: "dropdown-did-not-open" };

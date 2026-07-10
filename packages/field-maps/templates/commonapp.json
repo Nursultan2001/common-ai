@@ -285,14 +285,14 @@
           "selectors": [
             "#text_ques_159"
           ],
-          "kind": "text"
+          "kind": "combo-pick"
         },
         {
           "source": "testScores.ieltsListening",
           "selectors": [
             "#text_ques_164"
           ],
-          "kind": "text"
+          "kind": "combo-pick"
         },
         {
           "source": "testScores.ieltsDate",
@@ -308,7 +308,7 @@
           "selectors": [
             "#text_ques_166"
           ],
-          "kind": "text"
+          "kind": "combo-pick"
         },
         {
           "source": "testScores.ieltsDate",
@@ -324,7 +324,7 @@
           "selectors": [
             "#text_ques_168"
           ],
-          "kind": "text"
+          "kind": "combo-pick"
         },
         {
           "source": "testScores.ieltsDate",
@@ -340,7 +340,7 @@
           "selectors": [
             "#text_ques_170"
           ],
-          "kind": "text"
+          "kind": "combo-pick"
         },
         {
           "source": "testScores.ieltsDate",
@@ -356,7 +356,7 @@
           "selectors": [
             "label:Highest IELTS overall band score"
           ],
-          "kind": "text"
+          "kind": "combo-pick"
         },
         {
           "source": "testScores.ieltsDate",
