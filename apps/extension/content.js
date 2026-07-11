@@ -191,23 +191,42 @@
   async function trustedClickEl(el) {
     if (!el) return { ok: false, error: "no-el" };
     try { el.scrollIntoView({ block: "center", inline: "center" }); } catch (_e) {}
-    // Let the browser lay out after scrollIntoView. Two RAF gives Angular time
-    // to reposition dropdown panels; the extra sleep guards against slow paint.
-    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-    await sleep(80);
-    const r = el.getBoundingClientRect();
+    // CRITICAL: wait for the element's on-screen position to STABILIZE before
+    // measuring. scrollIntoView + Angular's dropdown-repositioning animate over
+    // several frames; measuring too early gave a stale y and the click landed on
+    // the NEXT option down (the "picked Duolingo instead of IELTS" bug). Poll the
+    // rect until it holds steady for 3 consecutive frames.
+    let lastKey = null, stable = 0;
+    for (let i = 0; i < 24; i++) {
+      await new Promise((r) => requestAnimationFrame(r));
+      const rr = el.getBoundingClientRect();
+      const key = Math.round(rr.top) + "," + Math.round(rr.left);
+      if (key === lastKey) { if (++stable >= 3) break; } else { stable = 0; lastKey = key; }
+    }
+    await sleep(40);
+    // Verify it's actually in the viewport now; if not, one more scroll+settle.
+    let r = el.getBoundingClientRect();
     const vw = window.innerWidth || document.documentElement.clientWidth;
     const vh = window.innerHeight || document.documentElement.clientHeight;
+    if (r.top < 0 || r.bottom > vh) {
+      try { el.scrollIntoView({ block: "center" }); } catch (_e) {}
+      await sleep(120);
+      r = el.getBoundingClientRect();
+    }
     const x = Math.round(r.left + r.width / 2);
     const y = Math.round(r.top + r.height / 2);
-    // If the element is off-screen or has zero size, this coordinate won't hit
-    // anything — bail so the caller can fall back to a synthetic click.
     if (r.width === 0 || r.height === 0 || x < 0 || y < 0 || x > vw || y > vh) {
       return { ok: false, error: `off-screen (${x},${y} vs ${vw}x${vh})` };
     }
+    // Guard against a mis-hit: confirm the element the browser would click at
+    // (x,y) is our target (or a descendant). If not, don't fire a wrong click.
+    try {
+      const top = document.elementFromPoint(x, y);
+      if (top && !(el === top || el.contains(top) || top.contains(el))) {
+        return { ok: false, error: "occluded", occludedBy: (top.className || top.tagName || "").toString().slice(0, 40) };
+      }
+    } catch (_e) {}
     const res = await trustedSend({ type: "TRUSTED_CLICK", x, y });
-    // Surface a one-line hint in the page console so the user (and we) can tell
-    // whether the trusted-event path is actually running. Silent on success.
     if (!res.ok) console.warn("[CommonAI] trusted click failed:", res.error, "at", x, y);
     return res;
   }
@@ -231,62 +250,88 @@
 
   // Drive an ng-select (Common App "Testing" fields: the tests multi-select AND
   // every SAT/ACT/IELTS score dropdown) the way a REAL user does, over the
-  // chrome.debugger bridge. This is required because Common App's ng-select only
-  // PERSISTS a change that comes from a genuine trusted gesture — synthetic
-  // events update the on-screen chip but never fire the /answer save, so the
-  // value silently vanishes on the next load. Recipe, all coordinate-free:
-  //   focus → type to filter → confirm the highlighted match → Enter → …repeat…
-  //   → Tab (blur is what commits the save to the server).
-  // Returns { ok, picked, missed }. ok=false (e.g. debugger attach refused) lets
-  // the caller fall back to a synthetic pick so the value at least shows.
+  // chrome.debugger bridge. Required because Common App's ng-select only PERSISTS
+  // a change from a genuine trusted gesture — synthetic events show the chip but
+  // never fire the /answer save, so the value vanishes on the next load.
+  //
+  // Recipe per value (exactly what a person does — "open, find it, click it"):
+  //   1. open the panel (trusted click on the ng-select-container)
+  //   2. type to FILTER so only the wanted option remains — this collapses the
+  //      list to a single row in a stable, on-screen position, so the click can
+  //      NEVER land on a neighbouring option (the old bug), and no scrolling of a
+  //      long list is needed.
+  //   3. trusted CLICK the option. (A click persists; a keyboard Enter after a
+  //      filter serialized a MALFORMED value on Common App and did NOT save — so
+  //      we click, never Enter.)
+  //   4. verify the chip; then blur (trusted Tab) which flushes the save.
+  // Returns { ok, picked, missed }. ok=false (debugger attach refused / occluded)
+  // lets the caller fall back to a synthetic, visual-only pick.
   async function fillNgSelectTrusted(el, values) {
     const ng = el.closest(".ng-select, ng-select");
     if (!ng) return { ok: false, error: "not-ng-select", picked: [] };
     const input = ng.querySelector("input") || el;
+    const container = ng.querySelector(".ng-select-container") || ng;
     const isVis = (x) => { try { return getComputedStyle(x).display !== "none"; } catch (_e) { return false; } };
     const openPanel = () =>
       [...document.querySelectorAll(".ng-dropdown-panel, [role='listbox']")].filter(isVis).pop() || null;
     const chipText = () => [...ng.querySelectorAll(".ng-value-label")].map((c) => normText(c.textContent));
     const setFilter = (t) => { try { setNativeValue(input, t); input.dispatchEvent(new Event("input", { bubbles: true })); } catch (_e) {} };
+    const closePanel = async () => {
+      try { input.dispatchEvent(new KeyboardEvent("keydown", { bubbles: true, key: "Escape", code: "Escape" })); } catch (_e) {}
+      await waitFor(() => !openPanel(), 600);
+    };
 
     removeLoadingBackdrops();
     try { input.focus(); } catch (_e) {}
-    // A trusted ArrowDown both attaches the debugger and opens the panel. If the
+    // A trusted ArrowDown attaches the debugger (and opens the panel). If the
     // bridge is unavailable, bail so the caller can try a synthetic pick.
     const attach = await trustedKey("ArrowDown");
-    if (!(attach && attach.ok)) return { ok: false, error: attach && attach.error, picked: [] };
-    await sleep(220);
+    if (!(attach && attach.ok)) return { ok: false, error: (attach && attach.error) || "no-bridge", picked: [] };
+    await sleep(200);
+    await closePanel();
 
     const picked = [];
     for (const raw of values) {
       const want = String(raw).trim();
       if (!want) continue;
       if (chipText().includes(normText(want))) { picked.push(want); continue; } // already selected
-      removeLoadingBackdrops();
-      try { input.focus(); } catch (_e) {}
-      setFilter("");
-      await sleep(80);
-      await trustedType(want); // trusted keystrokes → ng-select filters the list
-      // Wait for our option to actually be present in the (filtered) list.
-      const opt = await waitFor(() => {
-        const p = openPanel();
-        if (!p) return null;
-        return bestOption([...p.querySelectorAll(".ng-option:not(.ng-option-disabled)")], want);
-      }, 1800);
-      // Only press Enter if the option ng-select will select (the highlighted
-      // one) is actually OUR target — otherwise we'd persist the WRONG value.
-      const panel = openPanel();
-      const marked = panel && panel.querySelector(".ng-option-marked");
-      const matches = (a, b) => { a = normText(a); b = normText(b); return a === b || a.includes(b) || b.includes(a); };
-      if (opt && marked && matches(marked.textContent, want)) {
-        await trustedKey("Enter");
+      let landed = false;
+      for (let attemptN = 0; attemptN < 2 && !landed; attemptN++) {
+        removeLoadingBackdrops();
+        // 1. open
+        try { input.focus(); } catch (_e) {}
+        let panel = openPanel();
+        if (!panel) { await trustedClickEl(container); panel = await waitFor(openPanel, 1200); }
+        if (!panel) { await closePanel(); continue; }
+        // 2. filter to the wanted option (synthetic input is enough to filter;
+        //    only the SELECTION needs to be trusted).
+        setFilter(want);
+        const opt = await waitFor(() => {
+          const p = openPanel();
+          if (!p) return null;
+          return bestOption([...p.querySelectorAll(".ng-option:not(.ng-option-disabled)")], want);
+        }, 1600);
+        if (!opt) { setFilter(""); await closePanel(); continue; }
+        // 3. trusted click on the (now isolated, on-screen) option.
+        const cr = await trustedClickEl(opt);
         await sleep(320);
-        if (chipText().includes(normText(want))) picked.push(want);
+        landed = chipText().includes(normText(want));
+        if (!landed && cr && !cr.ok) {
+          // Trusted click blocked (occluded/off-screen). Synthetic as last resort
+          // so it at least shows; won't persist, but no worse.
+          ["mousedown", "mouseup", "click"].forEach((t) =>
+            opt.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true, view: window }))
+          );
+          await sleep(200);
+          landed = chipText().includes(normText(want));
+        }
+        setFilter("");
+        // Single-selects close on pick; multi-selects stay open. Reset either way.
+        await closePanel();
       }
-      setFilter("");
-      await sleep(100);
+      if (landed) picked.push(want);
     }
-    // Blur the control — this is the gesture that commits the save.
+    // Blur commits the save.
     await trustedKey("Tab");
     await sleep(500);
     return { ok: picked.length > 0, picked, missed: values.map((v) => String(v).trim()).filter((v) => v && !picked.includes(v)) };
