@@ -171,206 +171,36 @@
       "urlPattern": "https://apply.commonapp.org/common/2/236*",
       "name": "Testing — SAT",
       "fields": [
-        {
-          "source": "testScores.satPastCount",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_1839"
-          ]
-        },
-        {
-          "source": "testScores.satFutureSittings",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "0": "#option_ques_30_15-input",
-            "1": "#option_ques_30_16-input",
-            "2": "#option_ques_30_17-input",
-            "3": "#option_ques_30_18-input"
-          }
-        },
-        {
-          "source": "testScores.satFutureDate1",
-          "kind": "date",
-          "selectors": [
-            "#text_ques_31"
-          ],
-          "format": "MMMM YYYY"
-        },
-        {
-          "source": "testScores.satFutureDate2",
-          "kind": "date",
-          "selectors": [
-            "#text_ques_32"
-          ],
-          "format": "MMMM YYYY"
-        },
-        {
-          "source": "testScores.satFutureDate3",
-          "kind": "date",
-          "selectors": [
-            "#text_ques_33"
-          ],
-          "format": "MMMM YYYY"
-        },
-        {
-          "source": "testScores.satReadingWriting",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_1840"
-          ]
-        },
-        {
-          "source": "testScores.satReadingWritingDate",
-          "kind": "date",
-          "selectors": [
-            "#text_ques_1841"
-          ],
-          "format": "MMMM D, YYYY"
-        },
-        {
-          "source": "testScores.satMath",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_1842"
-          ]
-        },
-        {
-          "source": "testScores.satMathDate",
-          "kind": "date",
-          "selectors": [
-            "#text_ques_1843"
-          ],
-          "format": "MMMM D, YYYY"
-        },
-        {
-          "source": "testScores.satEssayReport",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "Yes": "#option_ques_1844_1792-input",
-            "No": "#option_ques_1844_1793-input"
-          }
-        },
-        {
-          "source": "testScores.satEssay",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_1845"
-          ]
-        },
-        {
-          "source": "testScores.satEssayDate",
-          "kind": "date",
-          "selectors": [
-            "#text_ques_1846"
-          ],
-          "format": "MMMM D, YYYY"
-        }
+        { "source": "testScores.satPastCount", "kind": "ca-answer", "questionId": 1839, "selectors": [] },
+        { "source": "testScores.satFutureSittings", "kind": "ca-answer", "questionId": 30, "selectors": [] },
+        { "source": "testScores.satFutureDate1", "kind": "ca-answer", "questionId": 31, "format": "MM/YYYY", "selectors": [] },
+        { "source": "testScores.satFutureDate2", "kind": "ca-answer", "questionId": 32, "format": "MM/YYYY", "selectors": [] },
+        { "source": "testScores.satFutureDate3", "kind": "ca-answer", "questionId": 33, "format": "MM/YYYY", "selectors": [] },
+        { "source": "testScores.satReadingWriting", "kind": "ca-answer", "questionId": 1840, "selectors": [] },
+        { "source": "testScores.satReadingWritingDate", "kind": "ca-answer", "questionId": 1841, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.satMath", "kind": "ca-answer", "questionId": 1842, "selectors": [] },
+        { "source": "testScores.satMathDate", "kind": "ca-answer", "questionId": 1843, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.satEssayReport", "kind": "ca-answer", "questionId": 1844, "selectors": [] },
+        { "source": "testScores.satEssay", "kind": "ca-answer", "questionId": 1845, "selectors": [] },
+        { "source": "testScores.satEssayDate", "kind": "ca-answer", "questionId": 1846, "format": "MM/DD/YYYY", "selectors": [] }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/2/10*",
       "name": "Testing — IELTS",
       "fields": [
-        {
-          "source": "testScores.ieltsTimesTaken",
-          "selectors": [
-            "#text_ques_159"
-          ],
-          "kind": "combo-pick"
-        },
-        {
-          "source": "testScores.ieltsFutureSittings",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "0": "#option_ques_160_15-input",
-            "1": "#option_ques_160_16-input",
-            "2": "#option_ques_160_17-input",
-            "3": "#option_ques_160_18-input"
-          }
-        },
-        {
-          "source": "testScores.ieltsListening",
-          "selectors": [
-            "#text_ques_164"
-          ],
-          "kind": "combo-pick"
-        },
-        {
-          "source": "testScores.ieltsDate",
-          "selectors": [
-            "#text_ques_165"
-          ],
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "requiresConfirm": true
-        },
-        {
-          "source": "testScores.ieltsReading",
-          "selectors": [
-            "#text_ques_166"
-          ],
-          "kind": "combo-pick"
-        },
-        {
-          "source": "testScores.ieltsDate",
-          "selectors": [
-            "#text_ques_167"
-          ],
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "requiresConfirm": true
-        },
-        {
-          "source": "testScores.ieltsWriting",
-          "selectors": [
-            "#text_ques_168"
-          ],
-          "kind": "combo-pick"
-        },
-        {
-          "source": "testScores.ieltsDate",
-          "selectors": [
-            "#text_ques_169"
-          ],
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "requiresConfirm": true
-        },
-        {
-          "source": "testScores.ieltsSpeaking",
-          "selectors": [
-            "#text_ques_170"
-          ],
-          "kind": "combo-pick"
-        },
-        {
-          "source": "testScores.ieltsDate",
-          "selectors": [
-            "#text_ques_171"
-          ],
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "requiresConfirm": true
-        },
-        {
-          "source": "testScores.ieltsOverall",
-          "selectors": [
-            "#text_ques_1794"
-          ],
-          "kind": "combo-pick"
-        },
-        {
-          "source": "testScores.ieltsDate",
-          "selectors": [
-            "#text_ques_1795"
-          ],
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "requiresConfirm": true
-        }
+        { "source": "testScores.ieltsTimesTaken", "kind": "ca-answer", "questionId": 159, "selectors": [] },
+        { "source": "testScores.ieltsFutureSittings", "kind": "ca-answer", "questionId": 160, "selectors": [] },
+        { "source": "testScores.ieltsListening", "kind": "ca-answer", "questionId": 164, "selectors": [] },
+        { "source": "testScores.ieltsDate", "kind": "ca-answer", "questionId": 165, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.ieltsReading", "kind": "ca-answer", "questionId": 166, "selectors": [] },
+        { "source": "testScores.ieltsDate", "kind": "ca-answer", "questionId": 167, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.ieltsWriting", "kind": "ca-answer", "questionId": 168, "selectors": [] },
+        { "source": "testScores.ieltsDate", "kind": "ca-answer", "questionId": 169, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.ieltsSpeaking", "kind": "ca-answer", "questionId": 170, "selectors": [] },
+        { "source": "testScores.ieltsDate", "kind": "ca-answer", "questionId": 171, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.ieltsOverall", "kind": "ca-answer", "questionId": 1794, "selectors": [] },
+        { "source": "testScores.ieltsDate", "kind": "ca-answer", "questionId": 1795, "format": "MM/DD/YYYY", "selectors": [] }
       ]
     },
     {

@@ -46,6 +46,8 @@
         return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${yyyy}`;
       case "MMMM YYYY":
         return `${MONTHS[d.getUTCMonth()]} ${yyyy}`;
+      case "MM/YYYY":
+        return `${mm}/${yyyy}`;
       default:
         return `${yyyy}-${mm}-${dd}`;
     }

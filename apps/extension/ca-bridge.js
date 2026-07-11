@@ -121,20 +121,81 @@
     return _send.apply(this, arguments);
   };
 
-  // Translate a human value to the coded `response` the API wants. Falls back to
-  // the raw value when there's no code map (scores like "780" are saved raw).
-  function resolve(questionId, value, isMulti) {
-    var map = CODES[questionId];
-    function one(v) {
-      v = v && v.trim ? v.trim() : v;
-      if (map) { var c = map[norm(v)]; if (c != null) return c; }
-      return String(v);
+  // ---- dynamic code resolution --------------------------------------------
+  // Common App stores dropdown/radio/multi-select answers as option CODES, not
+  // labels. The code for a value comes from the question's choice group:
+  //   GET /datacatalog/choicegroups/{choiceGroupId}/choicevalues
+  //     -> [{ choiceLabel, value }]  (label -> code)
+  // For many groups value==label (raw), but some (e.g. IELTS bands: 7.5 -> "16")
+  // are arbitrary — so we always resolve through the group when one exists.
+  var Q2CG = {};      // questionId -> choiceGroupId (0 = none/raw)
+  var SEC_DONE = {};  // sectionId -> loaded questionId->cgid
+  var CG_MAP = {};    // choiceGroupId -> { normLabel: code }
+
+  function authedJson(path) {
+    if (!AUTH) return Promise.resolve(null);
+    return _fetch.call(window, API + path, { headers: AUTH })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  function sectionOfCurrentPage() {
+    var m = String(location.pathname).match(/\/common\/\d+\/(\d+)/);
+    return m ? m[1] : null;
+  }
+
+  function ensureQuestionCg(questionId) {
+    if (Q2CG[questionId] !== undefined) return Promise.resolve(Q2CG[questionId]);
+    var sec = sectionOfCurrentPage();
+    if (!sec || SEC_DONE[sec]) return Promise.resolve(Q2CG[questionId]);
+    return authedJson("/datacatalog/sections/" + sec + "/questions").then(function (j) {
+      (j && j.questions || []).forEach(function (q) { if (q && q.questionId != null) Q2CG[q.questionId] = q.choiceGroupId || 0; });
+      SEC_DONE[sec] = true;
+      return Q2CG[questionId];
+    });
+  }
+
+  function ensureChoiceMap(cgid) {
+    if (CG_MAP[cgid]) return Promise.resolve(CG_MAP[cgid]);
+    return authedJson("/datacatalog/choicegroups/" + cgid + "/choicevalues").then(function (arr) {
+      var map = {};
+      (arr || []).forEach(function (o) {
+        var l = o && (o.choiceLabel != null ? o.choiceLabel : o.text);
+        var v = o && (o.value != null ? o.value : o.choiceValue);
+        if (l != null && v != null && !(norm(l) in map)) map[norm(l)] = String(v);
+      });
+      CG_MAP[cgid] = map;
+      DEFCOUNT += Object.keys(map).length;
+      return map;
+    });
+  }
+
+  // Look up a value in a label->code map, tolerant of numeric formatting
+  // ("8" vs "8.0", "7.5" vs "7.50"). Returns null if truly not found.
+  function lookup(map, v) {
+    var key = norm(v);
+    if (map[key] != null) return map[key];
+    var n = parseFloat(v);
+    if (!isNaN(n)) {
+      for (var k in map) { if (parseFloat(k) === n) return map[k]; }
     }
-    if (isMulti) {
-      var arr = Array.isArray(value) ? value : String(value).split(/[;,]/);
-      return arr.map(one).filter(function (x) { return x !== ""; });
-    }
-    return one(value);
+    return null;
+  }
+
+  // Resolve a human value to its coded response (async — may fetch the group).
+  function resolveAnswer(questionId, value, isMulti, isRaw) {
+    if (isRaw) return Promise.resolve(value);
+    return ensureQuestionCg(questionId).then(function (cgid) {
+      if (!cgid) { // no choice group -> raw value (dates, free numbers)
+        if (!isMulti) return String(value);
+        return (Array.isArray(value) ? value : String(value).split(/[;,]/)).map(function (x) { return String(x).trim(); }).filter(Boolean);
+      }
+      return ensureChoiceMap(cgid).then(function (map) {
+        function code(v) { var c = lookup(map, v); return c != null ? c : String(v && v.trim ? v.trim() : v); }
+        if (!isMulti) return code(value);
+        return (Array.isArray(value) ? value : String(value).split(/[;,]/)).map(function (x) { return code(String(x).trim()); }).filter(Boolean);
+      });
+    });
   }
 
   function save(questionId, resp) {
@@ -152,21 +213,25 @@
     if (ev.source !== window || !ev.data || ev.data.__caReq !== true) return;
     var d = ev.data;
     if (d.op === "status") {
-      window.postMessage({ __caRes: true, id: d.id, result: { hasAuth: !!AUTH, questions: Object.keys(CODES).length, defs: DEFCOUNT } }, "*");
+      window.postMessage({ __caRes: true, id: d.id, result: { hasAuth: !!AUTH, groups: Object.keys(CG_MAP).length, defs: DEFCOUNT } }, "*");
       return;
     }
-    var resp = d.raw ? d.value : resolve(d.questionId, d.value, d.isMulti);
-    save(d.questionId, resp).then(function (r) {
-      window.postMessage({ __caRes: true, id: d.id, result: r, hadAuth: !!AUTH, hadCodeMap: !!CODES[d.questionId], sentResponse: resp }, "*");
+    resolveAnswer(d.questionId, d.value, d.isMulti, d.raw).then(function (resp) {
+      return save(d.questionId, resp).then(function (r) {
+        window.postMessage({ __caRes: true, id: d.id, result: r, hadAuth: !!AUTH, sentResponse: resp }, "*");
+      });
+    }).catch(function (e) {
+      window.postMessage({ __caRes: true, id: d.id, result: { ok: false, error: String((e && e.message) || e) } }, "*");
     });
   });
 
   // Diagnostic hook (non-sensitive: option maps + booleans only, never the token)
   // so we can confirm the bridge captured auth + codes on a real page load.
-  window.__caPeek = function (qid) {
-    if (qid != null) return CODES[qid] || null;
-    return { hasAuth: !!AUTH, questions: Object.keys(CODES).length, defs: DEFCOUNT, questionIds: Object.keys(CODES).slice(0, 60) };
+  window.__caPeek = function () {
+    return { hasAuth: !!AUTH, groupsCached: Object.keys(CG_MAP).length, questionsMapped: Object.keys(Q2CG).length };
   };
+  // Test resolution without saving: returns what code(s) a value would map to.
+  window.__caResolve = function (questionId, value, isMulti) { return resolveAnswer(questionId, value, !!isMulti, false); };
   window.__caRawLog = function () { return RAWLOG; };
   // Compact per-question metadata for a section (type/min/max/choiceGroupId) —
   // small enough to never hit a response cap, for decoding the code system.
