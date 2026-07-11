@@ -168,4 +168,15 @@
     return { hasAuth: !!AUTH, questions: Object.keys(CODES).length, defs: DEFCOUNT, questionIds: Object.keys(CODES).slice(0, 60) };
   };
   window.__caRawLog = function () { return RAWLOG; };
+  // Diagnostic: authenticated GET/POST against api25 using the captured headers,
+  // so we can inspect the choice/section endpoints with a token that actually
+  // works. Returns { status, body } (body capped).
+  window.__caFetch = function (path, method, body) {
+    if (!AUTH) return Promise.resolve({ error: "no-auth" });
+    var init = { method: method || "GET", headers: AUTH };
+    if (body != null) init.body = typeof body === "string" ? body : JSON.stringify(body);
+    return _fetch.call(window, API + path, init)
+      .then(function (r) { return r.text().then(function (t) { return { status: r.status, body: t.slice(0, 4000) }; }); })
+      .catch(function (e) { return { error: String((e && e.message) || e) }; });
+  };
 })();
