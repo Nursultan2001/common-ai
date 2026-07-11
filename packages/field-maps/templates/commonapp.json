@@ -10,29 +10,22 @@
       "fields": [
         {
           "source": "testScores.selfReportScores",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "Yes": "#option_ques_837_2371-input",
-            "No": "#option_ques_837_2372-input"
-          }
+          "kind": "ca-answer",
+          "questionId": 837,
+          "selectors": []
         },
         {
           "source": "testScores.internationalLeavingExam",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "Yes": "#option_ques_925_2371-input",
-            "No": "#option_ques_925_2372-input"
-          }
+          "kind": "ca-answer",
+          "questionId": 925,
+          "selectors": []
         },
         {
           "source": "testScores.testsToReport",
-          "kind": "multi-combobox",
-          "selectors": [
-            "#text_ques_11"
-          ],
-          "requiresConfirm": true
+          "kind": "ca-answer",
+          "questionId": 11,
+          "isMulti": true,
+          "selectors": []
         }
       ]
     },

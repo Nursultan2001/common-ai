@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Common AI — Application Assistant",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "Autofills your college applications from your Common AI profile. You review and submit.",
   "permissions": ["storage", "activeTab", "scripting", "tabs", "debugger"],
   "host_permissions": [
@@ -18,6 +18,12 @@
     "default_title": "Common AI"
   },
   "content_scripts": [
+    {
+      "matches": ["https://apply.commonapp.org/*"],
+      "js": ["ca-bridge.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
     {
       "matches": ["https://apply.commonapp.org/*", "http://localhost:3000/*"],
       "js": ["content.js"],

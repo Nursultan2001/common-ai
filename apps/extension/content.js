@@ -234,6 +234,32 @@
   const trustedType = (text) => trustedSend({ type: "TRUSTED_TYPE", text });
   const trustedRelease = () => trustedSend({ type: "TRUSTED_RELEASE" });
 
+  // Bridge to the MAIN-world ca-bridge.js (Common App direct-save API). We post a
+  // request and await the matching response by id. The bridge holds the auth +
+  // option-code maps; the isolated content script never sees the token.
+  let __caSeq = 0;
+  function caCall(payload, timeoutMs) {
+    return new Promise((resolve) => {
+      const id = "ca_" + Date.now() + "_" + ++__caSeq;
+      const timer = setTimeout(() => { window.removeEventListener("message", onMsg); resolve(null); }, timeoutMs || 8000);
+      function onMsg(ev) {
+        if (ev.source !== window || !ev.data || ev.data.__caRes !== true || ev.data.id !== id) return;
+        clearTimeout(timer); window.removeEventListener("message", onMsg);
+        resolve(ev.data);
+      }
+      window.addEventListener("message", onMsg);
+      window.postMessage(Object.assign({ __caReq: true, id }, payload), "*");
+    });
+  }
+  async function caSave({ questionId, value, isMulti, raw }) {
+    const r = await caCall({ op: "save", questionId, value, isMulti: !!isMulti, raw: !!raw });
+    return r ? (r.result || {}) : { ok: false, error: "bridge-unavailable" };
+  }
+  async function caStatus() {
+    const r = await caCall({ op: "status" }, 3000);
+    return r ? r.result : null;
+  }
+
   // Common App shows a full-screen ".backdrop.full-screen" loading overlay while
   // a section loads. In automated/slow-network conditions it can get STUCK, and
   // because it sits above everything it swallows real (coordinate) clicks and can
@@ -498,6 +524,18 @@
 
   async function fillField(mapping, value, root = document) {
     if (value === null || value === undefined || value === "") return null;
+
+    // ca-answer: save directly through Common App's own /answer API (via the
+    // MAIN-world bridge), instead of driving the ng-select UI. Used for the
+    // "Testing" section, whose components refuse to persist simulated events.
+    // mapping: { source, questionId, isMulti?, raw?, format? }
+    if (mapping.kind === "ca-answer") {
+      let out = value;
+      if (mapping.format) out = formatDate(value, mapping.format); // date → API string
+      const r = await caSave({ questionId: mapping.questionId, value: out, isMulti: !!mapping.isMulti, raw: !!mapping.raw });
+      if (r && r.ok) return { source: mapping.source, status: "filled-api", questionId: mapping.questionId };
+      return { source: mapping.source, status: "api-failed", questionId: mapping.questionId, note: (r && (r.error || r.status)) || "no-response" };
+    }
 
     // radio-map: pick the exact radio option by selector from valueMap.
     if (mapping.kind === "radio-map") {
