@@ -27,6 +27,16 @@
   var AUTH = null; // captured header map (opaque; used only to authorize saves)
   var CODES = {}; // questionId -> { normalizedLabel: code }
   var DEFCOUNT = 0;
+  var RAWLOG = []; // diagnostic: every api25 request seen (url + small response sample)
+
+  function logRaw(url, resp) {
+    try {
+      if (url.indexOf("api25.commonapp.org") === -1 || url.indexOf("logr") > -1) return;
+      var short = url.split("commonapp.org")[1] || url;
+      RAWLOG.push({ u: short.slice(0, 70), s: (resp == null ? "" : String(resp)).slice(0, 220) });
+      if (RAWLOG.length > 120) RAWLOG.shift();
+    } catch (e) {}
+  }
 
   function norm(s) { return String(s == null ? "" : s).replace(/\s+/g, " ").trim().toLowerCase(); }
 
@@ -81,7 +91,11 @@
     try { if (url.indexOf("api25.commonapp.org") > -1 && args[1]) captureAuth(args[1].headers); } catch (e) {}
     var p = _fetch.apply(this, args);
     try {
-      if (isDataUrl(url)) p.then(function (res) { try { res.clone().json().then(harvest).catch(function () {}); } catch (e) {} });
+      if (url.indexOf("api25.commonapp.org") > -1 && url.indexOf("logr") === -1) {
+        p.then(function (res) {
+          try { res.clone().text().then(function (t) { logRaw(url, t); if (isDataUrl(url)) { try { harvest(JSON.parse(t)); } catch (e) {} } }).catch(function () {}); } catch (e) {}
+        });
+      }
     } catch (e) {}
     return p;
   };
@@ -98,7 +112,12 @@
   XMLHttpRequest.prototype.send = function () {
     var xhr = this, u = String(xhr.__u || "");
     try { if (u.indexOf("api25") > -1) captureAuth(xhr.__h); } catch (e) {}
-    if (isDataUrl(u)) xhr.addEventListener("load", function () { try { harvest(JSON.parse(xhr.responseText)); } catch (e) {} });
+    if (u.indexOf("api25.commonapp.org") > -1 && u.indexOf("logr") === -1) {
+      xhr.addEventListener("load", function () {
+        try { logRaw(u, xhr.responseText); } catch (e) {}
+        if (isDataUrl(u)) { try { harvest(JSON.parse(xhr.responseText)); } catch (e) {} }
+      });
+    }
     return _send.apply(this, arguments);
   };
 
@@ -148,4 +167,5 @@
     if (qid != null) return CODES[qid] || null;
     return { hasAuth: !!AUTH, questions: Object.keys(CODES).length, defs: DEFCOUNT, questionIds: Object.keys(CODES).slice(0, 60) };
   };
+  window.__caRawLog = function () { return RAWLOG; };
 })();
