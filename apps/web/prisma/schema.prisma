@@ -625,6 +625,7 @@ model TestScores {
 
   // IELTS — one date applied to all sub-scores for simplicity.
   ieltsTimesTaken Int?
+  ieltsFutureSittings String? // 0–3 (radio)
   ieltsListening  String?
   ieltsReading    String?
   ieltsWriting    String?

@@ -202,7 +202,7 @@
           "selectors": [
             "#text_ques_31"
           ],
-          "format": "MMMM D, YYYY"
+          "format": "MMMM YYYY"
         },
         {
           "source": "testScores.satFutureDate2",
@@ -210,7 +210,7 @@
           "selectors": [
             "#text_ques_32"
           ],
-          "format": "MMMM D, YYYY"
+          "format": "MMMM YYYY"
         },
         {
           "source": "testScores.satFutureDate3",
@@ -218,7 +218,7 @@
           "selectors": [
             "#text_ques_33"
           ],
-          "format": "MMMM D, YYYY"
+          "format": "MMMM YYYY"
         },
         {
           "source": "testScores.satReadingWriting",
@@ -288,6 +288,17 @@
           "kind": "combo-pick"
         },
         {
+          "source": "testScores.ieltsFutureSittings",
+          "kind": "radio-map",
+          "selectors": [],
+          "valueMap": {
+            "0": "#option_ques_160_15-input",
+            "1": "#option_ques_160_16-input",
+            "2": "#option_ques_160_17-input",
+            "3": "#option_ques_160_18-input"
+          }
+        },
+        {
           "source": "testScores.ieltsListening",
           "selectors": [
             "#text_ques_164"
@@ -354,14 +365,14 @@
         {
           "source": "testScores.ieltsOverall",
           "selectors": [
-            "label:Highest IELTS overall band score"
+            "#text_ques_1794"
           ],
           "kind": "combo-pick"
         },
         {
           "source": "testScores.ieltsDate",
           "selectors": [
-            "label:IELTS overall band score date"
+            "#text_ques_1795"
           ],
           "kind": "date",
           "format": "MMMM D, YYYY",

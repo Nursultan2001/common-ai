@@ -113,6 +113,8 @@ export default async function TestingPage() {
               <label>Times taken</label>
               <input name="ieltsTimesTaken" type="number" defaultValue={t?.ieltsTimesTaken ?? ""} />
             </div>
+            <ScoreSel label="Number of future IELTS sittings expected" name="ieltsFutureSittings"
+              value={t?.ieltsFutureSittings} options={["0", "1", "2", "3"]} />
             <div style={{ flex: "1 1 220px" }}>
               <label>Test date (applies to all scores)</label>
               <input name="ieltsDate" type="date" defaultValue={isoDate(t?.ieltsDate ?? null)} />

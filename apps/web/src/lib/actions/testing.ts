@@ -32,6 +32,7 @@ export async function saveTestingAction(formData: FormData) {
       formData.getAll("testsToReport").map((v) => String(v).trim()).filter(Boolean).join(", ") ||
       null,
     ieltsTimesTaken: n(formData, "ieltsTimesTaken"),
+    ieltsFutureSittings: s(formData, "ieltsFutureSittings"),
     ieltsListening: s(formData, "ieltsListening"),
     ieltsReading: s(formData, "ieltsReading"),
     ieltsWriting: s(formData, "ieltsWriting"),
