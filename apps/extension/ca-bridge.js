@@ -168,6 +168,15 @@
     return { hasAuth: !!AUTH, questions: Object.keys(CODES).length, defs: DEFCOUNT, questionIds: Object.keys(CODES).slice(0, 60) };
   };
   window.__caRawLog = function () { return RAWLOG; };
+  // Compact per-question metadata for a section (type/min/max/choiceGroupId) —
+  // small enough to never hit a response cap, for decoding the code system.
+  window.__caQuestions = function (sectionId) {
+    if (!AUTH) return Promise.resolve({ error: "no-auth" });
+    return _fetch.call(window, API + "/datacatalog/sections/" + sectionId + "/questions", { headers: AUTH })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { return (j.questions || []).map(function (q) { return { qid: q.questionId, label: (q.label || "").slice(0, 24), type: q.questionType, min: q.min, max: q.max, cgid: q.choiceGroupId, cvl: (q.choiceValueList || []).length, subtype: q.questionSubtype }; }); })
+      .catch(function (e) { return { error: String((e && e.message) || e) }; });
+  };
   // Diagnostic: authenticated GET/POST against api25 using the captured headers,
   // so we can inspect the choice/section endpoints with a token that actually
   // works. Returns { status, body } (body capped).
@@ -176,7 +185,7 @@
     var init = { method: method || "GET", headers: AUTH };
     if (body != null) init.body = typeof body === "string" ? body : JSON.stringify(body);
     return _fetch.call(window, API + path, init)
-      .then(function (r) { return r.text().then(function (t) { return { status: r.status, body: t.slice(0, 4000) }; }); })
+      .then(function (r) { return r.text().then(function (t) { return { status: r.status, body: t.slice(0, 90000) }; }); })
       .catch(function (e) { return { error: String((e && e.message) || e) }; });
   };
 })();
