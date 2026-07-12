@@ -1006,12 +1006,27 @@
       }
     } catch (_e) {}
 
-    // 1. open the modal.
-    const trigger = findEl([mapping.trigger || "#addCG"]);
-    if (!trigger) return { source: mapping.source, status: "add-grade-button-not-found" };
-    trigger.click();
+    // 1. open the modal — BUT only if it isn't already open. When a transcript is
+    // empty (e.g. the student just cleared it), Common App auto-opens this modal
+    // on page load. Clicking the "Add grade" trigger again then stacks a SECOND
+    // dialog; the extension fills the stacked one while the visible one stays
+    // blank — which looks exactly like "it didn't fill". So reuse the open modal.
+    if (!document.getElementById("schoolNameControl1")) {
+      const trigger = findEl([mapping.trigger || "#addCG"]);
+      if (!trigger) return { source: mapping.source, status: "add-grade-button-not-found" };
+      trigger.click();
+    }
     const ready = await waitFor(() => document.getElementById("schoolNameControl1"), 3500);
     if (!ready) return { source: mapping.source, status: "grid-modal-not-open" };
+    // If more than one dialog is somehow open (a prior stray click), close extras
+    // so we operate on a single, unambiguous grid.
+    {
+      const dialogs = [...document.querySelectorAll("mat-dialog-container")];
+      for (let i = 0; i < dialogs.length - 1; i++) {
+        const x = [...dialogs[i].querySelectorAll("button")].find((b) => /close dialog/i.test((b.getAttribute("aria-label") || b.textContent || "")));
+        if (x) { x.click(); await sleep(300); }
+      }
+    }
     const matById = async (id, val) => {
       if (!val) return;
       const el = document.getElementById(id);
