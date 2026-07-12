@@ -11,12 +11,6 @@
         {
           "source": "testScores.selfReportScores",
           "kind": "ca-answer",
-          "questionId": 837,
-          "selectors": []
-        },
-        {
-          "source": "testScores.internationalLeavingExam",
-          "kind": "ca-answer",
           "questionId": 925,
           "selectors": []
         },
@@ -26,6 +20,12 @@
           "questionId": 11,
           "isMulti": true,
           "selectors": []
+        },
+        {
+          "source": "testScores.internationalLeavingExam",
+          "kind": "ca-answer",
+          "questionId": 837,
+          "selectors": []
         }
       ]
     },
@@ -33,138 +33,22 @@
       "urlPattern": "https://apply.commonapp.org/common/2/3*",
       "name": "Testing — ACT",
       "fields": [
-        {
-          "source": "testScores.actPastCount",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "0": "#option_ques_12_9-input",
-            "1": "#option_ques_12_10-input",
-            "2": "#option_ques_12_11-input",
-            "3": "#option_ques_12_12-input",
-            "4": "#option_ques_12_13-input",
-            "5": "#option_ques_12_14-input"
-          }
-        },
-        {
-          "source": "testScores.actComposite",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_17"
-          ]
-        },
-        {
-          "source": "testScores.actCompositeDate",
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "selectors": [
-            "#text_ques_18"
-          ]
-        },
-        {
-          "source": "testScores.actEnglish",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_19"
-          ]
-        },
-        {
-          "source": "testScores.actEnglishDate",
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "selectors": [
-            "#text_ques_20"
-          ]
-        },
-        {
-          "source": "testScores.actMath",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_21"
-          ]
-        },
-        {
-          "source": "testScores.actMathDate",
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "selectors": [
-            "#text_ques_22"
-          ]
-        },
-        {
-          "source": "testScores.actReading",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_23"
-          ]
-        },
-        {
-          "source": "testScores.actReadingDate",
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "selectors": [
-            "#text_ques_24"
-          ]
-        },
-        {
-          "source": "testScores.actReportScience",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "Yes": "#option_ques_172_1792-input",
-            "No": "#option_ques_172_1793-input"
-          }
-        },
-        {
-          "source": "testScores.actScience",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_25"
-          ]
-        },
-        {
-          "source": "testScores.actScienceDate",
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "selectors": [
-            "#text_ques_26"
-          ]
-        },
-        {
-          "source": "testScores.actReportWriting",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "Yes": "#option_ques_2086_1792-input",
-            "No": "#option_ques_2086_1793-input"
-          }
-        },
-        {
-          "source": "testScores.actWriting",
-          "kind": "combo-pick",
-          "selectors": [
-            "#text_ques_27"
-          ]
-        },
-        {
-          "source": "testScores.actWritingDate",
-          "kind": "date",
-          "format": "MMMM D, YYYY",
-          "selectors": [
-            "#text_ques_28"
-          ]
-        },
-        {
-          "source": "testScores.actFutureSittings",
-          "kind": "radio-map",
-          "selectors": [],
-          "valueMap": {
-            "0": "#option_ques_13_15-input",
-            "1": "#option_ques_13_16-input",
-            "2": "#option_ques_13_17-input",
-            "3": "#option_ques_13_18-input"
-          }
-        }
+        { "source": "testScores.actPastCount", "kind": "ca-answer", "questionId": 12, "selectors": [] },
+        { "source": "testScores.actComposite", "kind": "ca-answer", "questionId": 17, "selectors": [] },
+        { "source": "testScores.actCompositeDate", "kind": "ca-answer", "questionId": 18, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.actEnglish", "kind": "ca-answer", "questionId": 19, "selectors": [] },
+        { "source": "testScores.actEnglishDate", "kind": "ca-answer", "questionId": 20, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.actMath", "kind": "ca-answer", "questionId": 21, "selectors": [] },
+        { "source": "testScores.actMathDate", "kind": "ca-answer", "questionId": 22, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.actReading", "kind": "ca-answer", "questionId": 23, "selectors": [] },
+        { "source": "testScores.actReadingDate", "kind": "ca-answer", "questionId": 24, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.actReportScience", "kind": "ca-answer", "questionId": 2086, "selectors": [] },
+        { "source": "testScores.actScience", "kind": "ca-answer", "questionId": 25, "selectors": [] },
+        { "source": "testScores.actScienceDate", "kind": "ca-answer", "questionId": 26, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.actReportWriting", "kind": "ca-answer", "questionId": 172, "selectors": [] },
+        { "source": "testScores.actWriting", "kind": "ca-answer", "questionId": 27, "selectors": [] },
+        { "source": "testScores.actWritingDate", "kind": "ca-answer", "questionId": 28, "format": "MM/DD/YYYY", "selectors": [] },
+        { "source": "testScores.actFutureSittings", "kind": "ca-answer", "questionId": 13, "selectors": [] }
       ]
     },
     {

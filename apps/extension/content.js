@@ -254,8 +254,21 @@
     });
   }
   async function caSave({ questionId, value, isMulti, raw }) {
-    const r = await caCall({ op: "save", questionId, value, isMulti: !!isMulti, raw: !!raw });
-    return r ? (r.result || {}) : { ok: false, error: "bridge-unavailable" };
+    // The bridge captures auth from the app's own requests on page load; if the
+    // extension runs before that happens, the first save reports no auth. Retry
+    // a few times (waiting for auth) before giving up.
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const r = await caCall({ op: "save", questionId, value, isMulti: !!isMulti, raw: !!raw });
+      const res = r ? (r.result || {}) : { ok: false, error: "bridge-unavailable" };
+      if (res.ok) return res;
+      const e = String(res.error || "");
+      if (r === null || e === "no-auth-captured" || e === "bridge-unavailable") {
+        await sleep(700);
+        continue;
+      }
+      return res; // a real (non-auth) error — surface it
+    }
+    return { ok: false, error: "no-auth-after-retries" };
   }
   async function caStatus() {
     const r = await caCall({ op: "status" }, 3000);
