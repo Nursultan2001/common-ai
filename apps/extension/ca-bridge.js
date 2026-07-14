@@ -227,10 +227,21 @@
     "art (visual or performing)": 4, "physical education/health": 5, "other/elective": 7
   };
   var TX_LEVELS = { "regular/standard": 1 };
-  var TX_GRADES = { "5.0": "188" }; // KZ default; extend if other grades are used
   // schedule code -> ordered grade/credit columns
   var TX_COLS = { "0": ["1", "2", "F"], "1": ["1", "2", "3", "F"], "2": ["1", "2", "3", "4", "F"], "3": ["F"], "4": ["F"] };
-  function txGrade(v) { if (v == null || v === "") return null; var c = TX_GRADES[norm(v)]; return c != null ? c : String(v); }
+  // 0.0-5.0 grading scale: the grade dropdown runs 5.0 (code 188) down to 0.0 in
+  // 0.1 steps, sequential — verified live (188=5.0, 198=4.0, 208=3.0, 218=2.0).
+  // So grade G -> code 188 + round((5 - G) * 10), covering the entire range.
+  function txGrade(v) {
+    if (v == null || v === "") return null;
+    var s = String(v).trim();
+    var n = parseFloat(s);
+    if (!isNaN(n) && n >= 0 && n <= 5) {
+      var code = 188 + Math.round((5 - n) * 10);
+      if (code >= 188 && code <= 238) return String(code);
+    }
+    return s; // other scales: pass the raw value through (server validates)
+  }
 
   function saveTranscript(spec) {
     return getCag().then(function (cag) {
