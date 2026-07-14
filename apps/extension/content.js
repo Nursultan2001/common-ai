@@ -1157,6 +1157,43 @@
     };
   }
 
+  // ca-transcript: save an entire Courses & Grades transcript (school, year,
+  // scale, schedule + every course) in ONE /answer/v2 POST via the MAIN-world
+  // bridge — far more reliable than driving the slow modal grid, which stalls
+  // partway through 18 courses. The bridge resolves all option codes.
+  // mapping: { source:"gradeData.9", questionId, reportedAllQid, gatingQid? }
+  async function fillTranscript(mapping, payload) {
+    const data = get(payload, mapping.source);
+    const courses = data && Array.isArray(data.courses)
+      ? data.courses.filter((c) => c && (c.subject || c.courseName)) : [];
+    if (!data || !courses.length) return { source: mapping.source, status: "skip-no-courses" };
+    const spec = {
+      questionId: mapping.questionId,
+      reportedAllQid: mapping.reportedAllQid || null,
+      gatingQid: mapping.gatingQid || null,
+      schoolName: data.schoolName,
+      schoolYear: data.schoolYear,
+      gradingScale: data.gradingScale,
+      schedule: data.schedule,
+      courses,
+    };
+    // Retry while the bridge captures auth (page-load race).
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const r = await caCall({ op: "transcript", spec }, 20000);
+      const res = r ? (r.result || {}) : { ok: false, error: "bridge-unavailable" };
+      if (res.ok) {
+        return { source: mapping.source, status: "filled-api", detail: `${res.courses} courses saved`, unmapped: res.unmapped };
+      }
+      const e = String(res.error || "");
+      if (r === null || e === "no-auth-captured" || e === "bridge-unavailable" || e === "no-auth") {
+        await sleep(700);
+        continue;
+      }
+      return { source: mapping.source, status: "api-failed", note: e, detail: res.detail || res.unmapped };
+    }
+    return { source: mapping.source, status: "api-failed", note: "no-auth-after-retries" };
+  }
+
   async function applyPage(pageMap, payload) {
     const report = [];
 
@@ -1167,6 +1204,10 @@
       }
       if (m.kind === "courses-grid") {
         report.push(await fillCoursesGrid(m, payload));
+        continue;
+      }
+      if (m.kind === "ca-transcript") {
+        report.push(await fillTranscript(m, payload));
         continue;
       }
       report.push((await fillField(m, get(payload, m.source))) || { source: m.source, status: "empty" });

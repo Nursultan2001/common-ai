@@ -208,12 +208,83 @@
       .catch(function (e) { return { ok: false, error: String((e && e.message) || e) }; });
   }
 
+  // ---- Courses & Grades transcript direct-save ------------------------------
+  // The ENTIRE transcript (school, year, scale, schedule + every course) saves
+  // as ONE /answer/v2 POST with a nested response — far more reliable than
+  // driving the slow modal grid. Dynamic maps (year/scale/schedule/highSchools)
+  // come from GET /answer/CoursesAndGrades; subject/level/grade codes are static
+  // Common App reference data.
+  var CAG = null;
+  function getCag() {
+    if (CAG) return Promise.resolve(CAG);
+    return authedJson("/answer/CoursesAndGrades").then(function (j) { CAG = j || {}; return CAG; });
+  }
+  function cagMap(arr) { var m = {}; (arr || []).forEach(function (o) { if (o && o.choiceLabel != null) m[norm(o.choiceLabel)] = String(o.value); }); return m; }
+  var TX_SUBJECTS = {
+    "foreign/world language": 6, "english": 0, "algebra": 11, "geometry": 12,
+    "computer science": 8, "earth/environmental science": 19, "biology": 16,
+    "physics": 18, "chemistry": 17, "history/social science": 3,
+    "art (visual or performing)": 4, "physical education/health": 5, "other/elective": 7
+  };
+  var TX_LEVELS = { "regular/standard": 1 };
+  var TX_GRADES = { "5.0": "188" }; // KZ default; extend if other grades are used
+  // schedule code -> ordered grade/credit columns
+  var TX_COLS = { "0": ["1", "2", "F"], "1": ["1", "2", "3", "F"], "2": ["1", "2", "3", "4", "F"], "3": ["F"], "4": ["F"] };
+  function txGrade(v) { if (v == null || v === "") return null; var c = TX_GRADES[norm(v)]; return c != null ? c : String(v); }
+
+  function saveTranscript(spec) {
+    return getCag().then(function (cag) {
+      var years = cagMap(cag.academicYears), scales = cagMap(cag.gradingScale),
+          scheds = cagMap(cag.schedules), schools = cagMap(cag.highSchools);
+      // School: match the stored name, else fall back to the only/first school
+      // (the transcript dropdown is limited to the Education-section schools —
+      // works for registry AND manually-entered schools).
+      var hs = schools[norm(spec.schoolName)];
+      if (hs == null) { var v = cag.highSchools || []; hs = v.length ? String(v[0].value) : null; }
+      var Y = years[norm(spec.schoolYear)], Gs = scales[norm(spec.gradingScale)], Sc = scheds[norm(spec.schedule)];
+      if (hs == null || Y == null || Gs == null || Sc == null) {
+        return { ok: false, error: "unresolved-header", detail: { hs: hs, Y: Y, Gs: Gs, Sc: Sc } };
+      }
+      var cols = TX_COLS[String(Sc)] || ["F"];
+      var gField = { "1": "grade1", "2": "grade2", "3": "grade3", "4": "grade4", "F": "gradeFinal" };
+      var gKey = { "1": "G1", "2": "G2", "3": "G3", "4": "G4", "F": "FG" };
+      var cField = { "1": "credit1", "2": "credit2", "3": "credit3", "4": "credit4", "F": "creditFinal" };
+      var cKey = { "1": "C1", "2": "C2", "3": "C3", "4": "C4", "F": "FC" };
+      var unmapped = [];
+      var Cs = (spec.courses || []).map(function (c) {
+        var su = TX_SUBJECTS[norm(c.subject)];
+        if (su == null) { unmapped.push(c.subject); return null; }
+        var row = { Su: su, CN: c.courseName || "", CL: TX_LEVELS[norm(c.courseLevel)] != null ? TX_LEVELS[norm(c.courseLevel)] : 1,
+          G1: null, G2: null, G3: null, G4: null, FG: null, C1: null, C2: null, C3: null, C4: null, FC: null, CNA: !!c.creditNA };
+        cols.forEach(function (col) { row[gKey[col]] = txGrade(c[gField[col]]); });
+        if (!c.creditNA) cols.forEach(function (col) { var cv = c[cField[col]]; if (cv != null && cv !== "") row[cKey[col]] = String(cv); });
+        return row;
+      }).filter(Boolean);
+      if (!Cs.length) return { ok: false, error: "no-courses-mapped", unmapped: unmapped };
+      var resp = { HSc: [{ Hs: String(hs), Y: Number(Y), Gs: Number(Gs), Sc: Number(Sc), OSN: null, Cs: Cs }] };
+      // grade 12 gates the whole section behind a Yes/No question — answer Yes first.
+      var pre = spec.gatingQid ? save(spec.gatingQid, "0") : Promise.resolve();
+      return pre.then(function () { return save(spec.questionId, resp); }).then(function (r) {
+        if (spec.reportedAllQid) return save(spec.reportedAllQid, "1").then(function () { return r; });
+        return r;
+      }).then(function (r) { return { ok: r.ok, status: r.status, courses: Cs.length, unmapped: unmapped.length ? unmapped : undefined }; });
+    }).catch(function (e) { return { ok: false, error: String((e && e.message) || e) }; });
+  }
+
   // ---- content-script API (postMessage) ----
   window.addEventListener("message", function (ev) {
     if (ev.source !== window || !ev.data || ev.data.__caReq !== true) return;
     var d = ev.data;
     if (d.op === "status") {
       window.postMessage({ __caRes: true, id: d.id, result: { hasAuth: !!AUTH, groups: Object.keys(CG_MAP).length, defs: DEFCOUNT } }, "*");
+      return;
+    }
+    if (d.op === "transcript") {
+      saveTranscript(d.spec || {}).then(function (r) {
+        window.postMessage({ __caRes: true, id: d.id, result: r }, "*");
+      }).catch(function (e) {
+        window.postMessage({ __caRes: true, id: d.id, result: { ok: false, error: String((e && e.message) || e) } }, "*");
+      });
       return;
     }
     resolveAnswer(d.questionId, d.value, d.isMulti, d.raw).then(function (resp) {
@@ -232,6 +303,7 @@
   };
   // Test resolution without saving: returns what code(s) a value would map to.
   window.__caResolve = function (questionId, value, isMulti) { return resolveAnswer(questionId, value, !!isMulti, false); };
+  window.__caTranscript = function (spec) { return saveTranscript(spec); };
   window.__caRawLog = function () { return RAWLOG; };
   // Compact per-question metadata for a section (type/min/max/choiceGroupId) —
   // small enough to never hit a response cap, for decoding the code system.

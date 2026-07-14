@@ -3057,88 +3057,28 @@
       "urlPattern": "https://apply.commonapp.org/common/13/55*",
       "name": "Courses & Grades — 9th grade",
       "fields": [
-        {
-          "source": "gradeData.9",
-          "kind": "courses-grid",
-          "selectors": [],
-          "trigger": "#addCG",
-          "requiresConfirm": true
-        },
-        {
-          "source": "gradeData.9.reportedAll",
-          "kind": "checkbox-map",
-          "selectors": [],
-          "requiresConfirm": true,
-          "valueMap": {
-            "true": "[id$=\"_3796-input\"]"
-          }
-        }
+        { "source": "gradeData.9", "kind": "ca-transcript", "questionId": 1918, "reportedAllQid": 1924, "selectors": [] }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/13/56*",
       "name": "Courses & Grades — 10th grade",
       "fields": [
-        {
-          "source": "gradeData.10",
-          "kind": "courses-grid",
-          "selectors": [],
-          "trigger": "#addCG",
-          "requiresConfirm": true
-        },
-        {
-          "source": "gradeData.10.reportedAll",
-          "kind": "checkbox-map",
-          "selectors": [],
-          "requiresConfirm": true,
-          "valueMap": {
-            "true": "[id$=\"_3796-input\"]"
-          }
-        }
+        { "source": "gradeData.10", "kind": "ca-transcript", "questionId": 1922, "reportedAllQid": 1923, "selectors": [] }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/13/57*",
       "name": "Courses & Grades — 11th grade",
       "fields": [
-        {
-          "source": "gradeData.11",
-          "kind": "courses-grid",
-          "selectors": [],
-          "trigger": "#addCG",
-          "requiresConfirm": true
-        },
-        {
-          "source": "gradeData.11.reportedAll",
-          "kind": "checkbox-map",
-          "selectors": [],
-          "requiresConfirm": true,
-          "valueMap": {
-            "true": "[id$=\"_3796-input\"]"
-          }
-        }
+        { "source": "gradeData.11", "kind": "ca-transcript", "questionId": 1925, "reportedAllQid": 1926, "selectors": [] }
       ]
     },
     {
       "urlPattern": "https://apply.commonapp.org/common/13/58*",
       "name": "Courses & Grades — 12th grade",
       "fields": [
-        {
-          "source": "gradeData.12",
-          "kind": "courses-grid",
-          "selectors": [],
-          "trigger": "#addCG",
-          "requiresConfirm": true
-        },
-        {
-          "source": "gradeData.12.reportedAll",
-          "kind": "checkbox-map",
-          "selectors": [],
-          "requiresConfirm": true,
-          "valueMap": {
-            "true": "[id$=\"_3796-input\"]"
-          }
-        }
+        { "source": "gradeData.12", "kind": "ca-transcript", "questionId": 1928, "reportedAllQid": 1929, "gatingQid": 1927, "selectors": [] }
       ]
     },
     {
